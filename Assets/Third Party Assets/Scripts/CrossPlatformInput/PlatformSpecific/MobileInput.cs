@@ -124,6 +124,17 @@ namespace UnityStandardAssets.CrossPlatformInput.PlatformSpecific
             return m_VirtualButtons[name].GetButton;
         }
 
+		public override Vector2 GetLastKnownPos(string name)
+		{
+			if (m_VirtualButtons.ContainsKey(name))
+			{
+				return m_VirtualButtons[name].GetLastKnownPos;
+			}
+			
+			AddButton(name);
+			return m_VirtualButtons[name].GetLastKnownPos;
+		}
+
 
         public override Vector3 MousePosition()
         {

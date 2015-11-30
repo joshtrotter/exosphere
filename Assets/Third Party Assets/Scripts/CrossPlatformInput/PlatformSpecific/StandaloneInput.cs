@@ -28,6 +28,11 @@ namespace UnityStandardAssets.CrossPlatformInput.PlatformSpecific
             return Input.GetButtonUp(name);
         }
 
+		public override Vector2 GetLastKnownPos(string name)
+		{
+			return Vector2.zero;
+		}
+
 
         public override void SetButtonDown(string name)
         {

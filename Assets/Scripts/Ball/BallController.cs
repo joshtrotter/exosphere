@@ -14,9 +14,7 @@ public class BallController : MonoBehaviour
 	public float turnResponsiveness = 1f;
 	// The maximum velocity the ball can rotate at
 	public float maxAngularVelocity = 25f; 
-	// The force added to the ball when it jumps
-	public float jumpPower = 2f; 
-
+	 
 	//Hold a reference to the brake controller script
 	private BrakeController brakes;
 	//Hold a reference to the balls rigidbody
@@ -24,6 +22,9 @@ public class BallController : MonoBehaviour
 	
 	// The length of the ray used to check if the ball is grounded
 	private const float groundRayLength = 1f;
+
+	//Store our current target velocity
+	private Vector3 targetVelocity;
 
 	private void Awake ()
 	{
@@ -45,14 +46,14 @@ public class BallController : MonoBehaviour
 			brakes.ReleaseBrakes ();
 
 			//Accelerate away from the camera if we are on the ground - TODO do we want to allow mid-air acceleration?
-			if (IsBallOnGround ()) {
+			if (IsOnGround ()) {
 				rb.AddForce (moveDirection * movePower);
 
 				//If the player attempts to turn sharply at a high velocity then they will skid out
 				brakes.CheckForBrakeLockOnTurn(moveDirection);
 
 				//Our target velocity is the current acceleration direction with the current velocity magnitude
-				Vector3 targetVelocity = moveDirection.normalized * rb.velocity.magnitude;
+				targetVelocity = moveDirection.normalized * rb.velocity.magnitude;
 				//If we jump straight to the target velocity the movement will not feel smooth when the camera turn so we will lerp there over time
 				rb.velocity = Vector3.Lerp (rb.velocity, targetVelocity, Time.deltaTime * turnResponsiveness);
 			}
@@ -69,7 +70,7 @@ public class BallController : MonoBehaviour
 	public void Brake (float brakePower)
 	{
 		if (!brakes.IsBrakeLocked()) {
-			if (IsBallOnGround ()) {
+			if (IsOnGround ()) {
 				//Lock the brakes if the player is applying a hard brake and the ball is travelling above the brakeLockVelocity...
 				if (!brakes.CheckForBrakeLockOnBrake(brakePower)) {
 					//...otherwise apply brakes normally
@@ -79,22 +80,17 @@ public class BallController : MonoBehaviour
 		}
 	}
 
-	//Inovked when the screen is tapped
-	public void Jump ()
+	public Vector3 GetTargetVelocity()
 	{
-		// If on the ground then add an upward force
-		if (IsBallOnGround ()) {
-			rb.AddForce (Vector3.up * jumpPower, ForceMode.Impulse);
-		}
+		return targetVelocity;
 	}
 
+
 	//Utility method for checking if the ball is grounded
-	private Boolean IsBallOnGround ()
+	public Boolean IsOnGround ()
 	{
 		//TODO This is a candidate for future optimization - this method is called a lot and Physics.Raycast is relatively expensive
 		return Physics.Raycast (transform.position, -Vector3.up, groundRayLength);
 	}
-
-
 	
 }

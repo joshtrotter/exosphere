@@ -127,6 +127,10 @@ namespace UnityStandardAssets.CrossPlatformInput
 			return activeInput.GetButtonUp(name);
 		}
 
+		public static Vector2 GetLastKnownPos(string name)
+		{
+			return activeInput.GetLastKnownPos (name);
+		}
 
 		public static void SetButtonDown(string name)
 		{
@@ -248,6 +252,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 			private int m_LastPressedFrame = -5;
 			private int m_ReleasedFrame = -5;
 			private bool m_Pressed;
+			private Vector2 pos;
 
 
 			public VirtualButton(string name)
@@ -282,6 +287,10 @@ namespace UnityStandardAssets.CrossPlatformInput
 				m_ReleasedFrame = Time.frameCount;
 			}
 
+			public void Update(Vector2 pos)
+			{
+				this.pos = pos;
+			}
 
 			// the controller gameobject should call Remove when the button is destroyed or disabled
 			public void Remove()
@@ -311,6 +320,13 @@ namespace UnityStandardAssets.CrossPlatformInput
 				get
 				{
 					return (m_ReleasedFrame == Time.frameCount - 1);
+				}
+			}
+
+			public Vector2 GetLastKnownPos
+			{
+				get {
+					return pos;
 				}
 			}
 		}

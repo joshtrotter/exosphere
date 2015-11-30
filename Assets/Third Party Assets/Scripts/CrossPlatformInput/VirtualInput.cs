@@ -122,6 +122,7 @@ namespace UnityStandardAssets.CrossPlatformInput
         public abstract bool GetButton(string name);
         public abstract bool GetButtonDown(string name);
         public abstract bool GetButtonUp(string name);
+		public abstract Vector2 GetLastKnownPos (string name);
 
         public abstract void SetButtonDown(string name);
         public abstract void SetButtonUp(string name);

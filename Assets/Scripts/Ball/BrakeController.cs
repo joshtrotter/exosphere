@@ -92,7 +92,7 @@ public class BrakeController : MonoBehaviour
 		material.dynamicFriction = neutralFriction * brakeLockFrictionScale;
 		
 		//TODO this is a temporary colour effect - replace with skid marks, smoke, sound effects etc to the skid
-		GetComponent<Renderer> ().material.color = Color.red;
+		GetComponent<Renderer> ().material.SetColor("_EmissionColor", Color.red * 10f);
 		
 		//Start a coroutine to check for the end of the brake lock
 		StartCoroutine (WaitForEndOfBrakeLockSlide ());
@@ -109,7 +109,7 @@ public class BrakeController : MonoBehaviour
 		isBrakeLocked = false;
 		
 		//TODO this is temporary - we will be using better effects for the slide later on
-		GetComponent<Renderer> ().material.color = Color.grey;
+		GetComponent<Renderer> ().material.SetColor("_EmissionColor", Color.white);
 	}
 	
 	//Unlocks the brakes only after the balls velocity has reduced below the exitBrakeLockVelocity

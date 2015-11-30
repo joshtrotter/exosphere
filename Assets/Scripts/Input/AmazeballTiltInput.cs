@@ -24,7 +24,7 @@ public class AmazeballTiltInput : MonoBehaviour
 
 	//Track an offset for the vertical acceleration so that the player can choose their own neutral orientation for the device
 	private float verticalAccelerationOffset;
-		
+				
 	//If this rig is enabled we will register the two virtual axis with the CrossPlatformInputManager. This means these axis values will be derived from this script.
 	private void OnEnable ()
 	{
@@ -33,7 +33,6 @@ public class AmazeballTiltInput : MonoBehaviour
 			
 		horizontalAxis = new CrossPlatformInputManager.VirtualAxis ("Horizontal");
 		CrossPlatformInputManager.RegisterVirtualAxis (horizontalAxis);
-			
 	}
 		
 	//If this rig is disabled we will deregister the two virtual axis from the CrossPlatformInputManager. This means these axis values will be derived from the default keyboard input.

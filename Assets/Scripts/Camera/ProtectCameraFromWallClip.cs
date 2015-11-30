@@ -16,8 +16,8 @@ namespace UnityStandardAssets.Cameras
         public float closestDistance = 0.5f;            // the closest distance the camera can be from the target        
         public string dontClipTag = "Player";           // don't clip against objects with this tag (useful for not clipping against the targeted object)
 
-        private Transform cam;                  // the transform of the camera
-        private Transform pivot;                // the point at which the camera pivots around
+		private Transform cam;                  // the transform of the camera
+		private Transform pivot;                // the point at which the camera pivots around
         private float originalDistance;             // the original distance to the camera before any modification are made
         private float moveVelocity;             // the velocity at which the camera moved
         private float currentDistance;              // the current distance from the camera to the target
@@ -29,7 +29,7 @@ namespace UnityStandardAssets.Cameras
         private void Start()
         {
             // find the camera in the object hierarchy
-            cam = GetComponentInChildren<Camera>().transform;
+			cam = GetComponentInChildren<Camera>().transform;
             pivot = cam.parent;
             originalDistance = cam.localPosition.magnitude;
             currentDistance = originalDistance;

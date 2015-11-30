@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
@@ -8,8 +9,16 @@ using UnityStandardAssets.CrossPlatformInput;
  */ 
 public class BallInputReader : MonoBehaviour
 {
+	public float pickupTimeThreshold;
+
 	// Reference to the ball controller.
-	private BallController ball; 
+	private BallController ball;
+
+	//Reference to the pickup controller;
+	private PickupController pickups;
+
+	//Reference to the transform controller;
+	private TransformController transforms;
 
 	// the world-relative desired move vector, calculated from the camForward and user input.
 	private Vector3 move;
@@ -20,13 +29,12 @@ public class BallInputReader : MonoBehaviour
 	// A reference to the main camera in the scenes transform
 	private Transform cam; 
 
-	// whether the jump button is currently pressed
-	private bool jump;
-
 	private void Awake ()
 	{
 		// Set up the references to other game objects
 		ball = GetComponent<BallController> ();
+		pickups = GetComponent<PickupController> ();
+		transforms = GetComponent<TransformController> ();
 		cam = Camera.main.transform;            
 	}
 
@@ -50,8 +58,18 @@ public class BallInputReader : MonoBehaviour
 			brakeForce = Mathf.Abs (v);
 		}
 
-		//Get the button input
-		jump = CrossPlatformInputManager.GetButton ("Jump");
+		//If we detect a touch then start tracking it
+		if (CrossPlatformInputManager.GetButtonDown ("Right")) {
+			StartCoroutine(TrackButtonPress("Right", PickupController.Slot.RIGHT, CrossPlatformInputManager.GetLastKnownPos("Right"), Time.time));
+		}
+		if (CrossPlatformInputManager.GetButtonDown ("Left")) {
+			StartCoroutine(TrackButtonPress("Left", PickupController.Slot.LEFT, CrossPlatformInputManager.GetLastKnownPos("Left"), Time.time));
+		}
+
+		//If we detect a shake then trigger the response
+		if (CrossPlatformInputManager.GetButtonDown ("Shake")) {
+			transforms.RemoveCurrent();
+		}
 	}
 
 	private void FixedUpdate ()
@@ -63,10 +81,29 @@ public class BallInputReader : MonoBehaviour
 		} else {
 			ball.Neutral ();
 		}
+	}
 
-		if (jump) {
-			ball.Jump ();
-			jump = false;
+	private IEnumerator TrackButtonPress(String buttonName, PickupController.Slot slot, Vector2 startPos, float startTime)
+	{
+		bool isDrag = false;
+		pickups.TouchPickup (slot);
+
+		//Wait for the button to be released
+		while (CrossPlatformInputManager.GetButton(buttonName)) {
+			//If the button is not released within the threshold time then this touch is treated as a drag
+			if (!isDrag && Time.time - startTime > pickupTimeThreshold) {
+				isDrag = true;
+				pickups.StartDragging(slot, CrossPlatformInputManager.GetLastKnownPos(buttonName));
+			}
+			if (isDrag) {
+				pickups.Drag(CrossPlatformInputManager.GetLastKnownPos(buttonName));
+			}
+			yield return new WaitForFixedUpdate();
+		}
+		if (!isDrag) {
+			pickups.UsePickup (slot);
+		} else {
+			pickups.EndDrag();
 		}
 	}
 
