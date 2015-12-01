@@ -4,7 +4,7 @@ using System.Collections;
 public abstract class BallTransform : MonoBehaviour
 {
 	public Material transformMaterial;
-	public PhysicMaterial transformPhysicMaterial;
+	public PhysicMaterial transformPhysicMaterial; 
 
 	public virtual void Apply(BallController ball) 
 	{

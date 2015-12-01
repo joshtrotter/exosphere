@@ -13,7 +13,7 @@ public class BallController : MonoBehaviour
 	// The speed with which the balls velocity is adjusted to match the camera rotation (too slow and the ball becomes hard to turn, too fast and the movement feels unrealistic)
 	public float turnResponsiveness = 1f;
 	// The maximum velocity the ball can rotate at
-	public float maxAngularVelocity = 25f; 
+	public float maxAngularVelocity = 17.5f; 
 	 
 	//Hold a reference to the brake controller script
 	private BrakeController brakes;

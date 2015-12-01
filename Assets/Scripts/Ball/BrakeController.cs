@@ -32,11 +32,14 @@ public class BrakeController : MonoBehaviour
 	private Rigidbody rb;
 	//Hold a reference to the balls physic material
 	private PhysicMaterial material;
+	//Hold a reference to the transform controller
+	private TransformController transformController;
 
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody> ();
 		material = GetComponent<Collider> ().material;
+		transformController = GetComponent<TransformController> ();
 
 		//store the balls base drag values so that we can return to these after a brake has finished (we increase drag during a brake)
 		neutralDrag = rb.drag;
@@ -109,7 +112,8 @@ public class BrakeController : MonoBehaviour
 		isBrakeLocked = false;
 		
 		//TODO this is temporary - we will be using better effects for the slide later on
-		GetComponent<Renderer> ().material.SetColor("_EmissionColor", Color.white);
+		GetComponent<Renderer> ().material.SetColor("_EmissionColor", 
+		                                            transformController.currentTransform.transformMaterial.GetColor("_EmissionColor"));
 	}
 	
 	//Unlocks the brakes only after the balls velocity has reduced below the exitBrakeLockVelocity
