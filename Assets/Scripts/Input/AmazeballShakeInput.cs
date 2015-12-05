@@ -8,13 +8,16 @@ using UnityStandardAssets.CrossPlatformInput;
 public class AmazeballShakeInput : MonoBehaviour {
 
 	//The required delta in vertical acceleration between 2 frames that will be considered as one shake - lower values will make shake detection more sensitive
-	public float shakeDetectThreshold = 0.25f;
+	public float shakeDetectThreshold = 0.165f;
 	
 	//The maximum amount of time (in seconds) that can elapse between two shakes (exceeding the shakeDetectThreshold) in order for them to be treated as a continuous shake 
 	public float shakeDetectInterval = 0.2f;
 
 	//The number of continuous shakes (exceeding the shakeDetectThreshold) that must occur for the shake action to be triggered
 	public int requiredShakes = 2;
+
+	//This is just used to ensure the shake detection which works based on acceleration delta between two frames is consistent across frame rates
+	private const float expectedFps = 60f;
 
 	//When a continuous shake is detected it will be treated as though a 'shake' button was pressed
 	private CrossPlatformInputManager.VirtualButton shakeButton;
@@ -56,6 +59,9 @@ public class AmazeballShakeInput : MonoBehaviour {
 		//Get the change in acceleration this frame
 		float verticalAcceleration = Input.acceleration.y;
 		float verticalAccelerationDelta = verticalAcceleration - prevVerticalAcceleration;
+
+		//Make sure the delta is frame rate independent
+		verticalAccelerationDelta *= (Time.deltaTime * expectedFps);
 
 		//Check if we have exceeded the acceleration threshold
 		if (Mathf.Abs (verticalAccelerationDelta) >= shakeDetectThreshold) {
