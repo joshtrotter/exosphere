@@ -50,7 +50,9 @@ public class BallController : MonoBehaviour
 				rb.AddForce (moveDirection * movePower);
 
 				//If the player attempts to turn sharply at a high velocity then they will skid out
-				brakes.CheckForBrakeLockOnTurn(moveDirection);
+				if (brakes.CheckForBrakeLockOnTurn(moveDirection)) {
+					brakes.LockBrakes();
+				}
 
 				//Our target velocity is the current acceleration direction with the current velocity magnitude
 				targetVelocity = moveDirection.normalized * rb.velocity.magnitude;
@@ -75,6 +77,8 @@ public class BallController : MonoBehaviour
 				if (!brakes.CheckForBrakeLockOnBrake(brakePower)) {
 					//...otherwise apply brakes normally
 					brakes.ApplyBrakes(brakePower);
+				} else {
+					brakes.LockBrakes();
 				}
 			}
 		}
@@ -90,7 +94,7 @@ public class BallController : MonoBehaviour
 	public Boolean IsOnGround ()
 	{
 		//TODO This is a candidate for future optimization - this method is called a lot and Physics.Raycast is relatively expensive
-		return Physics.Raycast (transform.position, -Vector3.up, groundRayLength);
+		return Physics.Raycast (transform.position, Vector3.down, groundRayLength);
 	}
 	
 }
