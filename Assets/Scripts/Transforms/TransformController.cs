@@ -24,7 +24,6 @@ public class TransformController : MonoBehaviour {
 	public void ApplyTransform(BallTransform newTransform)
 	{
 		if (newTransform != currentTransform) {
-			Atomize ();
 			currentTransform.Remove (ballController);
 			newTransform.Apply (ballController);
 			currentTransform = newTransform;	
