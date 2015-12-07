@@ -42,6 +42,7 @@ public class BrakeController : MonoBehaviour
 		transformController = GetComponent<TransformController> ();
 
 		//store the balls base drag values so that we can return to these after a brake has finished (we increase drag during a brake)
+		//TODO assumes that neutral drag values are never altered anywhere else
 		neutralDrag = rb.drag;
 		neutralAngularDrag = rb.angularDrag;
 		neutralFriction = material.dynamicFriction;
@@ -66,20 +67,12 @@ public class BrakeController : MonoBehaviour
 
 	//Lock the brakes if the player attempts to turn sharply while the ball is travelling above the brakeLockVelocity
 	public bool CheckForBrakeLockOnTurn(Vector3 moveDirection) {
-		bool lockBrakes = Mathf.Abs (Vector3.Angle (rb.velocity, moveDirection)) > enterBrakeLockTurnAngle && rb.velocity.magnitude > enterBrakeLockVelocity;
-		if (lockBrakes) {
-			LockBrakes ();
-		}
-		return lockBrakes;
+		return Mathf.Abs (Vector3.Angle (rb.velocity, moveDirection)) > enterBrakeLockTurnAngle && rb.velocity.magnitude > enterBrakeLockVelocity;
 	}
 
 	//Lock the brakes if the player is applying a hard brake and the ball is travelling above the brakeLockVelocity
 	public bool CheckForBrakeLockOnBrake(float brakePower) {
-		bool lockBrakes = brakePower >= hardBrakeTrigger && rb.velocity.magnitude > enterBrakeLockVelocity;
-		if (lockBrakes) {
-			LockBrakes ();
-		}
-		return lockBrakes;
+		return brakePower >= hardBrakeTrigger && rb.velocity.magnitude > enterBrakeLockVelocity;
 	}
 	
 	//Called when the ball should enter a brake lock slide
