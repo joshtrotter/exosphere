@@ -27,6 +27,7 @@ public abstract class Pickup : MonoBehaviour
 
 	public void Consume(BallController ball) 
 	{
+		//TODO decide whether charges should be consumed on an unsuccessful use (such as ball already in air, so no jump applied
 		charges--;
 		Apply (ball);
 	}

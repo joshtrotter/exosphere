@@ -53,7 +53,6 @@ public class PickupController : MonoBehaviour
 	public void UsePickup(Slot slot)
 	{
 		LookupSlot(slot).UsePickup (ball);
-		LookupSlot(slot).RemovePickupHighlight();
 	}
 
 	public void TouchPickup(Slot slot)
