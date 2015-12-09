@@ -3,7 +3,7 @@ using System;
 
 public class RocketPickup : Pickup
 {
-	// The force added to the ball when it jumps
+	// The force added to the ball when it launches forward
 	public float rocketPower = 15f; 
 	
 	public override String GetId () 
