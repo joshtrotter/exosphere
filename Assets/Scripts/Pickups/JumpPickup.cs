@@ -8,7 +8,7 @@ public class JumpPickup : Pickup
 
 	public override String GetId () 
 	{
-		return "JUMP";
+		return "Jump";
 	}
 
 	public override int GetMaxCharges() 

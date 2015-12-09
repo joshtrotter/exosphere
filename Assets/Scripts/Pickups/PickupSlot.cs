@@ -58,6 +58,7 @@ public class PickupSlot : MonoBehaviour
 			Debug.Log ("No pickup available for use");
 		} else {
 			pickup.Consume(ball);
+			this.RemovePickupHighlight();
 			if (pickup.GetCharges() < 1) {
 				RemovePickup();
 			}
