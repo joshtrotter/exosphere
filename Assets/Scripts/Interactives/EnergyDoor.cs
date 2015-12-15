@@ -1,24 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnergyDoor : MonoBehaviour {
+public class EnergyDoor : Door {
 
 	public ParticleSystem EnergyDoorFront; 
 	public ParticleSystem EnergyDoorBack;
 	public ParticleSystem EnergyDoorFrontHit; 
 	public ParticleSystem EnergyDoorBackHit;
 
-	public bool FieldOn = true;
-
 	private Collider coll;
 
 
 	void Awake(){
 		coll = GetComponent<Collider>();
-	}
-
-	void Start(){
-		FieldOn = !FieldOn;
+		IsClosed = !IsClosed;
 		SwapState ();
 	}
 
@@ -34,27 +29,21 @@ public class EnergyDoor : MonoBehaviour {
 		EnergyDoorBackHit.Play ();
 	}
 
-	public void SwapState(){
-		if (FieldOn) {
-			TurnOff ();		
-		} else {
-			TurnOn ();
-		}
-	}
-
-	public void TurnOn ()
+	public override void Close ()
 	{
 		EnergyDoorFront.Play ();
 		EnergyDoorBack.Play ();
 		coll.enabled = true;
-		FieldOn = true;
+		IsClosed = true;
 	}
 
-	void TurnOff ()
+	public override void Open ()
 	{
+		EnergyDoorFront.Clear ();
+		EnergyDoorBack.Clear ();
 		EnergyDoorFront.Stop ();
 		EnergyDoorBack.Stop ();
 		coll.enabled = false;
-		FieldOn = false;
+		IsClosed = false;
 	}
 }
