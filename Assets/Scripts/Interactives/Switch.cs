@@ -26,7 +26,6 @@ public class Switch : MonoBehaviour {
 	}
 	
 	public void SwapState(){
-		print ("SwappingState");
 		if (IsOn) {
 			TurnOff();
 		} else {
