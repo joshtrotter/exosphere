@@ -1,24 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnergyDoor : MonoBehaviour {
+public class EnergyDoor : Door {
 
 	public ParticleSystem EnergyDoorFront; 
 	public ParticleSystem EnergyDoorBack;
 	public ParticleSystem EnergyDoorFrontHit; 
 	public ParticleSystem EnergyDoorBackHit;
 
-	public bool FieldOn = true;
+	//store references to each piece of the side frame
+	public GameObject frame;
+	private Renderer[] side_pieces;
 
 	private Collider coll;
+
+	//store the initial 'On' emission color
+	private Color startColor;
 
 
 	void Awake(){
 		coll = GetComponent<Collider>();
-	}
-
-	void Start(){
-		FieldOn = !FieldOn;
+		side_pieces = frame.GetComponentsInChildren<Renderer> ();
+		startColor = side_pieces[0].material.GetColor ("_EmissionColor");
+		IsClosed = true;
+		IsClosed = !IsClosed;
 		SwapState ();
 	}
 
@@ -34,27 +39,34 @@ public class EnergyDoor : MonoBehaviour {
 		EnergyDoorBackHit.Play ();
 	}
 
-	public void SwapState(){
-		if (FieldOn) {
-			TurnOff ();		
-		} else {
-			TurnOn ();
-		}
-	}
-
-	public void TurnOn ()
+	public override void Close ()
 	{
 		EnergyDoorFront.Play ();
 		EnergyDoorBack.Play ();
+
 		coll.enabled = true;
-		FieldOn = true;
+		SetEmission (startColor);
+
+		IsClosed = true;
 	}
 
-	void TurnOff ()
+	public override void Open ()
 	{
+		EnergyDoorFront.Clear ();
+		EnergyDoorBack.Clear ();
 		EnergyDoorFront.Stop ();
 		EnergyDoorBack.Stop ();
+
 		coll.enabled = false;
-		FieldOn = false;
+		SetEmission (Color.black);
+
+		IsClosed = false;
+	}
+
+	//this function cycles through all pieces of the frame and changes their emission color
+	public void SetEmission(Color color){
+		foreach (Renderer side in side_pieces) {
+			side.material.SetColor ("_EmissionColor", color);
+		}
 	}
 }
