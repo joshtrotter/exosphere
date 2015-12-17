@@ -11,8 +11,8 @@ public class LaserHitManager : MonoBehaviour {
 	public Color heatColor = Color.red;
 	public float heatRate = 1f;
 
-	private bool hitThisFrame;
-	private bool hitLastFrame;
+	protected bool hitThisFrame;
+	protected bool hitLastFrame;
 
 	private float currentHeat;
 	private Gradient heatGradient;
