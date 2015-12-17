@@ -22,11 +22,11 @@ public class EnergyDoor : Door {
 		coll = GetComponent<Collider>();
 		side_pieces = frame.GetComponentsInChildren<Renderer> ();
 		startColor = side_pieces[0].material.GetColor ("_EmissionColor");
-		IsClosed = true;
 		IsClosed = !IsClosed;
 		SwapState ();
 	}
 
+	//TODO remove this function
 	//allows manual disabling of the field for testing
 	void Update(){
 		if (Input.GetKeyDown ("o")) {

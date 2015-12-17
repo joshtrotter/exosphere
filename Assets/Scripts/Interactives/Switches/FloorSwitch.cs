@@ -1,14 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Switch : MonoBehaviour {
+public class FloorSwitch : Switch {
 
-	public bool IsOn = true;
 	//Switch is on when the lightcone is green, off when it orange
 
-	//store a reference to the object to be activated by the switch
-	public SwitchableObject target;
-	
 	private ParticleSystem LightCone;
 
 	void Awake(){
@@ -24,21 +20,13 @@ public class Switch : MonoBehaviour {
 			SwapState();
 		}
 	}
-	
-	public void SwapState(){
-		if (IsOn) {
-			TurnOff();
-		} else {
-			TurnOn();
-		}
-	}
 
-	public void TurnOn(){
+	public override void TurnOn(){
 		LightCone.Play ();
 		IsOn = true;
 	}
 
-	public void TurnOff(){
+	public override void TurnOff(){
 		LightCone.Clear ();
 		LightCone.Stop ();
 		IsOn = false;
