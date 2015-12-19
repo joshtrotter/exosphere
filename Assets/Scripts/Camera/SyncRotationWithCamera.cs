@@ -9,8 +9,8 @@ public class SyncRotationWithCamera : MonoBehaviour {
 	{
 		cam = GameObject.FindWithTag ("CameraRig").transform;
 	}
-	
-	void Update () {
+
+	void Update(){
 		transform.rotation = cam.rotation;
 	}
 }

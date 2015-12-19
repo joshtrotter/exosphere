@@ -5,12 +5,12 @@ using System.Collections;
  * This class is responsible for handling when a laser hits the ball. The response to a hit is handled by the current transform as it depends on the transform state.
  * For example a glass ball will diffuse the laser whereas an air ball might burst.
  */
-public class LaserController : LaserHitManager {
+public class LaserController : LaserModule {
 
 	private TransformController transformController;
 	private LaserDiffuser laserDiffuser;
 
-	void Awake() 
+	 void Awake() 
 	{
 		transformController = GetComponent<TransformController> ();
 		laserDiffuser = GetComponentInChildren<LaserDiffuser> ();	

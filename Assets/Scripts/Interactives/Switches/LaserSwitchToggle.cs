@@ -7,9 +7,10 @@ public class LaserSwitchToggle : Switch {
 	private Material glow;
 	//store the initial 'On' emission color
 	private Color startColor;
+	public GameObject laserSink;
 
 	void Awake () {
-		glow = GetComponent<Renderer> ().material;
+		glow = laserSink.GetComponent<Renderer> ().material;
 		startColor = glow.GetColor ("_EmissionColor");
 		IsOn = !IsOn;
 		SwapState ();
@@ -17,10 +18,12 @@ public class LaserSwitchToggle : Switch {
 
 	public override void OnLaserEnter(){
 		target.Activate ();
-		SwapState ();
+		TurnOn ();
 	}
 
 	public override void OnLaserExit(){
+		target.Activate ();
+		TurnOff();
 	}
 
 	public override void TurnOn(){
