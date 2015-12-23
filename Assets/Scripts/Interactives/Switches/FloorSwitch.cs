@@ -3,12 +3,26 @@ using System.Collections;
 
 public class FloorSwitch : Switch {
 
-	//Switch is on when the lightcone is green, off when it orange
+	private ParticleSystem LightConeOn;
+	private ParticleSystem LightConeOff;
 
-	private ParticleSystem LightCone;
+	public Color OnColor;
+	public Color OffColor;
 
 	void Awake(){
-		LightCone = GetComponentInChildren<ParticleSystem> ();
+		//set up lightcones
+		ParticleSystem[] particles = GetComponentsInChildren<ParticleSystem> ();
+		foreach (ParticleSystem particle in particles) {
+			if (particle.name == "LightConeOn"){
+				LightConeOn = particle;
+			} else if (particle.name == "LightConeOff") {
+				LightConeOff = particle;
+			}
+		}
+
+		LightConeOn.GetComponent<Renderer> ().material.SetColor ("_Color", OnColor);
+		LightConeOff.GetComponent<Renderer> ().material.SetColor ("_Color", OffColor);
+
 		IsOn = !IsOn;
 		SwapState ();
 	}
@@ -22,13 +36,20 @@ public class FloorSwitch : Switch {
 	}
 
 	public override void TurnOn(){
-		LightCone.Play ();
+		//turn off the Off coloured cone
+		LightConeOff.Clear ();
+		LightConeOff.Stop ();
+		//turn on the On coloured cone
+		LightConeOn.Play ();
 		IsOn = true;
 	}
 
 	public override void TurnOff(){
-		LightCone.Clear ();
-		LightCone.Stop ();
+		//turn off the On coloured cone
+		LightConeOn.Clear ();
+		LightConeOn.Stop ();
+		//turn on the Off coloured cone
+		LightConeOff.Play ();
 		IsOn = false;
 	}
 

@@ -9,7 +9,8 @@ public class LaserSwitchCharge : Switch {
 	private Material glow;
 	
 	//store the initial 'On' emission color
-	private Color startColor;
+	public Color onColor;
+	private Color offColor;
 	
 	//store how long a full charge and discharge should take
 	public float chargeTime = 2f;
@@ -26,8 +27,8 @@ public class LaserSwitchCharge : Switch {
 	private int MaxChargeLevel;
 	
 	void Awake () {
+		offColor = onColor * Config.dimIntensity;
 		glow = laserSink.GetComponent<Renderer>().material;
-		startColor = glow.GetColor ("_EmissionColor");
 		//set the maxchargelevel to the number of charge lights in the array
 		MaxChargeLevel = ChargeLights.Length;
 		//set tick times based on charge times and number of lights in the array
@@ -36,7 +37,7 @@ public class LaserSwitchCharge : Switch {
 		if (IsOn) {
 			ChargeLevel = MaxChargeLevel;
 		} else {
-			SetEmissionAll (Color.black);
+			SetEmissionAll (offColor);
 		}
 	}
 	
@@ -67,7 +68,7 @@ public class LaserSwitchCharge : Switch {
 	//whilst the laser is pointed at the switch this function will turn on one light per second
 	//until the switch is fully charged
 	private IEnumerator ChargeUp(){
-		SetEmission (glow, startColor);
+		SetEmission (glow, onColor);
 		float timer = 0;
 		while (charging) {
 			yield return new WaitForEndOfFrame();
@@ -75,7 +76,7 @@ public class LaserSwitchCharge : Switch {
 			if (timer > chargeTick){ //increment charge level after each second
 				ChargeLevel += 1;
 				timer = 0;
-				SetEmission(ChargeLights[ChargeLevel-1].GetComponent<Renderer>().material, startColor);
+				SetEmission(ChargeLights[ChargeLevel-1].GetComponent<Renderer>().material, onColor);
 			}
 			if (ChargeLevel == MaxChargeLevel){ //switch is fully on, stop charging activate target
 				charging = false;
@@ -84,7 +85,7 @@ public class LaserSwitchCharge : Switch {
 			}
 		}
 		if (ChargeLevel != MaxChargeLevel) { //charge has been interrupted, reset to uncharged
-			SetEmissionAll (Color.black);
+			SetEmissionAll (offColor);
 			ChargeLevel = 0;
 		}
 	}

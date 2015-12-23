@@ -4,7 +4,7 @@ using System.Collections;
 /**
  * Used to diffuse a new ray from a ray hit 
  */
-public class LaserDiffuser : ArcReactor_Launcher {
+public class LaserDiffuser : LaserSnapFrom {
 
 	public void Diffuse(ArcReactorHitInfo hit)
 	{

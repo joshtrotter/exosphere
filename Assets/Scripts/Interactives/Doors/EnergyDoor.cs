@@ -3,6 +3,10 @@ using System.Collections;
 
 public class EnergyDoor : Door {
 
+	//store the initial 'On' emission color
+	public Color onColor = new Color(0xD3F,0x1CF,0xE2F);
+	private Color offColor;
+
 	public ParticleSystem EnergyDoorFront; 
 	public ParticleSystem EnergyDoorBack;
 	public ParticleSystem EnergyDoorFrontHit; 
@@ -14,24 +18,20 @@ public class EnergyDoor : Door {
 
 	private Collider coll;
 
-	//store the initial 'On' emission color
-	private Color startColor;
-
-
 	void Awake(){
 		coll = GetComponent<Collider>();
 		side_pieces = frame.GetComponentsInChildren<Renderer> ();
-		startColor = side_pieces[0].material.GetColor ("_EmissionColor");
+
+		offColor = onColor * Config.dimIntensity;
+
+		//set colour of energy field correctly
+		EnergyDoorFront.GetComponent<Renderer>().material.SetColor ("_Color", onColor);
+		EnergyDoorFrontHit.GetComponent<Renderer>().material.SetColor ("_Color", onColor);
+		EnergyDoorBack.GetComponent<Renderer>().material.SetColor ("_Color", onColor);
+		EnergyDoorBackHit.GetComponent<Renderer>().material.SetColor ("_Color", onColor);
+
 		IsClosed = !IsClosed;
 		SwapState ();
-	}
-
-	//TODO remove this function
-	//allows manual disabling of the field for testing
-	void Update(){
-		if (Input.GetKeyDown ("o")) {
-			SwapState ();
-		}
 	}
 
 	void OnCollisionEnter(){
@@ -45,7 +45,7 @@ public class EnergyDoor : Door {
 		EnergyDoorBack.Play ();
 
 		coll.enabled = true;
-		SetEmission (startColor);
+		SetEmissionColor (onColor);
 
 		IsClosed = true;
 	}
@@ -58,13 +58,13 @@ public class EnergyDoor : Door {
 		EnergyDoorBack.Stop ();
 
 		coll.enabled = false;
-		SetEmission (Color.black);
+		SetEmissionColor (offColor);
 
 		IsClosed = false;
 	}
 
 	//this function cycles through all pieces of the frame and changes their emission color
-	public void SetEmission(Color color){
+	public void SetEmissionColor(Color color){
 		foreach (Renderer side in side_pieces) {
 			side.material.SetColor ("_EmissionColor", color);
 		}

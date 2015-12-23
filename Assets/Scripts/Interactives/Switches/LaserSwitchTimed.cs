@@ -9,7 +9,8 @@ public class LaserSwitchTimed : Switch {
 	private Material glow;
 
 	//store the initial 'On' emission color
-	private Color startColor;
+	public Color OnColor;
+	private Color OffColor;
 
 	//store how long a full charge and discharge should take
 	public float chargeTime = 4f;
@@ -26,8 +27,9 @@ public class LaserSwitchTimed : Switch {
 	private int MaxChargeLevel;
 	
 	void Awake () {
+		//set offColor as dimmed version of onColor
+		OffColor = OnColor * Config.dimIntensity;
 		glow = laserSink.GetComponent<Renderer> ().material;
-		startColor = glow.GetColor ("_EmissionColor");
 		//set the maxchargelevel to the number of charge lights in the array
 		MaxChargeLevel = ChargeLights.Length;
 		//set tick times based on charge times and number of lights in the array
@@ -39,7 +41,7 @@ public class LaserSwitchTimed : Switch {
 			ChargeLevel = MaxChargeLevel;
 			StartCoroutine (ChargeDown ());
 		} else {
-			SetEmissionAll (Color.black);
+			SetEmissionAll (OffColor);
 		}
 	}
 	
@@ -60,7 +62,7 @@ public class LaserSwitchTimed : Switch {
 		//target is activated immediately if the switch was off
 		if (!IsOn) {
 			target.Activate ();
-			SetEmission (glow, startColor);
+			SetEmission (glow, OnColor);
 			IsOn = true;
 		}
 	}
@@ -68,7 +70,7 @@ public class LaserSwitchTimed : Switch {
 	public override void TurnOff(){
 		if (IsOn) {
 			target.Activate ();
-			SetEmission (glow, Color.black);
+			SetEmission (glow, OffColor);
 			IsOn = false;
 		}
 	}
@@ -96,7 +98,7 @@ public class LaserSwitchTimed : Switch {
 			if (timer > chargeTick){ //increment charge level after each time period
 				ChargeLevel += 1;
 				timer = 0;
-				SetEmission(ChargeLights[ChargeLevel-1].GetComponent<Renderer>().material, startColor);
+				SetEmission(ChargeLights[ChargeLevel-1].GetComponent<Renderer>().material, OnColor);
 			}
 			if (ChargeLevel == MaxChargeLevel){ //switch is fully on, stop charging activate target
 				charging = false;
@@ -112,7 +114,7 @@ public class LaserSwitchTimed : Switch {
 			if (timer > dischargeTick){ //decrement charge level after each time period
 				ChargeLevel -= 1;
 				timer = 0;
-				SetEmission(ChargeLights[ChargeLevel].GetComponent<Renderer>().material, Color.black);
+				SetEmission(ChargeLights[ChargeLevel].GetComponent<Renderer>().material, OffColor);
 			}
 		}
 		if (ChargeLevel == 0){ //switch is fully uncharged, deactivate target

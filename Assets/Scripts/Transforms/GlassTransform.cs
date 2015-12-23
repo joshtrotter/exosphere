@@ -5,8 +5,8 @@ public class GlassTransform : BallTransform {
 
 	//We track a reference to the laser diffuser whenever the glass ball is reflecting a laser so that if the glass transform is removed we can immediately disable the reflection
 	private LaserDiffuser laserDiffuser;
-	
-	//START ADDED PART
+	private LaserSnapTo laserSnapTo;
+
 	//Track a reference to the camera so that we can slow down the turn speed when the ball is shooting a laser
 	private AmazeballCam cam;
 	private float startTurnSpeed;
@@ -16,14 +16,21 @@ public class GlassTransform : BallTransform {
 		base.Apply (ball);
 		cam = GameObject.FindWithTag("CameraRig").GetComponent<AmazeballCam>();
 		startTurnSpeed = cam.turnSpeed;
-	} //END ADDED
+		//enable laser snapping
+		laserSnapTo = ball.GetComponent<LaserSnapTo> ();
+		laserSnapTo.Enable ();
+	}
 
 	public override void Remove(BallController ball)
 	{
-		//START ADDED
 		//ensure camera is at normal speed
 		cam.turnSpeed = startTurnSpeed;
-		//END ADDED
+
+		//disable laser snapping
+		laserSnapTo.Disable ();
+		//ensure that any current snap is ended
+		laserSnapTo.DoHitEnd ();
+
 
 		//If reflecting then cancel it before removing the transform
 		if (laserDiffuser != null) {
@@ -33,10 +40,8 @@ public class GlassTransform : BallTransform {
 
 	public override void OnLaserEnter(LaserDiffuser laserDiffuser, ArcReactorHitInfo hitInfo)
 	{
-		//START ADDED
 		//slow down camera movement for easier aiming
 		cam.turnSpeed = slowTurnSpeed;
-		//END ADDED
 
 		laserDiffuser.Diffuse (hitInfo);
 		this.laserDiffuser = laserDiffuser;
@@ -44,10 +49,8 @@ public class GlassTransform : BallTransform {
 
 	public override void OnLaserExit(LaserDiffuser laserDiffuser)
 	{
-		//START ADDED
 		//ensure camera is at normal speed
 		cam.turnSpeed = startTurnSpeed;
-		//END ADDED
 
 		laserDiffuser.Disable ();
 		this.laserDiffuser = null;

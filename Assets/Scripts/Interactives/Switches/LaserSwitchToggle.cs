@@ -6,12 +6,14 @@ public class LaserSwitchToggle : Switch {
 	//store a reference to the emitting material on the laser switch
 	private Material glow;
 	//store the initial 'On' emission color
-	private Color startColor;
+	public Color onColor;
+	private Color offColor;
+
 	public GameObject laserSink;
 
 	void Awake () {
+		offColor = onColor * Config.dimIntensity;
 		glow = laserSink.GetComponent<Renderer> ().material;
-		startColor = glow.GetColor ("_EmissionColor");
 		IsOn = !IsOn;
 		SwapState ();
 	}
@@ -27,12 +29,12 @@ public class LaserSwitchToggle : Switch {
 	}
 
 	public override void TurnOn(){
-		SetEmission (startColor);
+		SetEmission (onColor);
 		IsOn = true;
 	}
 	
 	public override void TurnOff(){
-		SetEmission (Color.black);
+		SetEmission (offColor);
 		IsOn = false;
 	}
 

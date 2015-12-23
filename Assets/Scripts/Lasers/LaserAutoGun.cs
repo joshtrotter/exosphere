@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class LaserAutoGun : ArcReactor_Launcher {
+public class LaserAutoGun : LaserSnapFrom {
 
-	void Start() {
+	public override void Start() {
+		base.Start ();
 		this.LaunchRay ();
 	}
 

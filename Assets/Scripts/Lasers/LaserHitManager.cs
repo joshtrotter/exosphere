@@ -7,8 +7,8 @@ using System.Collections;
  */ 
 public class LaserHitManager : MonoBehaviour {
 
-	protected bool hitThisFrame;
-	protected bool hitLastFrame;
+	private bool hitThisFrame;
+	private bool hitLastFrame;
 
 	//an array of modules to call
 	private LaserModule[] laserModules;
@@ -28,7 +28,7 @@ public class LaserHitManager : MonoBehaviour {
 		} else {
 			//send all modules updated hitInfo
 			foreach (LaserModule module in laserModules) {
-				module.DoHitContinue(hitInfo);
+				if (module.IsEnabled) module.DoHitContinue(hitInfo);
 			}
 		}
 	}
@@ -38,7 +38,7 @@ public class LaserHitManager : MonoBehaviour {
 	{
 		StartCoroutine(TrackHit());
 		foreach (LaserModule module in laserModules) {
-			module.DoHitStart(hitInfo);
+			if (module.IsEnabled) module.DoHitStart(hitInfo);
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class LaserHitManager : MonoBehaviour {
 	public virtual void DoHitEnd()
 	{
 		foreach (LaserModule module in laserModules) {
-			module.DoHitEnd();
+			if (module.IsEnabled) module.DoHitEnd ();
 		}
 	}
 
