@@ -22,7 +22,6 @@ public class GlassTransform : BallTransform {
 	{
 		//START ADDED
 		//ensure camera is at normal speed
-		print ("returning cam speed to normal");
 		cam.turnSpeed = startTurnSpeed;
 		//END ADDED
 
@@ -36,9 +35,7 @@ public class GlassTransform : BallTransform {
 	{
 		//START ADDED
 		//slow down camera movement for easier aiming
-		print ("setting cam speed to " + slowTurnSpeed);
 		cam.turnSpeed = slowTurnSpeed;
-		print ("set cam speed to " + slowTurnSpeed);
 		//END ADDED
 
 		laserDiffuser.Diffuse (hitInfo);
@@ -49,7 +46,6 @@ public class GlassTransform : BallTransform {
 	{
 		//START ADDED
 		//ensure camera is at normal speed
-		print ("returning cam speed to normal");
 		cam.turnSpeed = startTurnSpeed;
 		//END ADDED
 
