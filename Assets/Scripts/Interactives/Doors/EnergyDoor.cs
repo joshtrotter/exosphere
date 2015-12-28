@@ -41,17 +41,17 @@ public class EnergyDoor : Door {
 
 	public override void Close ()
 	{
+		base.Close ();
 		EnergyDoorFront.Play ();
 		EnergyDoorBack.Play ();
 
 		coll.enabled = true;
 		SetEmissionColor (onColor);
-
-		IsClosed = true;
 	}
 
 	public override void Open ()
 	{
+		base.Open ();
 		EnergyDoorFront.Clear ();
 		EnergyDoorBack.Clear ();
 		EnergyDoorFront.Stop ();
@@ -59,8 +59,6 @@ public class EnergyDoor : Door {
 
 		coll.enabled = false;
 		SetEmissionColor (offColor);
-
-		IsClosed = false;
 	}
 
 	//this function cycles through all pieces of the frame and changes their emission color
