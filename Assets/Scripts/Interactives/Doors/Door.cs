@@ -5,9 +5,15 @@ public abstract class Door : SwitchableObject {
 
 	public bool IsClosed = true;
 
+	//[HideInInspector] //locking is managed by DoorLock script
+	public bool IsLocked = false;
+
 	//called on SwitchableObject by a switch
 	public override void Activate() {
-		SwapState ();
+		//door will only be activated if it is not locked
+		if (!IsLocked) {
+			SwapState ();
+		}
 	}
 	
 	public virtual void SwapState(){
@@ -26,5 +32,15 @@ public abstract class Door : SwitchableObject {
 	public virtual void Open ()
 	{
 		IsClosed = false;
+	}
+
+	public virtual void Lock ()
+	{
+		IsLocked = true;
+	}
+	
+	public virtual void Unlock ()
+	{
+		IsLocked = false;
 	}
 }

@@ -52,16 +52,12 @@ public class LaserSnapFrom : ArcReactor_Launcher {
 		//Debug.Log ("Returning to normal");
 		const float error = 1e-12f;
 		while (Quaternion.Angle(transform.localRotation,startRotation) > error && !snapped) {
-			//Debug.Log (Quaternion.Lerp (transform.localRotation, startRotation, turnSpeed * Time.deltaTime));
 			transform.localRotation = Quaternion.Lerp (transform.localRotation, startRotation, turnSpeed * Time.fixedDeltaTime);
-			//Debug.Log ("current: " + transform.localRotation);
-			//Debug.Log ("start: " + startRotation);
 			//transform.localRotation = startRotation;
 			yield return new WaitForFixedUpdate();
 		}
 		//make return exact
 		transform.localRotation = startRotation;
-		//Debug.Log ("Returned to normal");
 	}
 }
 

@@ -14,8 +14,6 @@ public class OcclusionDoor : Door {
 	public override void Close ()
 	{
 		base.Close ();
-		//TODO this is temporary until we have a proper door
-		portal.gameObject.GetComponent<Renderer>().enabled = true;
 		portal.open = false;
 	}
 	
@@ -23,7 +21,5 @@ public class OcclusionDoor : Door {
 	{
 		base.Open ();
 		portal.open = true;
-		//TODO this is temporary until we have a proper door
-		portal.gameObject.GetComponent<Renderer>().enabled = false;
 	}
 }
