@@ -15,7 +15,7 @@ public class MoveBetweenTargets : MonoBehaviour {
 	private Vector3 previousTarget;
 	private Vector3 currentTarget;
 	
-	protected void Awake() {
+	protected virtual void Awake() {
 		for (int i = 0; i < targetPositions.Count; i++) {
 			targetPositions[i] += transform.position;
 		}
