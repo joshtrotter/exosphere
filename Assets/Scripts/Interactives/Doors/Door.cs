@@ -20,11 +20,11 @@ public abstract class Door : SwitchableObject {
 	
 	public virtual void Close ()
 	{
-
+		IsClosed = true;
 	}
 	
 	public virtual void Open ()
 	{
-
+		IsClosed = false;
 	}
 }
