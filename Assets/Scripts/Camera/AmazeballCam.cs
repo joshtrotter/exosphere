@@ -23,7 +23,9 @@ public class AmazeballCam : MonoBehaviour
 	// The maximum value of the x axis rotation of the pivot
 	public float maxTilt = 15f; 
 	// The minimum value of the x axis rotation of the pivot
-	public float minTilt = 5f;                         
+	public float minTilt = 5f; 
+	// The target FPS - used to ensure turn speeds are frame rate independent
+	public int targetFps = 60;
 
 	// The rig's y axis rotation
 	private float camAngle;                    
@@ -59,7 +61,7 @@ public class AmazeballCam : MonoBehaviour
 		var y = CrossPlatformInputManager.GetAxis ("Vertical");
 			
 		// Adjust the look angle by an amount proportional to the turn speed and horizontal input.
-		camAngle += (x * turnSpeed) % 360f;
+		camAngle += (x * turnSpeed * Time.deltaTime * targetFps) % 360f;
 		// Rotate the rig (the root object) around Y axis only:
 		transform.localRotation = Quaternion.Euler (0f, camAngle, 0f);
 			
@@ -67,7 +69,7 @@ public class AmazeballCam : MonoBehaviour
 		pivotTilt = y > 0 ? Mathf.Lerp (0, -minTilt, y) : Mathf.Lerp (0, maxTilt, -y);
 		// Rotate the pivot around the X axis only
 		Quaternion pivotRotation = Quaternion.Euler (pivotTilt, pivotEulers.y, pivotEulers.z);
-		pivot.localRotation = Quaternion.Slerp (pivot.localRotation, pivotRotation, 1f * Time.deltaTime);
+		pivot.localRotation = Quaternion.Slerp (pivot.localRotation, pivotRotation, Time.deltaTime);
 	}
 
 	void FixedUpdate ()
