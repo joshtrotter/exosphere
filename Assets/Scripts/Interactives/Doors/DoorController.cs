@@ -16,7 +16,7 @@ public class DoorController : SwitchableObject {
 
 	void SwitchActivation(){
 		foreach (Door door in doors) {
-			door.SwapState ();
+			door.Activate ();
 		}
 	}
 

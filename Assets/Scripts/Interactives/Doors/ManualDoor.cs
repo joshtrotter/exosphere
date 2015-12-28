@@ -5,30 +5,36 @@ public class ManualDoor : Door {
 	
 	//store the initial 'On' emission color
 	public Color onColor = new Color(0xD3F,0x1CF,0xE2F);
-	private Color offColor;
+	public Color offColor;
 
-	private bool IsOpening;
-	private bool IsClosing;
+	//the speed at which the door opens and closes
+	public float doorSpeed = 3f;
+
+	private bool IsOpening = false;
+	private bool IsClosing = false;
 
 	private float openY;
 	private float closedY;
 	
-	void Awake(){
+	void Awake()
+	{
 		//set up base positions so door knows where to move between.
 		closedY = transform.position.y;
 		openY = closedY + 4.5f;
-
 		offColor = onColor * Config.dimIntensity;
+		
 		IsClosed = !IsClosed;
 		SwapState ();
-	}
 
+		//set color correctly,. If door is locked, then offColor will be set by LockController
+		if (!IsLocked) SetEmissionColor (onColor);
+	}
 	
 	public override void Close ()
 	{
 		IsOpening = false;
 		IsClosing = true;
-		SetEmissionColor (onColor);
+		StartCoroutine (MoveDown ());
 		IsClosed = true;
 	}
 	
@@ -36,7 +42,7 @@ public class ManualDoor : Door {
 	{
 		IsOpening = true;
 		IsClosing = false;
-		SetEmissionColor (offColor);
+		StartCoroutine (MoveUp());
 		IsClosed = false;
 	}
 
@@ -44,7 +50,7 @@ public class ManualDoor : Door {
 		while (IsOpening) {
 			yield return new WaitForEndOfFrame();
 			Vector3 newPos = transform.position;
-			newPos.y = Mathf.Lerp (transform.position.y, openY, Time.deltaTime);
+			newPos.y = Mathf.Lerp (transform.position.y, openY, doorSpeed * Time.deltaTime);
 			transform.position = newPos;
 			if (transform.position.y >= openY){
 				IsOpening = false;
@@ -56,12 +62,22 @@ public class ManualDoor : Door {
 		while (IsClosing) {
 			yield return new WaitForEndOfFrame();
 			Vector3 newPos = transform.position;
-			newPos.y = Mathf.Lerp (transform.position.y, closedY, Time.deltaTime);
+			newPos.y = Mathf.Lerp (transform.position.y, closedY, doorSpeed * Time.deltaTime);
 			transform.position = newPos;
 			if (transform.position.y <= closedY){
 				IsClosing = false;
 			}
 		}
+	}
+
+	public override void Lock(){
+		IsLocked = true;
+		SetEmissionColor (offColor);
+	}
+
+	public override void Unlock(){
+		IsLocked = false;
+		SetEmissionColor (onColor);
 	}
 
 	//this function cycles through all pieces of the frame and changes their emission color
