@@ -8,7 +8,7 @@ public class SpinAtTarget : MoveBetweenTargets
 	public float spinUpTime = 2.5f;
 	private AxisRotator rotator;
 
-	protected void Awake ()
+	protected override void Awake ()
 	{
 		base.Awake ();
 		rotator = GetComponent<AxisRotator> ();

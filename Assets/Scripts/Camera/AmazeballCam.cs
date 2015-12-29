@@ -28,7 +28,7 @@ public class AmazeballCam : MonoBehaviour
 	public int targetFps = 60;
 
 	// The rig's y axis rotation
-	private float camAngle;                    
+	public float camAngle;                    
 	// The pivot's x axis rotation
 	private float pivotTilt;                    
 
