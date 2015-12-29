@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour {
 	
@@ -9,7 +9,12 @@ public class LevelManager : MonoBehaviour {
 	private float cameraAngle;
 	private GameObject player;
 	private GameObject cameraRig;
-	
+
+	private int numCollectables;
+	private int collected;
+
+	private Dictionary<string, int> objectStates = new Dictionary<string, int>();
+
 	private bool firstLoad = true;
 	
 	void Awake () {
@@ -33,6 +38,8 @@ public class LevelManager : MonoBehaviour {
 			if (firstLoad) {
 				OnFirstLoad ();
 				firstLoad = false;
+			} else {
+				OnReload();
 			}
 			SetupLevel ();
 		}
@@ -41,6 +48,18 @@ public class LevelManager : MonoBehaviour {
 	private void OnFirstLoad() 
 	{
 		SetSpawnLocation(GameObject.FindGameObjectWithTag ("StartSpawn").transform);
+		numCollectables = Object.FindObjectsOfType<Collectable> ().Length;
+	}
+
+	private void OnReload()
+	{
+		HasLevelState[] statefulLevelObjects = Object.FindObjectsOfType<HasLevelState> ();
+		foreach (HasLevelState obj in statefulLevelObjects) {
+			int rememberedState = 0;
+			if (objectStates.TryGetValue(obj.uniqueId, out rememberedState)) {
+				obj.ReloadState(rememberedState);
+			}
+		}
 	}
 
 	private void SetupLevel() 
@@ -68,6 +87,14 @@ public class LevelManager : MonoBehaviour {
 
 	public void SetCameraRotation(float cameraAngle) {
 		this.cameraAngle = cameraAngle;
+	}
+
+	public void RegisterObjectState(string objectId, int objectState) {
+		objectStates.Add (objectId, objectState);
+	}
+
+	public void RemoveCollectable() {
+		collected--;
 	}
 
 }

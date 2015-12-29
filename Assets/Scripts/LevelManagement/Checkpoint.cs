@@ -4,7 +4,7 @@ using System.Collections;
 public class Checkpoint : MonoBehaviour {
 
 	public float cameraAngle;
-	private LevelManager levelManager;
+	private static LevelManager levelManager;
 		
 	void OnTriggerEnter(Collider coll) {
 		if (coll.CompareTag ("Player")) {
@@ -26,7 +26,7 @@ public class Checkpoint : MonoBehaviour {
 		ball.GetComponent<TransformController> ().RemoveCurrent ();
 	}
 
-	LevelManager GetLevelManager() {
+	private static LevelManager GetLevelManager() {
 		if (levelManager == null) {
 			levelManager = GameObject.FindGameObjectWithTag ("LevelManager").GetComponent<LevelManager>();
 		}
