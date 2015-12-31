@@ -73,7 +73,7 @@ public class AmazeballTiltInput : MonoBehaviour
 	}
 
 	//Set the vertical orientation offset based upon the devices current orientation - TODO have the user explicitly acknowledge when they are in the neutral position
-	private void ConfigureVerticalOrientationOffset ()
+	public void ConfigureVerticalOrientationOffset ()
 	{
 		verticalAccelerationOffset = Input.acceleration.y;
 	}

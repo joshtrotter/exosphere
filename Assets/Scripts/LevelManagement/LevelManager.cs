@@ -9,6 +9,8 @@ public class LevelManager : MonoBehaviour {
 	private float cameraAngle;
 	private GameObject player;
 	private GameObject cameraRig;
+	private CallibrationUI calibrator;
+	private Canvas calCanvas;
 
 	private int numCollectables;
 	private int collected;
@@ -19,6 +21,8 @@ public class LevelManager : MonoBehaviour {
 	
 	void Awake () {
 		DontDestroyOnLoad (this);
+		calibrator = GetComponentInChildren<CallibrationUI> ();
+		calCanvas = calibrator.GetComponentInChildren<Canvas> ();
 		ReloadLevel ();
 	}
 
@@ -28,7 +32,15 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void ReloadLevel() {
+		TearDown ();
 		Application.LoadLevel (currentLevel);
+	}
+
+	private void TearDown()
+	{
+		if (calCanvas != null) {
+			calCanvas.gameObject.SetActive (true);
+		}
 	}
 
 	private void OnLevelWasLoaded() 
@@ -66,6 +78,13 @@ public class LevelManager : MonoBehaviour {
 	{
 		SendPlayerToSpawnPoint ();
 		RotateCamera ();
+
+#if MOBILE_INPUT
+		//do this last
+		CalibrateTilt ();
+#else
+		calCanvas.gameObject.SetActive(false);
+#endif
 	}
 
 	private void SendPlayerToSpawnPoint() 
@@ -79,6 +98,11 @@ public class LevelManager : MonoBehaviour {
 	{
 		cameraRig = GameObject.FindGameObjectWithTag ("CameraRig");
 		cameraRig.GetComponent<AmazeballCam> ().camAngle = cameraAngle;
+	}
+
+	private void CalibrateTilt ()
+	{
+		calibrator.SetupCalibration ();
 	}
 
 	public void SetSpawnLocation(Transform transform) {
