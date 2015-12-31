@@ -37,7 +37,7 @@ public class LaserSwitchTimed : Switch {
 		dischargeTick = dischargeTime / MaxChargeLevel;
 
 		//ensure the switch is in the desired start state
-		if (IsOn) {
+		if (currentState == ON_STATE) {
 			ChargeLevel = MaxChargeLevel;
 			StartCoroutine (ChargeDown ());
 		} else {
@@ -60,18 +60,16 @@ public class LaserSwitchTimed : Switch {
 
 	public override void TurnOn(){
 		//target is activated immediately if the switch was off
-		if (!IsOn) {
-			target.Activate ();
+		if (currentState != ON_STATE) {
+			base.TurnOn ();
 			SetEmission (glow, OnColor);
-			IsOn = true;
 		}
 	}
 	
 	public override void TurnOff(){
-		if (IsOn) {
-			target.Activate ();
+		if (currentState == ON_STATE) {
+			base.TurnOff();
 			SetEmission (glow, OffColor);
-			IsOn = false;
 		}
 	}
 

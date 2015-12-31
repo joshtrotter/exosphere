@@ -11,7 +11,7 @@ public abstract class HasLevelState : MonoBehaviour {
 	[UniqueIdentifier]
 	public string uniqueId;
 
-	protected int currentState = 0;
+	public int currentState = 0;
 	private static LevelManager levelManager;
 	
 	public abstract void ReloadState(int state);

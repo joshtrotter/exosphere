@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Switch : MonoBehaviour {
+public class Switch : HasLevelState {
 
-	public bool IsOn = true;
-	//Switch is on when the lightcone is green, off when it orange
-	
+	protected const int ON_STATE = 0;
+	protected const int OFF_STATE = 1;
+
 	//store a reference to the object to be activated by the switch
 	public SwitchableObject target;
 	
 	public virtual void SwapState(){
-		if (IsOn) {
+		if (currentState == ON_STATE) {
 			TurnOff();
 		} else {
 			TurnOn();
@@ -18,11 +18,19 @@ public class Switch : MonoBehaviour {
 	}
 	
 	public virtual void TurnOn(){
-		IsOn = true;
+		RegisterStateChange (0);
+		target.Activate ();
 	}
 	
 	public virtual void TurnOff(){
-		IsOn = false;
+		RegisterStateChange (1);
+		target.Activate ();
+	}
+
+	public override void ReloadState(int state) {
+		if (state != currentState) {
+			SwapState();
+		}
 	}
 
 	public virtual void OnLaserEnter(){
