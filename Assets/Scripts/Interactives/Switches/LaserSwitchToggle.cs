@@ -14,28 +14,26 @@ public class LaserSwitchToggle : Switch {
 	void Awake () {
 		offColor = onColor * Config.dimIntensity;
 		glow = laserSink.GetComponent<Renderer> ().material;
-		IsOn = !IsOn;
-		SwapState ();
+
+		SetEmission (currentState == ON_STATE ? onColor : offColor);
 	}
 
 	public override void OnLaserEnter(){
-		target.Activate ();
 		TurnOn ();
 	}
 
 	public override void OnLaserExit(){
-		target.Activate ();
 		TurnOff();
 	}
 
 	public override void TurnOn(){
+		base.TurnOn ();
 		SetEmission (onColor);
-		IsOn = true;
 	}
 	
 	public override void TurnOff(){
+		base.TurnOff ();
 		SetEmission (offColor);
-		IsOn = false;
 	}
 
 	//this function changes the emission color of the switch

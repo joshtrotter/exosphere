@@ -114,7 +114,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void RegisterObjectState(string objectId, int objectState) {
-		objectStates.Add (objectId, objectState);
+		objectStates[objectId] = objectState;
 	}
 
 	public void RemoveCollectable() {

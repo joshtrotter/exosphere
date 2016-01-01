@@ -34,7 +34,7 @@ public class LaserSwitchCharge : Switch {
 		//set tick times based on charge times and number of lights in the array
 		chargeTick = chargeTime / MaxChargeLevel;
 
-		if (IsOn) {
+		if (currentState == ON_STATE) {
 			ChargeLevel = MaxChargeLevel;
 		} else {
 			SetEmissionAll (offColor);
@@ -80,7 +80,6 @@ public class LaserSwitchCharge : Switch {
 			}
 			if (ChargeLevel == MaxChargeLevel){ //switch is fully on, stop charging activate target
 				charging = false;
-				target.Activate ();
 				TurnOn();
 			}
 		}
