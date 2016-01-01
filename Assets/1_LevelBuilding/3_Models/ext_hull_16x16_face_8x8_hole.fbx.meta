@@ -1,25 +1,15 @@
 fileFormatVersion: 2
-guid: 2ec33a4d19f16a14b858a6b768a8ba8d
-timeCreated: 1451358450
+guid: 7b2a1ae56ef80204d929f0e2fba3ba3b
+timeCreated: 1451630633
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: Cube_004
-    100002: //RootNode
-    100004: Plane_019
-    400000: Cube_004
-    400002: //RootNode
-    400004: Plane_019
-    2300000: Cube_004
-    2300002: Plane_019
-    2300004: //RootNode
-    3300000: Cube_004
-    3300002: Plane_019
-    3300004: //RootNode
-    4300000: Cube_004
-    4300002: Plane_019
-    4300004: Cube_011
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Plane_028
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -61,7 +51,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 30
+    normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
     normalImportMode: 1
     tangentImportMode: 1
