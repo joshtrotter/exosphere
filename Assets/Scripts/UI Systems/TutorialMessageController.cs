@@ -28,6 +28,9 @@ public class TutorialMessageController : MonoBehaviour {
 	}
 
 	public void DisplayMessage(TutorialMessage messageObject){
+		//ensure that any previous message is overriden
+		HideMessage ();
+
 		currentMessage = messageObject;
 
 		if (currentMessage.messageIsOnLeft) {
