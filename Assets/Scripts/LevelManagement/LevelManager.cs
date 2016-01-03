@@ -60,6 +60,7 @@ public class LevelManager : MonoBehaviour {
 	private void OnFirstLoad() 
 	{
 		SetSpawnLocation(GameObject.FindGameObjectWithTag ("StartSpawn").transform);
+		SetCameraRotation (GameObject.FindGameObjectWithTag ("StartSpawn").transform.localRotation.eulerAngles.y);
 		numCollectables = Object.FindObjectsOfType<Collectable> ().Length;
 	}
 
