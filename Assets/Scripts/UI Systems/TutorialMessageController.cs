@@ -28,15 +28,15 @@ public class TutorialMessageController : MonoBehaviour {
 	}
 
 	public void DisplayMessage(TutorialMessage messageObject){
+		currentMessage = messageObject;
 		//ensure that any previous message is overriden
 		HideMessage ();
-
-		currentMessage = messageObject;
 
 		if (currentMessage.messageIsOnLeft) {
 			SetupText (leftMessageText, leftDisplayPanel, leftCaption);
 			SetupImage (rightImageHolder, rightDisplayPanel, rightCaption);
-		} else {
+		}
+		else {
 			SetupText (rightMessageText, rightDisplayPanel, rightCaption);
 			SetupImage (leftImageHolder, leftDisplayPanel, leftCaption);
 		}
@@ -66,8 +66,6 @@ public class TutorialMessageController : MonoBehaviour {
 		leftMessageText.text = "";
 		rightMessageText.text = "";
 		Destroy (imageInstance);
-		//leftCaption.gameObject.SetActive(false);
-		//rightCaption.gameObject.SetActive(false);
 		//hide panels
 		leftDisplayPanel.SetActive (false);
 		rightDisplayPanel.SetActive (false);

@@ -2,47 +2,46 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class PauseMenu : MonoBehaviour {
+public class PauseMenu : UISystem {
 
-	public GameObject pauseButton;
 	public GameObject unpauseButton;
 	public GameObject pauseMenu;
 	public CallibrationUI callibrator;
 	private CanvasGroup canvasGroup;
 
 	void Awake(){
+		base.Awake ();
 		unpauseButton.SetActive (false);
 		pauseMenu.SetActive (false);
-		/*canvasGroup = pauseMenu.GetComponent<CanvasGroup> ();
-		canvasGroup.interactable = false;
-		canvasGroup.alpha = 0;*/
-
 	}
 
 	public void Pause()
 	{
-		pauseButton.SetActive (false);
-		unpauseButton.SetActive (true);
-		pauseMenu.SetActive (true);
-		/*canvasGroup.interactable = true;
-		canvasGroup.alpha = 1;*/
-
-		Time.timeScale = 0f;
+		RequestToBeShown ();
 	}
 
 	public void Unpause()
 	{
-		pauseButton.SetActive (true);
+		Deregister ();
+		Hide ();
+	}
+
+	public override void Show ()
+	{
+		Time.timeScale = 0f;
+		unpauseButton.SetActive (true);
+		pauseMenu.SetActive (true);
+	}
+
+	public override void Hide ()
+	{
+		Time.timeScale = 1f;
 		unpauseButton.SetActive (false);
 		pauseMenu.SetActive (false);
-		
-		/*canvasGroup.interactable = false;
-		canvasGroup.alpha = 0;*/
-		Time.timeScale = 1f;
 	}
 
 	public void Recallibrate(){
 		Unpause ();
-		callibrator.StartCalibration ();
+		callibrator.RequestToBeShown ();
 	}
 }

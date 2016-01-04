@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class CallibrationUI : MonoBehaviour {
+public class CallibrationUI : UISystem {
 
 	private AmazeballTiltInput tiltInput;
 	
@@ -13,7 +14,9 @@ public class CallibrationUI : MonoBehaviour {
 
 	private Canvas canvas;
 
-	public PauseMenu pauseMenu;
+	public override void ShowRequestAccepted(){
+		StartCalibration ();
+	}
 
 	//does a first time set up each time a new level is loaded/reloaded- called by level manager
 	public void SetupCalibration()
@@ -25,15 +28,23 @@ public class CallibrationUI : MonoBehaviour {
 		ballInputReader = ball.GetComponent<BallInputReader> ();
 
 		canvas = GetComponentInChildren<Canvas> ();
-
-		StartCalibration ();
+		Hide ();
+		RequestToBeShown ();
 	}
 
+	public override void Hide ()
+	{
+		//hide UI
+		canvas.gameObject.SetActive (false);
+		//show pause button again
+		//pauseMenu.pauseButton.SetActive (true);
+	}
 
 	public void FinishCalibration()
 	{
+		Deregister ();
 		tiltInput.ConfigureVerticalOrientationOffset ();
-
+		
 		//unfreeze ball
 		rbBall.isKinematic = false;
 		ballInputReader.enabled = true;
@@ -41,10 +52,15 @@ public class CallibrationUI : MonoBehaviour {
 		rbBall.velocity = ballVelocity;
 		rbBall.angularVelocity = ballAngularVelocity;
 
-		//hide UI
-		canvas.gameObject.SetActive (false);
-		//show pause button again
-		pauseMenu.pauseButton.SetActive (true);
+		Hide ();
+	}
+
+	public override void Show ()
+	{
+		//show UI
+		canvas.gameObject.SetActive (true);
+		//hide pause button 
+		//pauseMenu.pauseButton.SetActive (false);
 	}
 
 	public void StartCalibration()
@@ -56,10 +72,7 @@ public class CallibrationUI : MonoBehaviour {
 		rbBall.isKinematic = true;
 		ballInputReader.enabled = false;
 
-		//show UI
-		canvas.gameObject.SetActive (true);
-		//hide pause button 
-		pauseMenu.pauseButton.SetActive (false);
+		Show ();
 	}
 
 }
