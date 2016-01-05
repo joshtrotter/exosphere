@@ -89,7 +89,7 @@ public class LaserSwitchTimed : Switch {
 	//whilst the laser is pointed at the switch this function will turn on one light per second
 	//until the switch is fully charged
 	private IEnumerator ChargeUp(){
-		float timer = 0;
+		float timer = chargeTick; //turn on first chargelight instantly
 		while (charging) {
 			yield return new WaitForEndOfFrame();
 			timer += Time.deltaTime;
