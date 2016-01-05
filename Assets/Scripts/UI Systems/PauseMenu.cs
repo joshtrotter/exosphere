@@ -9,7 +9,7 @@ public class PauseMenu : UISystem {
 	public CallibrationUI callibrator;
 	private CanvasGroup canvasGroup;
 
-	void Awake(){
+	public override void Awake(){
 		base.Awake ();
 		unpauseButton.SetActive (false);
 		pauseMenu.SetActive (false);

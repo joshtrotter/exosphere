@@ -28,7 +28,7 @@ public class LaserSwitchTimed : Switch {
 	
 	void Awake () {
 		//set offColor as dimmed version of onColor
-		OffColor = OnColor * Config.dimIntensity;
+		OffColor = OnColor * Config.hardDimIntensity;
 		glow = laserSink.GetComponent<Renderer> ().material;
 		//set the maxchargelevel to the number of charge lights in the array
 		MaxChargeLevel = ChargeLights.Length;

@@ -74,7 +74,7 @@ public class TutorialMessageController : MonoBehaviour {
 
 	//closes the message and registers that it should not be shown again
 	public void CloseMessage(){
-		currentMessage.HasBeenClosed = true;
+		currentMessage.gameObject.SetActive (false);
 		HideMessage ();
 	}
 

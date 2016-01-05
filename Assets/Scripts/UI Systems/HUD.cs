@@ -6,7 +6,7 @@ public class HUD : UISystem {
 
 	private Canvas HUDCanvas;
 
-	void Awake()
+	public override void Awake()
 	{
 		base.Awake ();
 		HUDCanvas = GetComponentInChildren<Canvas> ();

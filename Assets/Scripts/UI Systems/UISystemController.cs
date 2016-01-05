@@ -25,7 +25,6 @@ public class UISystemController : MonoBehaviour {
 	//a UISystem has informed the controller that it wants to be shown
 	//It will only be shown if there is not currently a lower ranked UISystem wanting to be shown
 	public void RegisterRequest(UISystem NewUI){
-		Debug.Log (NewUI + " registered");
 		WantsToBeShown[NewUI] = true;
 		if (NewUI != CurrentlyShownUI) {
 			CheckForNewUIToShow ();
@@ -34,7 +33,6 @@ public class UISystemController : MonoBehaviour {
 
 	//a UISystem has informed the controller that it no longer wishes to be shown
 	public void Deregister(UISystem UI){
-		Debug.Log (UI + " deregistered");
 		WantsToBeShown[UI] = false;
 
 		if (CurrentlyShownUI == UI) {
@@ -46,35 +44,26 @@ public class UISystemController : MonoBehaviour {
 
 	//ensures that the currently displaying UI is the lowest ranked UI requesting to be shown
 	private void CheckForNewUIToShow(){
-		Debug.Log ("Checking for new ui to show");
 		UISystem NewUIToShow = null;
 		int NewUIRank = CurrentlyShownUIRank;
-		foreach (UISystem UI in WantsToBeShown.Keys) 
-		{
-			if (WantsToBeShown[UI])
-			{
-				if (UIRanks[UI] < NewUIRank) //found different UI to display
-				{
-					Debug.Log ("Found new UI to display: " + UI);
+		foreach (UISystem UI in WantsToBeShown.Keys) {
+			if (WantsToBeShown [UI]) {
+				if (UIRanks [UI] < NewUIRank) { //found different UI to display
 					NewUIToShow = UI;
-					NewUIRank = UIRanks[UI];
-				} else {
-					Debug.Log (UI + " rank not low enough(" + UIRanks[UI] + "). Current rank: " + NewUIRank );
+					NewUIRank = UIRanks [UI];
+				} 
+			}
+
+			if (NewUIToShow != null) {
+				if (CurrentlyShownUI != null) {
+					CurrentlyShownUI.Hide ();
 				}
+				CurrentlyShownUI = NewUIToShow;
+				CurrentlyShownUIRank = NewUIRank;
+				CurrentlyShownUI.ShowRequestAccepted ();
 			}
-		}
 
-		if (NewUIToShow != null)
-		{
-			Debug.Log ("Showing " + NewUIToShow);
-			if (CurrentlyShownUI != null){
-				CurrentlyShownUI.Hide ();
-			}
-			CurrentlyShownUI = NewUIToShow;
-			CurrentlyShownUIRank = NewUIRank;
-			CurrentlyShownUI.ShowRequestAccepted();
 		}
-
 	}
 
 

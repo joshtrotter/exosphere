@@ -6,7 +6,7 @@ public abstract class UISystem : MonoBehaviour {
 
 	private UISystemController controller;
 
-	public void Awake(){
+	public virtual void Awake(){
 		controller = FindObjectOfType<UISystemController> ();
 	}
 	

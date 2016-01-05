@@ -11,32 +11,23 @@ public class TutorialMessage : MonoBehaviour {
 	public string imageCaption;
 	//determines whether message is on left or right. Images will be automatically sent to the opposite side to message
 	public bool messageIsOnLeft = true;
-	[HideInInspector]
-	public bool HasBeenClosed;
 
-
-	void OnLevelWasLoaded()
-	{
+	void Awake(){
+		message = message.Replace ("\\n", "\n");
 		controller = GameObject.FindGameObjectWithTag ("TutorialSystem").GetComponent<TutorialMessageController> ();
 	}
 
-	public void OpenMessage(){
-		if (!HasBeenClosed) {
-			controller.DisplayMessage (this);
-		}
+	protected void OpenMessage(){
+		controller.DisplayMessage (this);
 	}
 
-	public void CloseMessage(){
+	protected void HideMessage(){
 		controller.HideMessage ();
 	}
 
-	void OnTriggerEnter()
-	{
-		OpenMessage ();
+	protected void CloseMessage(){
+		controller.HideMessage ();
+		this.gameObject.SetActive (false);
 	}
 
-	void OnTriggerExit()
-	{
-		//CloseMessage ();
-	}
 }
