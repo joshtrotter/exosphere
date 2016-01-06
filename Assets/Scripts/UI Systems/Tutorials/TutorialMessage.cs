@@ -2,17 +2,21 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class TutorialMessage : MonoBehaviour {
+public class TutorialMessage : HasLevelState {
 	
 	//enum and struct to interact with TutorialExternalTrigger
-	public enum TriggerBehaviour{None,Close,Open,Hide,Ready};
+	public enum TriggerBehaviour{None,Close,Open,Hide,SetReady,SetUnready};
 
 	[System.Serializable]
 	public struct TutorialSwitchTuple {
 		public TutorialMessage tut;
 		public TriggerBehaviour method;
 	}
-
+	
+	private const int READY_STATE = 0; //can be opened
+	private const int UNREADY_STATE = 1; //cannot be opened until changed to ready state
+	private const int CLOSED_STATE = 2; //cannot be opened and cannot be set to ready - permanent
+	
 	private TutorialMessageController controller;
 	public string message;
 	public string messageCaption = "Tap to Close";
@@ -20,7 +24,6 @@ public class TutorialMessage : MonoBehaviour {
 	public string imageCaption;
 	//determines whether message is on left or right. Images will be automatically sent to the opposite side to message
 	public bool messageIsOnLeft = true;
-	public bool isReady = true;
 
 	//determines how the tutorial responds to the players interactions with its trigger collider
 	public TriggerBehaviour triggerEnterBehaviour = TriggerBehaviour.Open;
@@ -29,19 +32,26 @@ public class TutorialMessage : MonoBehaviour {
 
 	void Awake(){
 		message = message.Replace ("\\n", "\n");
-		controller = GameObject.FindGameObjectWithTag ("TutorialSystem").GetComponent<TutorialMessageController> ();
+	}
+
+	private TutorialMessageController GetTutorialController(){
+		if (controller == null){
+			controller = GetLevelManager().GetComponentInChildren<TutorialMessageController>();
+		}
+		return controller;
 	}
 
 	private void OpenMessage(){
-		controller.DisplayMessage (this);
+		GetTutorialController().DisplayMessage (this);
 	}
 
 	private void HideMessage(){
-		controller.HideMessage ();
+		GetTutorialController().HideMessage ();
 	}
 
 	private void CloseMessage(){
-		controller.HideMessage ();
+		RegisterStateChange (CLOSED_STATE);
+		HideMessage ();
 		this.gameObject.SetActive (false);
 	}
 	
@@ -65,14 +75,17 @@ public class TutorialMessage : MonoBehaviour {
 	//calls the desired function based on given behaviour
 	void CallBehaviour (TriggerBehaviour behaviour)
 	{
-		if (behaviour == TriggerBehaviour.Ready) {
-			isReady = true;
+		if (behaviour == TriggerBehaviour.SetReady && currentState != CLOSED_STATE) {
+			RegisterStateChange(READY_STATE);
 			return;
 		} 
-		if (!isReady)
+		if (currentState != READY_STATE)
 			return;
 		switch (behaviour) {
 		case TriggerBehaviour.None:
+			break;		
+		case TriggerBehaviour.SetUnready:
+			RegisterStateChange(UNREADY_STATE);
 			break;
 		case TriggerBehaviour.Open:
 			OpenMessage ();
@@ -86,4 +99,10 @@ public class TutorialMessage : MonoBehaviour {
 		}
 	}
 
+	public override void ReloadState(int state) {
+		currentState = state;
+		if (currentState == CLOSED_STATE)
+			CloseMessage ();
+	}
+	
 }

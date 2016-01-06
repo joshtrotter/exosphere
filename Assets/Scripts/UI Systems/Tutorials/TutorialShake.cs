@@ -4,11 +4,11 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class TutorialShake : MonoBehaviour {
 
-	public TutorialMessage.TutorialSwitchTuple tutorial;
+	public TutorialMessage.TutorialSwitchTuple[] tutorials;
 
 	void Update () {
 		if (CrossPlatformInputManager.GetButtonDown ("Shake")) {
-			if (tutorial.tut.isReady){
+			foreach (TutorialMessage.TutorialSwitchTuple tutorial in tutorials){
 				tutorial.tut.ExternalTriggerCall(tutorial.method);
 			}
 		}
