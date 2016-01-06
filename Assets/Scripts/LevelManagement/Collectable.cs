@@ -45,13 +45,12 @@ public class Collectable : HasLevelState {
 
 	private void Collect() {
 		collectEffect.Play();
-		GetLevelManager ().GetComponentInChildren<HUD>().SendMessage ("CollectableFound");
 		hoverEffect.Stop();
 		item.DOMoveY (transform.position.y + flyingSpeed * collectEffect.duration, collectEffect.duration).OnComplete(OnCollectionComplete).Play();
 	}
 
 	private void OnCollectionComplete() {
-		Debug.Log ("Setting " + uniqueId + " inactive");
+		GetLevelManager ().GetComponentInChildren<HUD>().SendMessage ("CollectableFound");
 		gameObject.SetActive(false);
 	}
 }

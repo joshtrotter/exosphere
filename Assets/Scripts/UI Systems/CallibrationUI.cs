@@ -54,10 +54,7 @@ public class CallibrationUI : UISystem {
 
 	public override void Show ()
 	{
-		//show UI
 		canvas.gameObject.SetActive (true);
-		//hide pause button 
-		//pauseMenu.pauseButton.SetActive (false);
 	}
 
 	public void StartCalibration()

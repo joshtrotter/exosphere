@@ -124,7 +124,11 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void RemoveCollectable() {
-		collected--;
+		collected++;
+	}
+
+	public string GetNumCollectablesFound(){
+		return collected + "/" + numCollectables;
 	}
 
 }
