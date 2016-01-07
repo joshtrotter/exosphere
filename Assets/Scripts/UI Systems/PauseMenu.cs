@@ -11,8 +11,7 @@ public class PauseMenu : UISystem {
 
 	public override void Awake(){
 		base.Awake ();
-		unpauseButton.SetActive (false);
-		pauseMenu.SetActive (false);
+		Hide ();
 	}
 
 	public void Pause()

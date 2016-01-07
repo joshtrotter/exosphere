@@ -29,13 +29,21 @@ public class BallInputReader : MonoBehaviour
 	// A reference to the main camera in the scenes transform
 	private Transform cam; 
 
+	//A reference to the HUD which will be informed of a shake
+	private HUD hud;
+
 	private void Awake ()
 	{
 		// Set up the references to other game objects
 		ball = GetComponent<BallController> ();
 		pickups = GetComponent<PickupController> ();
 		transforms = GetComponent<TransformController> ();
-		cam = Camera.main.transform;            
+		cam = Camera.main.transform;    
+	}
+
+	private void Start()
+	{
+		hud = GameObject.FindGameObjectWithTag ("LevelManager").GetComponentInChildren<HUD> ();
 	}
 
 	private void Update ()
@@ -69,6 +77,7 @@ public class BallInputReader : MonoBehaviour
 		//If we detect a shake then trigger the response
 		if (CrossPlatformInputManager.GetButtonDown ("Shake")) {
 			transforms.RemoveCurrent();
+			hud.SendMessage("MorphRemoved");
 		}
 	}
 
