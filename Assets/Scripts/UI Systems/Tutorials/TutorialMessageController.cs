@@ -4,6 +4,8 @@ using System.Collections;
 
 public class TutorialMessageController : MonoBehaviour {
 
+	public static TutorialMessageController controller;
+
 	public Text leftMessageText;
 	public Text rightMessageText;
 	public GameObject leftImageHolder;
@@ -21,6 +23,7 @@ public class TutorialMessageController : MonoBehaviour {
 	private GameObject imageInstance;
 
 	void Awake(){
+		controller = this;
 		leftDisplayPanel = leftMessageText.transform.parent.gameObject;
 		rightDisplayPanel = rightMessageText.transform.parent.gameObject;
 

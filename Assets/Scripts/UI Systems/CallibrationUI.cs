@@ -5,6 +5,8 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class CallibrationUI : UISystem {
 
+	public static CallibrationUI controller;
+
 	private AmazeballTiltInput tiltInput;
 	
 	private BallInputReader ballInputReader;
@@ -13,6 +15,11 @@ public class CallibrationUI : UISystem {
 	private Vector3 ballAngularVelocity;
 
 	private Canvas canvas;
+
+	void Awake(){
+		controller = this;
+		canvas = GetComponentInChildren<Canvas> ();
+	}
 
 	public override void ShowRequestAccepted(){
 		StartCalibration ();
@@ -27,7 +34,6 @@ public class CallibrationUI : UISystem {
 		rbBall = ball.GetComponent<Rigidbody> ();
 		ballInputReader = ball.GetComponent<BallInputReader> ();
 
-		canvas = GetComponentInChildren<Canvas> ();
 		Hide ();
 		RequestToBeShown ();
 	}

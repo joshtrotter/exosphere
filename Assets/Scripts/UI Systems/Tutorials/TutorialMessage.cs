@@ -36,7 +36,7 @@ public class TutorialMessage : HasLevelState {
 
 	private TutorialMessageController GetTutorialController(){
 		if (controller == null){
-			controller = GetLevelManager().GetComponentInChildren<TutorialMessageController>();
+			controller = LevelManager.manager.GetComponentInChildren<TutorialMessageController>();
 		}
 		return controller;
 	}

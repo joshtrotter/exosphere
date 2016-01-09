@@ -4,11 +4,13 @@ using System.Collections;
 
 public class HUD : UISystem {
 
+	public static HUD controller;
+
 	private Canvas HUDCanvas;
 
-	public override void Awake()
+	void Awake()
 	{
-		base.Awake ();
+		controller = this;
 		HUDCanvas = GetComponentInChildren<Canvas> ();
 	}
 

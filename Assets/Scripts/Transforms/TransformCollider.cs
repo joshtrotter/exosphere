@@ -10,14 +10,7 @@ public class TransformCollider : MonoBehaviour {
 		if (coll.CompareTag("Player")) {
 			TransformController transformController = coll.gameObject.GetComponent<TransformController>();
 			transformController.ApplyTransform(ballTransform);
-			GetLevelManager().GetComponentInChildren<HUD>().SendMessage("MorphApplied", ballTransform);
+			HUD.controller.SendMessage("MorphApplied", ballTransform);
 		}
-	}
-
-	private LevelManager GetLevelManager(){
-		if (levelManager == null) {
-			levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
-		}
-		return levelManager;
 	}
 }

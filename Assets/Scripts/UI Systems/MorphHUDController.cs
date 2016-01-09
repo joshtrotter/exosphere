@@ -21,6 +21,8 @@ public class MorphHUDController : MonoBehaviour {
 
 	//called by pressing the icon in the top left
 	public void RemoveMorph(){
+		//if (CrossPlatformInputManager.AxisExists ("Shake")) {
 		CrossPlatformInputManager.SetButtonDown ("Shake");
+		//}
 	}
 }

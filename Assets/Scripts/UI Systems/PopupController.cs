@@ -5,19 +5,22 @@ using DG.Tweening;
 
 public class PopupController : MonoBehaviour {
 
+	public static PopupController controller;
+
 	public Text popupText;
 	public float fadeInTime = 1f;
 	public float displayTime = 3f;
 	public float fadeOutTIme = 1f;
 
 	void Awake(){
+		controller = this;
 		Color invisible = popupText.color;
 		invisible.a = 0;
 		popupText.color = invisible;
 	}
 
 	public void CollectableFound(){
-		DisplayPopup ("Collectable Found");
+		DisplayPopup ("Supply Crate Collected (" + LevelManager.manager.GetNumCollectablesFound() + ")");
 	}
 	
 	public void CheckpointReached(){
@@ -25,7 +28,7 @@ public class PopupController : MonoBehaviour {
 	}
 
 	public void MorphApplied(){
-		DisplayPopup ("Morphed into Crystal Ball");
+		DisplayPopup ("Crystal Ball");
 	}
 
 	private void DisplayPopup(string popup){

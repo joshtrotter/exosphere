@@ -4,13 +4,15 @@ using System.Collections;
 
 public class PauseMenu : UISystem {
 
+	public static PauseMenu controller;
+
 	public GameObject unpauseButton;
 	public GameObject pauseMenu;
 	public CallibrationUI callibrator;
 	private CanvasGroup canvasGroup;
 
-	public override void Awake(){
-		base.Awake ();
+	void Awake(){
+		controller = this;
 		Hide ();
 	}
 

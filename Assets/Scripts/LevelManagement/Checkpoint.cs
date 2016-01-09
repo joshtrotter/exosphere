@@ -21,17 +21,17 @@ public class Checkpoint : MonoBehaviour {
 			ResetSpawnPoint();
 			ResetCamera();
 			ResetPlayer (coll.gameObject);
-			GetLevelManager().GetComponentInChildren<HUD>().SendMessage("CheckpointReached");
+			HUD.controller.SendMessage("CheckpointReached");
 			VisualizeCheckpoint();
 		}
 	}
 
 	private void ResetSpawnPoint() {
-		GetLevelManager().SetSpawnLocation(this.transform);
+		LevelManager.manager.SetSpawnLocation(this.transform);
 	}
 
 	private void ResetCamera() {
-		GetLevelManager().SetCameraRotation(this.cameraAngle);
+		LevelManager.manager.SetCameraRotation(this.cameraAngle);
 	}
 
 	private void ResetPlayer(GameObject ball) {
@@ -46,12 +46,5 @@ public class Checkpoint : MonoBehaviour {
 				.Append (bubbleEffect.DOScale (1f, growTime))
 				.Append (bubbleEffect.DOMoveY (bubbleEffect.position.y, growTime / 2));
 			
-	}
-
-	private static LevelManager GetLevelManager() {
-		if (levelManager == null) {
-			levelManager = GameObject.FindGameObjectWithTag ("LevelManager").GetComponent<LevelManager>();
-		}
-		return levelManager;
 	}
 }
