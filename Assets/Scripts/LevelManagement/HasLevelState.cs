@@ -18,14 +18,6 @@ public abstract class HasLevelState : MonoBehaviour {
 
 	protected void RegisterStateChange(int state) {
 		currentState = state;
-		GetLevelManager ().RegisterObjectState (uniqueId, currentState);
+		LevelManager.manager.RegisterObjectState (uniqueId, currentState);
 	}
-
-	protected static LevelManager GetLevelManager() {
-		if (levelManager == null) {
-			levelManager = GameObject.FindGameObjectWithTag ("LevelManager").GetComponent<LevelManager>();
-		}
-		return levelManager;
-	}
-	
 }

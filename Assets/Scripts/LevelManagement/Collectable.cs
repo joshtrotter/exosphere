@@ -33,8 +33,8 @@ public class Collectable : HasLevelState {
 		if (coll.CompareTag("Player")) {
 			this.coll.enabled = false;
 			RegisterStateChange(COLLECTED_STATE);
-			GetLevelManager().RemoveCollectable();
-			GetLevelManager ().GetComponentInChildren<HUD>().SendMessage ("CollectableFound");
+			LevelManager.manager.RemoveCollectable();
+			HUD.controller.SendMessage ("CollectableFound");
 			Collect ();
 		}
 	}

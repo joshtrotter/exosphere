@@ -4,14 +4,8 @@ using System.Collections;
 /* base class for all UISystems managed by the UISystemController */
 public abstract class UISystem : MonoBehaviour {
 
-	private UISystemController controller;
-
-	public virtual void Awake(){
-		controller = FindObjectOfType<UISystemController> ();
-	}
-	
 	public virtual void RequestToBeShown(){
-		controller.RegisterRequest (this);
+		UISystemController.controller.RegisterRequest (this);
 	}
 
 	public virtual void ShowRequestAccepted(){
@@ -19,7 +13,7 @@ public abstract class UISystem : MonoBehaviour {
 	}
 	
 	public virtual void Deregister(){
-		controller.Deregister (this);
+		UISystemController.controller.Deregister (this);
 	}
 
 	public abstract void Show ();

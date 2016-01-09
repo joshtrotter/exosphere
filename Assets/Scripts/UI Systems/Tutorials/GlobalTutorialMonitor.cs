@@ -3,9 +3,15 @@ using System.Collections;
 
 public class GlobalTutorialMonitor : MonoBehaviour {
 
+	public static GlobalTutorialMonitor controller;
+
 	public TutorialMessage collectableTutorial;
 	public TutorialMessage checkpointTutorial;
 	public float displayTime = 8;
+
+	void Awake(){
+		controller = this;
+	}
 	
 	public void CollectableFound(){
 		OpenTutorial (collectableTutorial);

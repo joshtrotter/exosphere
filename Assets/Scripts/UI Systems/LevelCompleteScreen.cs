@@ -4,6 +4,8 @@ using System.Collections;
 
 public class LevelCompleteScreen : UISystem {
 
+	public static LevelCompleteScreen controller;
+
 	public Text timeText;
 	public Text collectablesText;
 	public Text challengeText;
@@ -16,6 +18,10 @@ public class LevelCompleteScreen : UISystem {
 	private float levelTimer;
 	private LevelManager levelManager;
 
+	void Awake(){
+		controller = this;
+	}
+
 	void Start(){
 		Hide ();
 	}
@@ -26,7 +32,7 @@ public class LevelCompleteScreen : UISystem {
 		
 	public override void Show(){
 		timeText.text = levelTimer + "s";
-		collectablesText.text = GetLevelManager().GetNumCollectablesFound ();
+		collectablesText.text = LevelManager.manager.GetNumCollectablesFound ();
 		levelCompleteCanvas.gameObject.SetActive (true);
 		StartCoroutine (SlowReveal ());
 	}
@@ -44,12 +50,4 @@ public class LevelCompleteScreen : UISystem {
 			text.gameObject.SetActive(true);
 		}
 	}
-
-	private LevelManager GetLevelManager(){
-		if (levelManager == null) {
-			levelManager = GameObject.FindGameObjectWithTag ("LevelManager").GetComponent<LevelManager> ();
-		}
-		return levelManager;
-	}
-
 }

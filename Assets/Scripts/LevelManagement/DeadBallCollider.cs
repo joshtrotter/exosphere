@@ -8,14 +8,7 @@ public class DeadBallCollider : MonoBehaviour {
 	void OnTriggerEnter(Collider coll) 
 	{
 		if (coll.CompareTag("Player")) {
-			GetLevelManager().ReloadLevel();
+			LevelManager.manager.ReloadLevel();
 		}
-	}
-
-	LevelManager GetLevelManager() {
-		if (levelManager == null) {
-			levelManager = GameObject.FindGameObjectWithTag ("LevelManager").GetComponent<LevelManager>();
-		}
-		return levelManager;
 	}
 }

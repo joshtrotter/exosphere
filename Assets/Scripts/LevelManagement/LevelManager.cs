@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour {
+
+	//used for singleton creation
+	public static LevelManager manager;
 	
 	public int currentLevel = 1;
 
@@ -9,8 +12,6 @@ public class LevelManager : MonoBehaviour {
 	private float cameraAngle;
 	private GameObject player;
 	private GameObject cameraRig;
-	private CallibrationUI calibrator;
-	private Canvas calCanvas;
 
 	private int numCollectables;
 	private int collected;
@@ -20,9 +21,14 @@ public class LevelManager : MonoBehaviour {
 	private bool firstLoad = true;
 	
 	void Awake () {
-		DontDestroyOnLoad (this);
-		calibrator = GetComponentInChildren<CallibrationUI> ();
-		calCanvas = calibrator.GetComponentInChildren<Canvas> ();
+		//set up singleton instance, destroy if a LevelManager already exists.
+		if (manager == null) {
+			manager = this;
+			DontDestroyOnLoad (this);
+		} else if (manager != this) {
+			Destroy(gameObject);
+		}
+
 		ReloadLevel ();
 	}
 
@@ -38,9 +44,10 @@ public class LevelManager : MonoBehaviour {
 
 	private void TearDown()
 	{
-		if (calCanvas != null) {
+		/*if (calCanvas != null) {
 			calCanvas.gameObject.SetActive (true);
-		}
+		}*/
+
 	}
 
 	private void OnLevelWasLoaded() 
@@ -89,7 +96,7 @@ public class LevelManager : MonoBehaviour {
 		//do this last
 		CalibrateTilt ();
 #else
-		calCanvas.gameObject.SetActive(false);
+		CallibrationUI.controller.Hide ();
 #endif
 	}
 
@@ -108,7 +115,7 @@ public class LevelManager : MonoBehaviour {
 
 	private void CalibrateTilt ()
 	{
-		calibrator.SetupCalibration ();
+		CallibrationUI.controller.SetupCalibration ();
 	}
 
 	public void SetSpawnLocation(Transform transform) {
