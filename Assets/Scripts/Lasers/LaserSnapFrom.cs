@@ -11,7 +11,7 @@ public class LaserSnapFrom : ArcReactor_Launcher {
 	private LaserSnapTo target;
 
 	//the amount in the degrees the laser will turn to follow the object
-	public float followThreshold = 10f;
+	public float worldUnitThreshold = 3f;
 	//the speed at which the laser will lerp to the required position
 	public float turnSpeed = 10f;
 
@@ -34,11 +34,15 @@ public class LaserSnapFrom : ArcReactor_Launcher {
 	//this function causes the laser to follow the object while within the follow threshold
 	private IEnumerator Follow()
 	{
+		float distance; //current distance between this and target
+		float followThreshold; //current allowed maximum angle
 		while (snapped) { 
 			yield return new WaitForFixedUpdate ();
 			Quaternion targetRot = Quaternion.LookRotation(target.transform.position-transform.position);
 			transform.rotation = Quaternion.Lerp (transform.rotation, targetRot, turnSpeed * Time.fixedDeltaTime);
-
+			//do some trig to work out the current allowed angle to stay within the worldUnitThreshold
+			distance = Vector3.Distance(target.transform.position, transform.position);
+			followThreshold = Mathf.Asin (worldUnitThreshold/distance)* Mathf.Rad2Deg;
 			//compare source's current rotation angle with it's original and decide whether it exceeds the followThreshold
 			if (Quaternion.Angle (transform.localRotation, startRotation) > followThreshold) {
 				snapped = false;

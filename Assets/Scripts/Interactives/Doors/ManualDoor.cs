@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class ManualDoor : Door {
@@ -21,7 +21,7 @@ public class ManualDoor : Door {
 		//set up base positions so door knows where to move between.
 		closedY = transform.position.y;
 		openY = closedY + 4.5f;
-		offColor = onColor * Config.dimIntensity;
+		offColor = onColor * Config.softDimIntensity;
 		
 		IsClosed = !IsClosed;
 		SwapState ();

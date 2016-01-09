@@ -21,6 +21,7 @@ public class Checkpoint : MonoBehaviour {
 			ResetSpawnPoint();
 			ResetCamera();
 			ResetPlayer (coll.gameObject);
+			GetLevelManager().GetComponentInChildren<HUD>().SendMessage("CheckpointReached");
 			VisualizeCheckpoint();
 		}
 	}

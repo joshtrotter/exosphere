@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class EnergyDoor : Door {
@@ -22,7 +22,7 @@ public class EnergyDoor : Door {
 		coll = GetComponent<Collider>();
 		side_pieces = frame.GetComponentsInChildren<Renderer> ();
 
-		offColor = onColor * Config.dimIntensity;
+		offColor = onColor * Config.softDimIntensity;
 
 		//set colour of energy field correctly
 		EnergyDoorFront.GetComponent<Renderer>().material.SetColor ("_Color", onColor);

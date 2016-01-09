@@ -12,7 +12,7 @@ public class LaserSwitchToggle : Switch {
 	public GameObject laserSink;
 
 	void Awake () {
-		offColor = onColor * Config.dimIntensity;
+		offColor = onColor * Config.hardDimIntensity;
 		glow = laserSink.GetComponent<Renderer> ().material;
 
 		SetEmission (currentState == ON_STATE ? onColor : offColor);

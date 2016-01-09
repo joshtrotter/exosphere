@@ -18,12 +18,12 @@ public class Switch : HasLevelState {
 	}
 	
 	public virtual void TurnOn(){
-		RegisterStateChange (0);
+		RegisterStateChange (ON_STATE);
 		target.Activate ();
 	}
 	
 	public virtual void TurnOff(){
-		RegisterStateChange (1);
+		RegisterStateChange (OFF_STATE);
 		target.Activate ();
 	}
 

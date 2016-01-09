@@ -59,8 +59,13 @@ public class LevelManager : MonoBehaviour {
 
 	private void OnFirstLoad() 
 	{
-		SetSpawnLocation(GameObject.FindGameObjectWithTag ("StartSpawn").transform);
-		SetCameraRotation (GameObject.FindGameObjectWithTag ("StartSpawn").transform.localRotation.eulerAngles.y);
+		//TODO Designed for testing. If there is no startSpawn enable, the ball will be used
+		GameObject StartSpawn = GameObject.FindGameObjectWithTag ("StartSpawn");
+		if (StartSpawn == null) {
+			StartSpawn = GameObject.FindGameObjectWithTag ("Player");
+		}
+		SetSpawnLocation(StartSpawn.transform);
+		SetCameraRotation (StartSpawn.transform.localRotation.eulerAngles.y);
 		numCollectables = Object.FindObjectsOfType<Collectable> ().Length;
 	}
 
@@ -119,7 +124,11 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void RemoveCollectable() {
-		collected--;
+		collected++;
+	}
+
+	public string GetNumCollectablesFound(){
+		return collected + "/" + numCollectables;
 	}
 
 }

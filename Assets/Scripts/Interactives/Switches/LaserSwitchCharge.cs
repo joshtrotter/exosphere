@@ -27,14 +27,15 @@ public class LaserSwitchCharge : Switch {
 	private int MaxChargeLevel;
 	
 	void Awake () {
-		offColor = onColor * Config.dimIntensity;
+		offColor = onColor * Config.hardDimIntensity;
 		glow = laserSink.GetComponent<Renderer>().material;
 		//set the maxchargelevel to the number of charge lights in the array
 		MaxChargeLevel = ChargeLights.Length;
 		//set tick times based on charge times and number of lights in the array
-		chargeTick = chargeTime / MaxChargeLevel;
+		chargeTick = chargeTime / (MaxChargeLevel - 1);
 
 		if (currentState == ON_STATE) {
+			SetEmissionAll (onColor);
 			ChargeLevel = MaxChargeLevel;
 		} else {
 			SetEmissionAll (offColor);
@@ -69,7 +70,7 @@ public class LaserSwitchCharge : Switch {
 	//until the switch is fully charged
 	private IEnumerator ChargeUp(){
 		SetEmission (glow, onColor);
-		float timer = 0;
+		float timer = chargeTick; //turn on first chargelight instantly
 		while (charging) {
 			yield return new WaitForEndOfFrame();
 			timer += Time.deltaTime;

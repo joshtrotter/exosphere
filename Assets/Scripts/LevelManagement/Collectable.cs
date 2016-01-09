@@ -31,8 +31,10 @@ public class Collectable : HasLevelState {
 
 	void OnTriggerEnter (Collider coll) {
 		if (coll.CompareTag("Player")) {
+			this.coll.enabled = false;
 			RegisterStateChange(COLLECTED_STATE);
 			GetLevelManager().RemoveCollectable();
+			GetLevelManager ().GetComponentInChildren<HUD>().SendMessage ("CollectableFound");
 			Collect ();
 		}
 	}
