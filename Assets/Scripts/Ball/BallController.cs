@@ -26,6 +26,9 @@ public class BallController : MonoBehaviour
 	//Store our current target velocity
 	private Vector3 targetVelocity;
 
+	//During a controlled flight the ball can be controlled by the player even while in mid-air
+	public bool inControlledFlight;
+
 	private void Awake ()
 	{
 		brakes = GetComponent<BrakeController> ();
@@ -46,7 +49,7 @@ public class BallController : MonoBehaviour
 			brakes.ReleaseBrakes ();
 
 			//Accelerate away from the camera if we are on the ground - TODO do we want to allow mid-air acceleration?
-			if (IsOnGround ()) {
+			if (IsOnGround () || inControlledFlight) {
 				rb.AddForce (moveDirection * movePower);
 
 				//If the player attempts to turn sharply at a high velocity then they will skid out
