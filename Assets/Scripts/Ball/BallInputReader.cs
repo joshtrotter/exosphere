@@ -69,7 +69,6 @@ public class BallInputReader : MonoBehaviour
 		//If we detect a shake then trigger the response
 		if (CrossPlatformInputManager.GetButtonDown ("Shake")) {
 			transforms.RemoveCurrent();
-			HUD.controller.SendMessage("MorphRemoved");
 		}
 	}
 

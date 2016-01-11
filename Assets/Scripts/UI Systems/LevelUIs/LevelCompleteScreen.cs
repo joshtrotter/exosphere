@@ -18,13 +18,11 @@ public class LevelCompleteScreen : UISystem {
 	private float levelTimer;
 	private LevelManager levelManager;
 
-	void Awake(){
+	public override void Awake(){
 		controller = this;
+		base.Awake ();
 	}
 
-	void Start(){
-		Hide ();
-	}
 	public void LevelComplete(float time){
 		levelTimer = time;
 		RequestToBeShown ();

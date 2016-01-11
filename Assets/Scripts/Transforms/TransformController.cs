@@ -27,6 +27,7 @@ public class TransformController : MonoBehaviour {
 			currentTransform.Remove (ballController);
 			newTransform.Apply (ballController);
 			currentTransform = newTransform;	
+			HUD.controller.SendMessage("MorphApplied", currentTransform);
 		}
 	}
 
@@ -35,6 +36,7 @@ public class TransformController : MonoBehaviour {
 		if (currentTransform != standardTransform) {
 			Atomize ();
 			ApplyTransform(standardTransform);
+			HUD.controller.SendMessage("MorphRemoved");
 		}
 	}
 

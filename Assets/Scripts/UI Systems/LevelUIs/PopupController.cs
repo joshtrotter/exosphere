@@ -27,8 +27,10 @@ public class PopupController : MonoBehaviour {
 		DisplayPopup ("Checkpoint Reached");
 	}
 
-	public void MorphApplied(){
-		DisplayPopup ("Crystal Ball");
+	public void MorphApplied(BallTransform morph){
+		if (morph.morphName != null) {
+			DisplayPopup (morph.morphName);
+		}
 	}
 
 	private void DisplayPopup(string popup){

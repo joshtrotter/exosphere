@@ -5,6 +5,7 @@ public abstract class BallTransform : MonoBehaviour
 {
 	public Material transformMaterial;
 	public PhysicMaterial transformPhysicMaterial; 
+	public string morphName;
 
 	public virtual void Apply(BallController ball) 
 	{

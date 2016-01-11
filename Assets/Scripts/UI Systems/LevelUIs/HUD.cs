@@ -8,14 +8,11 @@ public class HUD : UISystem {
 
 	private Canvas HUDCanvas;
 
-	void Awake()
+	public override void Awake()
 	{
 		controller = this;
 		HUDCanvas = GetComponentInChildren<Canvas> ();
-	}
-
-	void Start(){
-		Hide ();
+		base.Awake ();
 		RequestToBeShown ();
 	}
 

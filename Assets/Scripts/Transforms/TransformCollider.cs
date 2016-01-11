@@ -10,7 +10,6 @@ public class TransformCollider : MonoBehaviour {
 		if (coll.CompareTag("Player")) {
 			TransformController transformController = coll.gameObject.GetComponent<TransformController>();
 			transformController.ApplyTransform(ballTransform);
-			HUD.controller.SendMessage("MorphApplied", ballTransform);
 		}
 	}
 }
