@@ -29,10 +29,22 @@ public class LevelCompleteScreen : UISystem {
 	}
 		
 	public override void Show(){
+		//update save data
+		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
+		levelData.Complete ();
+		levelData.SetNumCollectablesFound (LevelManager.manager.collected);
+		LevelDataManager.manager.Save ();
+
 		timeText.text = levelTimer + "s";
 		collectablesText.text = LevelManager.manager.GetNumCollectablesFound ();
 		levelCompleteCanvas.gameObject.SetActive (true);
 		StartCoroutine (SlowReveal ());
+	}
+
+	//TODO remove
+	public void BackToMenu(){
+		Deregister ();
+		HUD.controller.Deregister ();
 	}
 
 	public override void Hide(){

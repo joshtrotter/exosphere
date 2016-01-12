@@ -51,5 +51,4 @@ public class TransformController : MonoBehaviour {
 		atomizerEffect.Combine (pop);
 		Atomizer.Atomize (gameObject, atomizerEffect, () => {});
 	}
-
 }

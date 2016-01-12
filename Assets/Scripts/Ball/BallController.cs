@@ -28,7 +28,7 @@ public class BallController : MonoBehaviour
 
 	//During a controlled flight the ball can be controlled by the player even while in mid-air
 	public bool inControlledFlight;
-
+	
 	private void Awake ()
 	{
 		brakes = GetComponent<BrakeController> ();

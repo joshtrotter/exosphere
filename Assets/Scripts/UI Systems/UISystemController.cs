@@ -6,6 +6,8 @@ using System.Collections.Generic;
  * */
 public class UISystemController : MonoBehaviour {
 
+	public static UISystemController controller;
+
 	//list of UISystems in the game from which we will build our dicts
 	public UISystem[] UISystems;
 
@@ -16,6 +18,13 @@ public class UISystemController : MonoBehaviour {
 	private int CurrentlyShownUIRank = int.MaxValue;
 
 	void Awake(){
+		//set up singleton instance, destroy if a UISystemController already exists.
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		for (int i=0; i < UISystems.Length; i++) {
 			WantsToBeShown[UISystems[i]] = false;
 			UIRanks.Add(UISystems[i],i);

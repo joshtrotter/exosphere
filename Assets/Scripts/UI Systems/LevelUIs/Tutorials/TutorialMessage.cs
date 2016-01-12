@@ -34,19 +34,19 @@ public class TutorialMessage : HasLevelState {
 		message = message.Replace ("\\n", "\n");
 	}
 
-	private TutorialMessageController GetTutorialController(){
+	/*private TutorialMessageController GetTutorialController(){
 		if (controller == null){
 			controller = LevelManager.manager.GetComponentInChildren<TutorialMessageController>();
 		}
 		return controller;
-	}
+	}*/
 
 	private void OpenMessage(){
-		GetTutorialController().DisplayMessage (this);
+		TutorialMessageController.controller.DisplayMessage (this);
 	}
 
 	private void HideMessage(){
-		GetTutorialController().HideMessage ();
+		TutorialMessageController.controller.HideMessage ();
 	}
 
 	private void CloseMessage(){

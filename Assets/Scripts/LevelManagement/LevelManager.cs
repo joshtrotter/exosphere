@@ -13,8 +13,8 @@ public class LevelManager : MonoBehaviour {
 	private GameObject player;
 	private GameObject cameraRig;
 
-	private int numCollectables;
-	private int collected;
+	//private int numCollectables;
+	public int collected;
 
 	private Dictionary<string, int> objectStates = new Dictionary<string, int>();
 
@@ -29,7 +29,7 @@ public class LevelManager : MonoBehaviour {
 			Destroy(gameObject);
 		}
 
-		ReloadLevel ();
+		//ReloadLevel ();
 	}
 
 	public void SetCurrentLevel(int level) 
@@ -73,7 +73,7 @@ public class LevelManager : MonoBehaviour {
 		}
 		SetSpawnLocation(StartSpawn.transform);
 		SetCameraRotation (StartSpawn.transform.localRotation.eulerAngles.y);
-		numCollectables = Object.FindObjectsOfType<Collectable> ().Length;
+		//numCollectables = Object.FindObjectsOfType<Collectable> ().Length;
 	}
 
 	private void OnReload()
@@ -91,6 +91,7 @@ public class LevelManager : MonoBehaviour {
 	{
 		SendPlayerToSpawnPoint ();
 		RotateCamera ();
+		HUD.controller.RequestToBeShown ();
 
 #if MOBILE_INPUT
 		//do this last
@@ -135,7 +136,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public string GetNumCollectablesFound(){
-		return collected + "/" + numCollectables;
+		return collected + "/" + LevelDataManager.manager.allLevelData[currentLevel].totalCollectables;
 	}
 
 }
