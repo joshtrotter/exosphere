@@ -31,9 +31,9 @@ public class TutorialMessageController : MonoBehaviour {
 	}
 
 	public void DisplayMessage(TutorialMessage messageObject){
-		currentMessage = messageObject;
 		//ensure that any previous message is overriden
 		HideMessage ();
+		currentMessage = messageObject;
 
 		if (currentMessage.messageIsOnLeft) {
 			SetupText (leftMessageText, leftDisplayPanel, leftCaption);
@@ -64,14 +64,16 @@ public class TutorialMessageController : MonoBehaviour {
 	}
 
 	//closes the message
-	public void HideMessage(){
-		//reset display
-		leftMessageText.text = "";
-		rightMessageText.text = "";
-		Destroy (imageInstance);
-		//hide panels
-		leftDisplayPanel.SetActive (false);
-		rightDisplayPanel.SetActive (false);
+	public void HideMessage(TutorialMessage messageToHide = null){
+		if (messageToHide == currentMessage || messageToHide == null) {
+			//reset display
+			leftMessageText.text = "";
+			rightMessageText.text = "";
+			Destroy (imageInstance);
+			//hide panels
+			leftDisplayPanel.SetActive (false);
+			rightDisplayPanel.SetActive (false);
+		}
 
 	}
 
