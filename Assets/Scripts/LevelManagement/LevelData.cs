@@ -7,88 +7,141 @@ using System.Collections;
 [System.Serializable]
 public class LevelData {
 
-	//permanent level info
-	public int levelID;
-	public string levelName;
-	public int parentWorld, totalCollectables, starsRequiredToUnlock;
-	public float targetTime;
+	private LevelPermanentData permData;
+	private LevelSaveData saveData;
 
-	//save data info
-	public bool unlocked, completed, goldenBallCollected;
-	public int numCollectablesFound;
-	public float fastestTime;
-
-	//derived info for simple look up
-	public bool allCollectablesFound, timeTrialCompleted;
-
-	//initialize using permanent data for a level
-	public LevelData(LevelPermanentData permanentData){
-		levelID = permanentData.levelID;
-		levelName = permanentData.levelName;
-		parentWorld = permanentData.parentWorld;
-		totalCollectables = permanentData.totalCollectables;
-		starsRequiredToUnlock = permanentData.starsRequiredToUnlock;
-		targetTime = permanentData.targetTime;
+	//initialize using permanent data for a level, savedData can either be passed or a new empty object will be created
+	public LevelData(LevelPermanentData permanentData, LevelSaveData savedData = null){
+		permData = permanentData;
+		if (savedData == null) {
+			savedData = new LevelSaveData(GetLevelID());
+		}
+		saveData = savedData;
 	}
 
 	//this will be called by the LevelDataManager if there is saved data for this level
-	public void SetSavedData(LevelSaveData saveData){
-		unlocked = saveData.unlocked;
-		completed = saveData.completed;
-		goldenBallCollected = saveData.goldenBallCollected;
-		SetNumCollectablesFound (saveData.numCollectablesFound);
-		SetFastestTime (saveData.fastestTime);
+	public void SetSavedData(LevelSaveData savedData){
+		saveData = savedData;
+	}
+	
+	public LevelSaveData GetSavedData(){
+		return saveData;
+	}
+
+	public int GetLevelID(){
+		return permData.levelID;
+	}
+
+	public string GetLevelName(){
+		return permData.levelName;
+	}
+
+	public int GetTotalCollectables(){
+		return permData.totalCollectables;
+	}
+
+	public int GetNumCollectablesFound(){
+		return saveData.numCollectablesFound;
+	}
+	//returns a formatted time string if the target time is visible to the user, otherwise returns "Hidden"
+	public string GetTargetTimeAsString(){
+		if (IsUnlocked ()) {
+			return FloatToTimeString (permData.targetTime);
+		} else {
+			return "Hidden";
+		}
+	}
+
+	//returns a formatted time string if the user has attempted a time trial, otherwise returns "None"
+	public string GetFastestTimeAsString(){
+		if (IsUnlocked () && saveData.fastestTime > 0) {
+			return FloatToTimeString (saveData.fastestTime);
+		} else {
+			return "None";
+		}
+	}
+
+	//converts a float in seconds to a MM:SS:FF format string
+	private string FloatToTimeString(float time){
+		int mins = Mathf.FloorToInt (time / 60);
+		int secs = Mathf.FloorToInt (time % 60);
+		int milli = Mathf.FloorToInt ((time - Mathf.Floor (time)) * 60);
+		return string.Format ("{0:00}:{1:00}:{2:00}", mins, secs, milli);
+	}
+
+	public bool HasGoldenBallCollected(){
+		return saveData.goldenBallCollected;
+	}
+
+	public bool HasAllCollectablesFound(){
+		return (saveData.numCollectablesFound == permData.totalCollectables);
+	}
+
+	public bool IsUnlocked(){
+		return saveData.unlocked;
+	}
+
+	public bool HasBeenCompleted(){
+		return saveData.completed;
+	}
+
+	public bool TimeTrialHasBeenCompleted(){
+		return (saveData.fastestTime > 0 && saveData.fastestTime < permData.targetTime);
+	}
+
+	//returns "Completed", "Unlocked" or "Locked (X stars required to unlock)"
+	public string GetCompletionStatus(){
+		if (!IsUnlocked()) {
+			return "Locked (" + permData.starsRequiredToUnlock + ")";
+		} else if (HasBeenCompleted ()) {
+			return "Completed";
+		} else {
+			return "Unlocked";
+		}
 	}
 
 	//returns an X/Y string for the number of collectables found
-	public string GetNumCollectablesFound(){
-		return numCollectablesFound + "/" + totalCollectables;
+	public string GetNumCollectablesFoundOutOfTotal(){
+		return saveData.numCollectablesFound + "/" + permData.totalCollectables;
 	}
 
 	//returns the number of stars the user has earned on this level
 	public int GetStarsEarned(){
 		int starsEarned = 0;
-		if (allCollectablesFound)
+		if (HasAllCollectablesFound())
 			starsEarned += 1;
-		if (goldenBallCollected)
+		if (HasGoldenBallCollected())
 			starsEarned += 1;
-		if (timeTrialCompleted) 
+		if (TimeTrialHasBeenCompleted()) 
 			starsEarned += 1;
 		return starsEarned;
 	}
 
 	//sets number of collectables found to max out of new number and recorded number
 	public void SetNumCollectablesFound(int numFound){
-		numCollectablesFound = Mathf.Max (numCollectablesFound,numFound);
+		saveData.numCollectablesFound = Mathf.Max (saveData.numCollectablesFound,numFound);
 		//just in case
-		numCollectablesFound = Mathf.Min (numCollectablesFound, totalCollectables);
-
-		if (numCollectablesFound == totalCollectables)
-			allCollectablesFound = true;
+		saveData.numCollectablesFound = Mathf.Min (saveData.numCollectablesFound, permData.totalCollectables);
 	}
 
 	//sets fastest time to fastest out of currently recorded and new time
 	public void SetFastestTime(float newTime){
-		if (fastestTime == 0f)
-			fastestTime = float.MaxValue;
+		if (saveData.fastestTime == 0f)
+			saveData.fastestTime = float.MaxValue;
 
-		fastestTime = Mathf.Min (fastestTime, newTime);
-
-		if (fastestTime != 0 && fastestTime <= targetTime) {
-			timeTrialCompleted = true;
-		}
+		saveData.fastestTime = Mathf.Min (saveData.fastestTime, newTime);
 	}
 
 	public void SetGoldenBallCollected(){
-		goldenBallCollected = true;
+		saveData.goldenBallCollected = true;
 	}
 
 	public void Unlock(){
-		unlocked = true;
+		saveData.unlocked = true;
 	}	
 
 	public void Complete(){
-		completed = true;
+		saveData.completed = true;
 	}
 
 }

@@ -43,7 +43,7 @@ public class LevelInfo : UISystem {
 
 	//tells the levelManager to load the currently displayed level
 	public void PlayLevelButton(){
-		LevelManager.manager.SetCurrentLevel (currentLevel.levelID);
+		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID());
 		LevelManager.manager.ReloadLevel ();	
 	}
 
@@ -58,47 +58,47 @@ public class LevelInfo : UISystem {
 
 	//updates all text fields and images with the latest data that has been saved
 	private void SetLatestInfo(){
-		levelName.text = currentLevel.levelName;
+		levelName.text = currentLevel.GetLevelName();
 
 		//completion and time trials
-		//set default values
-		targetTime.text = "Hidden";
-		fastestTime.text = "None";
-		play.interactable = false;
-		timeTrial.interactable = false;
+		targetTime.text = currentLevel.GetTargetTimeAsString ();
+		fastestTime.text = currentLevel.GetFastestTimeAsString ();
+		levelCompletion.text = currentLevel.GetCompletionStatus ();
+		play.interactable = currentLevel.IsUnlocked ();
+		timeTrial.interactable = currentLevel.HasBeenCompleted ();
 
-		if (!currentLevel.unlocked) {
-			levelCompletion.text = "Locked (" + currentLevel.starsRequiredToUnlock + " Stars Required)";
-		} else if (currentLevel.completed) {
+		/*if (!currentLevel.IsUnlocked()) {
+			levelCompletion.text = "Locked (" + currentLevel.permData.starsRequiredToUnlock + " Stars Required)";
+		} else if (currentLevel.saveData.completed) {
 			levelCompletion.text = "Completed";
 			play.interactable = true;
 			//set up time trial
 			timeTrial.interactable = true;
-			targetTime.text = FloatToTimeString(currentLevel.targetTime);
-			if (currentLevel.fastestTime != 0f){
-				fastestTime.text = FloatToTimeString(currentLevel.fastestTime);
+			targetTime.text = FloatToTimeString(currentLevel.permData.targetTime);
+			if (currentLevel.saveData.fastestTime != 0f){
+				fastestTime.text = FloatToTimeString(currentLevel.saveData.fastestTime);
 			}
 		} else {
 			levelCompletion.text = "Not Completed";
 			play.interactable = true;
-		}
+		}*/
 
-		if (currentLevel.timeTrialCompleted) {
+		if (currentLevel.TimeTrialHasBeenCompleted()) {
 			timeTrialStar.sprite = collectedStar;
 		} else {
 			timeTrialStar.sprite = uncollectedStar;
 		}
 
 		//supply crates
-		supplyCratesFound.text = currentLevel.GetNumCollectablesFound ();
-		if (currentLevel.allCollectablesFound) {
+		supplyCratesFound.text = currentLevel.GetNumCollectablesFoundOutOfTotal ();
+		if (currentLevel.HasAllCollectablesFound()) {
 			supplyCratesStar.sprite = collectedStar;
 		} else {
 			supplyCratesStar.sprite = uncollectedStar;
 		}
 
 		//golden ball
-		if (currentLevel.goldenBallCollected) {
+		if (currentLevel.HasGoldenBallCollected()) {
 			goldenBallFound.text = "Found";
 			goldenBallStar.sprite = collectedStar;
 		} else {
@@ -106,13 +106,5 @@ public class LevelInfo : UISystem {
 			goldenBallStar.sprite = uncollectedStar;
 		}
 
-	}
-
-	//converts a float in seconds to a MM:SS:FF format string
-	private string FloatToTimeString(float time){
-		int mins = Mathf.FloorToInt (time / 60);
-		int secs = Mathf.FloorToInt (time % 60);
-		int milli = Mathf.FloorToInt ((time - Mathf.Floor (time)) * 60);
-		return string.Format ("{0:00}:{1:00}:{2:00}", mins, secs, milli);
 	}
 }

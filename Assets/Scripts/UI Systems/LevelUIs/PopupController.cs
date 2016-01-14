@@ -21,7 +21,7 @@ public class PopupController : MonoBehaviour {
 
 	void OnLevelWasLoaded(){
 		if (Application.loadedLevel != 0) {
-			StartCoroutine (WaitToBeShown (LevelDataManager.manager.GetCurrentLevelData().levelName));
+			StartCoroutine (WaitToBeShown (LevelDataManager.manager.GetCurrentLevelData().GetLevelName()));
 		}
 	}
 

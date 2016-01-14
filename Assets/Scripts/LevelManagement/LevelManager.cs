@@ -15,6 +15,7 @@ public class LevelManager : MonoBehaviour {
 
 	//private int numCollectables;
 	public int collected;
+	public bool goldenBallFound;
 
 	private Dictionary<string, int> objectStates = new Dictionary<string, int>();
 
@@ -30,6 +31,9 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		//ReloadLevel ();
+		//TODO remove
+		goldenBallFound = true;
+		collected = 5;
 	}
 
 	public void SetCurrentLevel(int level) 
@@ -136,7 +140,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public string GetNumCollectablesFound(){
-		return collected + "/" + LevelDataManager.manager.allLevelData[currentLevel].totalCollectables;
+		return collected + "/" + LevelDataManager.manager.GetCurrentLevelData().GetTotalCollectables();
 	}
 
 }

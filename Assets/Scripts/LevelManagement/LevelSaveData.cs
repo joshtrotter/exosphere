@@ -10,14 +10,8 @@ public class LevelSaveData {
 	public bool unlocked, completed, goldenBallCollected;
 	public int numCollectablesFound;
 	public float fastestTime;
-	
-	public LevelSaveData(LevelData levelData){
-		levelID = levelData.levelID;
-		unlocked = levelData.unlocked;
-		completed = levelData.completed;
-		goldenBallCollected = levelData.goldenBallCollected;
-		numCollectablesFound = levelData.numCollectablesFound;
-		fastestTime = levelData.fastestTime;
-	}
 
+	public LevelSaveData(int ID){
+		levelID = ID;
+	}
 }

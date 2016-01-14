@@ -10,7 +10,7 @@ public class CreateLevelPermanentData : MonoBehaviour {
 	{
 		LevelPermanentData asset = ScriptableObject.CreateInstance<LevelPermanentData> ();
 		int num = 0;
-		while (AssetDatabase.FindAssets ("LevelPermanentData" + num, new string[]{"Assets/ScriptableObjects"}).Length > 0 && num < 10){
+		while (AssetDatabase.FindAssets ("LevelPermanentData" + num, new string[]{"Assets/ScriptableObjects"}).Length > 0){
 			num += 1;
 		}
 		AssetDatabase.CreateAsset (asset, "Assets/ScriptableObjects/LevelPermanentData" + num + ".asset");

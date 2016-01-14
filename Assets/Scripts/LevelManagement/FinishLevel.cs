@@ -5,6 +5,8 @@ public class FinishLevel : MonoBehaviour {
 
 	private BallController ball;
 	private Vector3 targetPos;
+	private bool levelComplete;
+
 	public float floatSpeed = 5f;
 
 	void Awake(){
@@ -26,6 +28,10 @@ public class FinishLevel : MonoBehaviour {
 			yield return new WaitForFixedUpdate();
 			ball.transform.position = Vector3.MoveTowards(ball.transform.position, targetPos, Time.fixedDeltaTime * floatSpeed);
 		}
-		LevelCompleteScreen.controller.LevelComplete (Time.time);
+		Debug.Log ("Completing level");
+		if (!levelComplete) {
+			levelComplete = true;
+			LevelCompleteScreen.controller.LevelComplete (Time.time);
+		}
 	}
 }

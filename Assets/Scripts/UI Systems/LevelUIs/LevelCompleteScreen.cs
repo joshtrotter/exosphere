@@ -1,63 +1,117 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LevelCompleteScreen : UISystem {
 
 	public static LevelCompleteScreen controller;
 
-	public Text timeText;
-	public Text collectablesText;
-	public Text challengeText;
-	public Text goldenBallText;
+	public Text supplyCrateTitleText;
+	public Text cratesFoundText;
+	public Text goldenBallFoundText;
+	public Text timeTrialUnlockedText;
+	public Text newLevelUnlockedText;
+	public Text cratesStarEarned;
+	public Text cratesNewBest;
+	public Text goldenBallStarEarned;
 
-	public Text[] textComponents;
+	private List<Text> displayList = new List<Text> ();
 
 	public Canvas levelCompleteCanvas;
 
 	private float levelTimer;
-	private LevelManager levelManager;
+	//private LevelManager levelManager;
 
 	public override void Awake(){
+
 		controller = this;
 		base.Awake ();
 	}
 
 	public void LevelComplete(float time){
 		levelTimer = time;
+		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
+		
+		Debug.Log ("Clearing list");
+		displayList.Clear ();
+		//set up summary and update save data
+		
+		//crates
+		AddToDisplayList (supplyCrateTitleText);
+		cratesFoundText.text = LevelManager.manager.GetNumCollectablesFound ();
+		AddToDisplayList (cratesFoundText);
+		
+		//goldenball
+		if (LevelManager.manager.goldenBallFound) {
+			AddToDisplayList(goldenBallFoundText);
+		}
+		
+		//unlocks
+		if (!levelData.HasBeenCompleted()) {
+			levelData.Complete ();
+			AddToDisplayList(timeTrialUnlockedText);
+			AddToDisplayList(newLevelUnlockedText);
+		}
+		
+		//stars and records
+		if (levelData.GetNumCollectablesFound() < LevelManager.manager.collected) {
+			levelData.SetNumCollectablesFound (LevelManager.manager.collected);
+			AddToDisplayList(cratesNewBest);
+			if (levelData.HasAllCollectablesFound()){
+				AddToDisplayList(cratesStarEarned);
+			}
+		}
+		
+		if (!levelData.HasGoldenBallCollected() && LevelManager.manager.goldenBallFound){
+			levelData.SetGoldenBallCollected();
+			AddToDisplayList(goldenBallStarEarned);
+		}
+		
+		LevelDataManager.manager.Save ();
+
 		RequestToBeShown ();
 	}
 		
 	public override void Show(){
-		//update save data
-		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
-		levelData.Complete ();
-		levelData.SetNumCollectablesFound (LevelManager.manager.collected);
-		LevelDataManager.manager.Save ();
-
-		timeText.text = levelTimer + "s";
-		collectablesText.text = LevelManager.manager.GetNumCollectablesFound ();
 		levelCompleteCanvas.gameObject.SetActive (true);
-		StartCoroutine (SlowReveal ());
+		GetComponentInChildren<TextGroupBestFit> ().FitText ();
+		StartCoroutine (RevealSummary ());
+	}
+
+	private void AddToDisplayList(Text text){
+		//set invisible
+		Color color = text.color;
+		color.a = 0f;
+		text.color = color;
+		//enable
+		text.gameObject.SetActive (true);
+		//add to list
+		Debug.Log ("adding " + text.name);
+		displayList.Add (text);
+		Debug.Log (displayList.Count);
 	}
 
 	//TODO remove
 	public void BackToMenu(){
-		Deregister ();
 		HUD.controller.Deregister ();
+		Deregister ();
 	}
 
 	public override void Hide(){
-		foreach (Text text in textComponents) {
+		//make everything invisible to allow step by step reveal on next show
+		/*foreach (Text text in displayList) {
 			text.gameObject.SetActive(false);
-		}
+		}*/
 		levelCompleteCanvas.gameObject.SetActive (false);
 	}
 
-	private IEnumerator SlowReveal(){
-		foreach (Text text in textComponents) {
-			yield return new WaitForSeconds(0.5f);
-			text.gameObject.SetActive(true);
+	private IEnumerator RevealSummary(){
+		yield return new WaitForSeconds(1f);
+		Debug.Log (displayList.Count);
+		foreach (Text text in displayList) {
+			text.color = Color.white;
+			yield return new WaitForSeconds(1f);
 		}
 	}
 }
