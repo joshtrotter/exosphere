@@ -16,6 +16,9 @@ public class LevelDataManager : MonoBehaviour {
 	public int levelToLoad;
 	
 	public LevelPermanentData[] permanentData;
+	[SerializeField]
+	private WorldData[] worldDataList;
+	private Dictionary<int, WorldData> allWorldData = new Dictionary<int, WorldData>();
 	private Dictionary<int, LevelData> allLevelData = new Dictionary<int, LevelData>();
 	//private Dictionary<int, LevelSaveData> savedData = new Dictionary<int, LevelSaveData>();
 
@@ -29,10 +32,12 @@ public class LevelDataManager : MonoBehaviour {
 		}
 
 		//initialize allLevelData dict with each of the permanentData objects we have created 
-		foreach (LevelPermanentData data in permanentData){
-			allLevelData[data.levelID] = new LevelData(data);
+		foreach (WorldData worldData in worldDataList){
+			allWorldData[worldData.worldID] = worldData;
+			foreach (LevelPermanentData levelData in worldData.childLevels){ 
+				allLevelData[levelData.levelID] = new LevelData(levelData);
+			}
 		}
-
 		//load and add all the users saved data to the allLevelData dictionary
 		Load ();
 	}
@@ -46,6 +51,19 @@ public class LevelDataManager : MonoBehaviour {
 
 	public LevelData GetCurrentLevelData(){
 		return allLevelData [LevelManager.manager.currentLevel];
+	}
+
+	public LevelData GetNextLevelData(LevelData currentLevel){
+		WorldData parentWorld = allWorldData [currentLevel.GetParentID ()];
+		int levelID = parentWorld.GetNextLevelID (currentLevel);
+		return levelID != 0 ? allLevelData [levelID] : null;
+	}
+
+	public LevelData GetPreviousLevelData(LevelData currentLevel){
+		WorldData parentWorld = allWorldData [currentLevel.GetParentID ()];
+		int levelID = parentWorld.GetPreviousLevelID (currentLevel);
+		return levelID != 0 ? allLevelData [levelID] : null;
+
 	}
 
 	//saves all necessary data to file

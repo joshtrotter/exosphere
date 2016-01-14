@@ -28,7 +28,6 @@ public class FinishLevel : MonoBehaviour {
 			yield return new WaitForFixedUpdate();
 			ball.transform.position = Vector3.MoveTowards(ball.transform.position, targetPos, Time.fixedDeltaTime * floatSpeed);
 		}
-		Debug.Log ("Completing level");
 		if (!levelComplete) {
 			levelComplete = true;
 			LevelCompleteScreen.controller.LevelComplete (Time.time);

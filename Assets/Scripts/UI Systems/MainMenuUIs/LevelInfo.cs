@@ -12,6 +12,8 @@ public class LevelInfo : UISystem {
 
 	//a reference to the level we are currently displaying
 	private LevelData currentLevel;
+	private LevelData previousLevel;
+	private LevelData nextLevel;
 
 	public Text levelName;
 	public Text levelCompletion;
@@ -19,8 +21,10 @@ public class LevelInfo : UISystem {
 	public Text goldenBallFound;
 	public Text targetTime;
 	public Text fastestTime;
-	public Button play;
-	public Button timeTrial;
+	public Button playButton;
+	public Button timeTrialButton;
+	public Button previousButton;
+	public Button nextButton;
 
 	public Image supplyCratesStar;
 	public Image goldenBallStar;
@@ -38,6 +42,7 @@ public class LevelInfo : UISystem {
 
 	public void DisplayLevelInfo(LevelData newLevel){
 		currentLevel = newLevel;
+		Deregister ();
 		RequestToBeShown ();
 	}
 
@@ -45,6 +50,14 @@ public class LevelInfo : UISystem {
 	public void PlayLevelButton(){
 		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID());
 		LevelManager.manager.ReloadLevel ();	
+	}
+
+	public void NextLevelButton(){
+		DisplayLevelInfo (nextLevel);
+	}
+
+	public void PreviousLevelButton(){
+		DisplayLevelInfo (previousLevel);
 	}
 
 	public override void Show(){
@@ -58,53 +71,32 @@ public class LevelInfo : UISystem {
 
 	//updates all text fields and images with the latest data that has been saved
 	private void SetLatestInfo(){
+		Debug.Log ("Displaying data for " + currentLevel.GetLevelName ());
 		levelName.text = currentLevel.GetLevelName();
 
-		//completion and time trials
+		//completion
+		levelCompletion.text = currentLevel.GetCompletionStatus ();
+		playButton.interactable = currentLevel.IsUnlocked ();
+
+		//time trials
+		timeTrialButton.interactable = currentLevel.HasBeenCompleted ();
 		targetTime.text = currentLevel.GetTargetTimeAsString ();
 		fastestTime.text = currentLevel.GetFastestTimeAsString ();
-		levelCompletion.text = currentLevel.GetCompletionStatus ();
-		play.interactable = currentLevel.IsUnlocked ();
-		timeTrial.interactable = currentLevel.HasBeenCompleted ();
-
-		/*if (!currentLevel.IsUnlocked()) {
-			levelCompletion.text = "Locked (" + currentLevel.permData.starsRequiredToUnlock + " Stars Required)";
-		} else if (currentLevel.saveData.completed) {
-			levelCompletion.text = "Completed";
-			play.interactable = true;
-			//set up time trial
-			timeTrial.interactable = true;
-			targetTime.text = FloatToTimeString(currentLevel.permData.targetTime);
-			if (currentLevel.saveData.fastestTime != 0f){
-				fastestTime.text = FloatToTimeString(currentLevel.saveData.fastestTime);
-			}
-		} else {
-			levelCompletion.text = "Not Completed";
-			play.interactable = true;
-		}*/
-
-		if (currentLevel.TimeTrialHasBeenCompleted()) {
-			timeTrialStar.sprite = collectedStar;
-		} else {
-			timeTrialStar.sprite = uncollectedStar;
-		}
+		timeTrialStar.sprite = currentLevel.TimeTrialHasBeenCompleted () ? collectedStar : uncollectedStar;
 
 		//supply crates
 		supplyCratesFound.text = currentLevel.GetNumCollectablesFoundOutOfTotal ();
-		if (currentLevel.HasAllCollectablesFound()) {
-			supplyCratesStar.sprite = collectedStar;
-		} else {
-			supplyCratesStar.sprite = uncollectedStar;
-		}
+		supplyCratesStar.sprite = currentLevel.AllCollectablesHaveBeenCollected () ? collectedStar : uncollectedStar;
 
 		//golden ball
-		if (currentLevel.HasGoldenBallCollected()) {
-			goldenBallFound.text = "Found";
-			goldenBallStar.sprite = collectedStar;
-		} else {
-			goldenBallFound.text = "Not Found";
-			goldenBallStar.sprite = uncollectedStar;
-		}
+		goldenBallFound.text = currentLevel.GetGoldenBallFoundAsString ();
+		goldenBallStar.sprite = currentLevel.GoldenBallHasBeenCollected () ? collectedStar : uncollectedStar;
+
+		//nav buttons
+		nextLevel = LevelDataManager.manager.GetNextLevelData (currentLevel);
+		previousLevel = LevelDataManager.manager.GetPreviousLevelData (currentLevel);
+		nextButton.interactable = nextLevel != null ? true : false;
+		previousButton.interactable = previousLevel != null ? true : false;
 
 	}
 }

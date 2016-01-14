@@ -28,12 +28,20 @@ public class LevelData {
 		return saveData;
 	}
 
+	public LevelPermanentData GetPermanentData(){
+		return permData;	
+	}
+
 	public int GetLevelID(){
 		return permData.levelID;
 	}
 
 	public string GetLevelName(){
 		return permData.levelName;
+	}
+
+	public int GetParentID(){
+		return permData.parentWorld;
 	}
 
 	public int GetTotalCollectables(){
@@ -69,11 +77,11 @@ public class LevelData {
 		return string.Format ("{0:00}:{1:00}:{2:00}", mins, secs, milli);
 	}
 
-	public bool HasGoldenBallCollected(){
+	public bool GoldenBallHasBeenCollected(){
 		return saveData.goldenBallCollected;
 	}
 
-	public bool HasAllCollectablesFound(){
+	public bool AllCollectablesHaveBeenCollected(){
 		return (saveData.numCollectablesFound == permData.totalCollectables);
 	}
 
@@ -92,7 +100,7 @@ public class LevelData {
 	//returns "Completed", "Unlocked" or "Locked (X stars required to unlock)"
 	public string GetCompletionStatus(){
 		if (!IsUnlocked()) {
-			return "Locked (" + permData.starsRequiredToUnlock + ")";
+			return "Locked (" + permData.starsRequiredToUnlock + " stars required)";
 		} else if (HasBeenCompleted ()) {
 			return "Completed";
 		} else {
@@ -105,12 +113,17 @@ public class LevelData {
 		return saveData.numCollectablesFound + "/" + permData.totalCollectables;
 	}
 
+	//returns "Found" or "Not Found"
+	public string GetGoldenBallFoundAsString(){
+		return GoldenBallHasBeenCollected() ? "Found" : "Not Found";
+	}
+
 	//returns the number of stars the user has earned on this level
 	public int GetStarsEarned(){
 		int starsEarned = 0;
-		if (HasAllCollectablesFound())
+		if (AllCollectablesHaveBeenCollected())
 			starsEarned += 1;
-		if (HasGoldenBallCollected())
+		if (GoldenBallHasBeenCollected())
 			starsEarned += 1;
 		if (TimeTrialHasBeenCompleted()) 
 			starsEarned += 1;
@@ -140,6 +153,8 @@ public class LevelData {
 		saveData.unlocked = true;
 	}	
 
+	//sets the level as completed
+	//TODO unlock the next level if necessary
 	public void Complete(){
 		saveData.completed = true;
 	}

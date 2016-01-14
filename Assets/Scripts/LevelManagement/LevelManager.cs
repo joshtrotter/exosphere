@@ -33,7 +33,7 @@ public class LevelManager : MonoBehaviour {
 		//ReloadLevel ();
 		//TODO remove
 		goldenBallFound = true;
-		collected = 5;
+		//collected = 5;
 	}
 
 	public void SetCurrentLevel(int level) 

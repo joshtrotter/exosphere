@@ -33,7 +33,6 @@ public class LevelCompleteScreen : UISystem {
 		levelTimer = time;
 		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
 		
-		Debug.Log ("Clearing list");
 		displayList.Clear ();
 		//set up summary and update save data
 		
@@ -58,12 +57,12 @@ public class LevelCompleteScreen : UISystem {
 		if (levelData.GetNumCollectablesFound() < LevelManager.manager.collected) {
 			levelData.SetNumCollectablesFound (LevelManager.manager.collected);
 			AddToDisplayList(cratesNewBest);
-			if (levelData.HasAllCollectablesFound()){
+			if (levelData.AllCollectablesHaveBeenCollected()){
 				AddToDisplayList(cratesStarEarned);
 			}
 		}
 		
-		if (!levelData.HasGoldenBallCollected() && LevelManager.manager.goldenBallFound){
+		if (!levelData.GoldenBallHasBeenCollected() && LevelManager.manager.goldenBallFound){
 			levelData.SetGoldenBallCollected();
 			AddToDisplayList(goldenBallStarEarned);
 		}
@@ -87,9 +86,7 @@ public class LevelCompleteScreen : UISystem {
 		//enable
 		text.gameObject.SetActive (true);
 		//add to list
-		Debug.Log ("adding " + text.name);
 		displayList.Add (text);
-		Debug.Log (displayList.Count);
 	}
 
 	//TODO remove
@@ -108,7 +105,6 @@ public class LevelCompleteScreen : UISystem {
 
 	private IEnumerator RevealSummary(){
 		yield return new WaitForSeconds(1f);
-		Debug.Log (displayList.Count);
 		foreach (Text text in displayList) {
 			text.color = Color.white;
 			yield return new WaitForSeconds(1f);
