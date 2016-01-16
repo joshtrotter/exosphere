@@ -45,6 +45,7 @@ public class PickupController : MonoBehaviour
 			slot = FindBestAvailableSlot ();
 		}
 		if (slot != null) {
+			Debug.Log ("Equipping Pickup");
 			slot.EquipPickup (pickup);
 		}
 		PulseAllSlots ();
