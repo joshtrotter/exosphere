@@ -18,7 +18,13 @@ public class UISystemController : MonoBehaviour {
 	private int CurrentlyShownUIRank = int.MaxValue;
 
 	void Awake(){
-		controller = this;
+		//set up singleton instance, destroy if a UISystemController already exists.
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		for (int i=0; i < UISystems.Length; i++) {
 			WantsToBeShown[UISystems[i]] = false;
 			UIRanks.Add(UISystems[i],i);

@@ -4,6 +4,13 @@ using System.Collections;
 /* base class for all UISystems managed by the UISystemController */
 public abstract class UISystem : MonoBehaviour {
 
+	//private UISystemController controller;
+
+	public virtual void Awake(){
+		//controller = GetComponentInParent<UISystemController> ();
+		Hide ();
+	}
+
 	public virtual void RequestToBeShown(){
 		UISystemController.controller.RegisterRequest (this);
 	}

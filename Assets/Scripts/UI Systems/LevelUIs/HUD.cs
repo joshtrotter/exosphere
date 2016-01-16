@@ -7,25 +7,25 @@ public class HUD : UISystem {
 	public static HUD controller;
 
 	private Canvas HUDCanvas;
+	[HideInInspector]
+	public bool hidden;
 
-	void Awake()
+	public override void Awake()
 	{
 		controller = this;
 		HUDCanvas = GetComponentInChildren<Canvas> ();
-	}
-
-	void Start(){
-		Hide ();
-		RequestToBeShown ();
+		base.Awake ();
 	}
 
 	public override void Show()
 	{
+		hidden = false;
 		HUDCanvas.gameObject.SetActive (true);
 	}
 
 	public override void Hide()
 	{
+		hidden = true;
 		HUDCanvas.gameObject.SetActive (false);
 	}
 }

@@ -16,9 +16,10 @@ public class CallibrationUI : UISystem {
 
 	private Canvas canvas;
 
-	void Awake(){
+	public override void Awake(){
 		controller = this;
 		canvas = GetComponentInChildren<Canvas> ();
+		base.Awake ();
 	}
 
 	public override void ShowRequestAccepted(){
@@ -34,7 +35,6 @@ public class CallibrationUI : UISystem {
 		rbBall = ball.GetComponent<Rigidbody> ();
 		ballInputReader = ball.GetComponent<BallInputReader> ();
 
-		Hide ();
 		RequestToBeShown ();
 	}
 

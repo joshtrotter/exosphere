@@ -28,11 +28,20 @@ public class AmazeballTiltInput : MonoBehaviour
 	//If this rig is enabled we will register the two virtual axis with the CrossPlatformInputManager. This means these axis values will be derived from this script.
 	private void OnEnable ()
 	{
-		verticalAxis = new CrossPlatformInputManager.VirtualAxis ("Vertical");
-		CrossPlatformInputManager.RegisterVirtualAxis (verticalAxis);
-			
-		horizontalAxis = new CrossPlatformInputManager.VirtualAxis ("Horizontal");
-		CrossPlatformInputManager.RegisterVirtualAxis (horizontalAxis);
+		//TODO this can probably be tidied up
+		if (!CrossPlatformInputManager.AxisExists ("Vertical")) {
+			verticalAxis = new CrossPlatformInputManager.VirtualAxis ("Vertical");
+			CrossPlatformInputManager.RegisterVirtualAxis (verticalAxis);
+		} else {
+			verticalAxis = CrossPlatformInputManager.VirtualAxisReference("Vertical");
+		}
+
+		if (!CrossPlatformInputManager.AxisExists ("Horizontal")) {
+			horizontalAxis = new CrossPlatformInputManager.VirtualAxis ("Horizontal");
+			CrossPlatformInputManager.RegisterVirtualAxis (horizontalAxis);
+		} else {
+			horizontalAxis = CrossPlatformInputManager.VirtualAxisReference("Horizontal");
+		}
 	}
 		
 	//If this rig is disabled we will deregister the two virtual axis from the CrossPlatformInputManager. This means these axis values will be derived from the default keyboard input.

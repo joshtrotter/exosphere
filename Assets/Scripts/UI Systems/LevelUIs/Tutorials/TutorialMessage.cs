@@ -29,30 +29,34 @@ public class TutorialMessage : HasLevelState {
 	public TriggerBehaviour triggerEnterBehaviour = TriggerBehaviour.Open;
 	public TriggerBehaviour triggerExitBehaviour = TriggerBehaviour.Close;
 
+	//determines how long the message will be displayed before it automatically disappears
+	//a value of 0 will never timeout
+	public float timeOut;
+
 
 	void Awake(){
 		message = message.Replace ("\\n", "\n");
 	}
 
-	private TutorialMessageController GetTutorialController(){
-		if (controller == null){
-			controller = LevelManager.manager.GetComponentInChildren<TutorialMessageController>();
-		}
-		return controller;
-	}
-
 	private void OpenMessage(){
-		GetTutorialController().DisplayMessage (this);
+		TutorialMessageController.controller.DisplayMessage (this);
+		if (timeOut > 0)
+			StartCoroutine (CloseAfterTimeOut ());
 	}
 
 	private void HideMessage(){
-		GetTutorialController().HideMessage ();
+		TutorialMessageController.controller.HideMessage (this);
 	}
 
 	private void CloseMessage(){
 		RegisterStateChange (CLOSED_STATE);
 		HideMessage ();
 		this.gameObject.SetActive (false);
+	}
+
+	private IEnumerator CloseAfterTimeOut(){
+		yield return new WaitForSeconds (timeOut);
+		CloseMessage ();
 	}
 	
 	void OnTriggerEnter(Collider coll){

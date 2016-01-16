@@ -19,26 +19,40 @@ public class PopupController : MonoBehaviour {
 		popupText.color = invisible;
 	}
 
+	void OnLevelWasLoaded(){
+		if (Application.loadedLevel != 0) {
+			StartCoroutine (WaitToBeShown (LevelDataManager.manager.GetCurrentLevelData().GetLevelName()));
+		}
+	}
+
 	public void CollectableFound(){
-		DisplayPopup ("Supply Crate Collected (" + LevelManager.manager.GetNumCollectablesFound() + ")");
+		StartCoroutine(WaitToBeShown("Supply Crate Collected (" + LevelManager.manager.GetNumCollectablesFound() + ")"));
 	}
 	
 	public void CheckpointReached(){
-		DisplayPopup ("Checkpoint Reached");
+		StartCoroutine(WaitToBeShown("Checkpoint Reached"));
 	}
 
-	public void MorphApplied(){
-		DisplayPopup ("Crystal Ball");
+	public void MorphApplied(BallTransform morph){
+		if (morph.morphName != null) {
+			StartCoroutine(WaitToBeShown(morph.morphName));
+		}
 	}
 
-	private void DisplayPopup(string popup){
-		//DOTween.Init ();
+	private IEnumerator WaitToBeShown(string popup){
+		while (HUD.controller.hidden) {
+			yield return new WaitForEndOfFrame();
+		}
+		DisplayPopup (popup);
+	}
+
+	private void DisplayPopup (string popup){
 		popupText.text = popup;
 		DOTween.Sequence ()
 			.Append (popupText.DOFade (1, fadeInTime))
 			.AppendInterval (displayTime)
 			.Append (popupText.DOFade (0, fadeOutTIme));
-		//popupText.rectTransform.parent.GetComponent<RectTransform>().DOSizeDelta(new Vector2(0,0), 1).From ().Play ();
+
 	}
 
 }

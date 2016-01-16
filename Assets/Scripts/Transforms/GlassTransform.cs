@@ -12,6 +12,9 @@ public class GlassTransform : BallTransform {
 	private float startTurnSpeed;
 	public float slowTurnSpeed = 1.5f;
 
+	//A reference to the shattering particle effect that should be used when the ball breaks
+	public ParticleSystem shatterParticles;
+
 	public override void Apply(BallController ball){
 		base.Apply (ball);
 		cam = GameObject.FindWithTag("CameraRig").GetComponent<AmazeballCam>();
@@ -19,6 +22,10 @@ public class GlassTransform : BallTransform {
 		//enable laser snapping
 		laserSnapTo = ball.GetComponent<LaserSnapTo> ();
 		laserSnapTo.Enable ();
+		//enable ball shattering
+		ball.gameObject.AddComponent<BallShatterer>();
+
+
 	}
 
 	public override void Remove(BallController ball)
@@ -36,6 +43,9 @@ public class GlassTransform : BallTransform {
 		if (laserDiffuser != null) {
 			OnLaserExit(laserDiffuser);
 		}
+
+		//disable ball shattering
+		Destroy (ball.gameObject.GetComponent<BallShatterer> ());
 	}
 
 	public override void OnLaserEnter(LaserDiffuser laserDiffuser, ArcReactorHitInfo hitInfo)

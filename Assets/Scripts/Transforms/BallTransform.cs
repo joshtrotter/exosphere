@@ -10,6 +10,8 @@ public abstract class BallTransform : MonoBehaviour
 	public float ballMovePowerScale = 1f;
 	public float ballMaxAngularVelocityModifier = 0f;
 
+	public string morphName;
+
 	public virtual void Apply(BallController ball) 
 	{
 		ball.GetComponent<Renderer> ().material = transformMaterial;

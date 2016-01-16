@@ -11,9 +11,9 @@ public class PauseMenu : UISystem {
 	public CallibrationUI callibrator;
 	private CanvasGroup canvasGroup;
 
-	void Awake(){
+	public override void Awake(){
 		controller = this;
-		Hide ();
+		base.Awake ();
 	}
 
 	public void Pause()
