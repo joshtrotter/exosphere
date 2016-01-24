@@ -9,6 +9,7 @@ public class WorldData : ScriptableObject {
 	public string worldName;
 	public bool unlocked;
 	public List<LevelPermanentData> childLevels;
+	public Material skybox;
 
 	//returns the levelID of the level following on from the currentLevel
 	//if the current level is the last in the world, returns 0

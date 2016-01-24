@@ -47,11 +47,11 @@ public class LevelDataManager : MonoBehaviour {
 	//TODO remove
 	void Start(){
 		allLevelData [levelToLoad].Unlock ();
-		foreach (int id in allLevelData.Keys) {
+		//foreach (int id in allLevelData.Keys) {
 			//allLevelData[id].Unlock();
-		}
+		//}
 		//LevelInfo.controller.DisplayLevelInfo (allLevelData [levelToLoad]);
-		Application.LoadLevel (3);
+		LevelSelectManager.manager.StartWorldLevelsDisplay (GetCurrentWorldData ());
 	}
 
 	public LevelData GetCurrentLevelData(){

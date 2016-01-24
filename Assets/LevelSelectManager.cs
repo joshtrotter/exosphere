@@ -4,9 +4,12 @@ using System.Collections;
 
 public class LevelSelectManager : MonoBehaviour {
 
+	public static LevelSelectManager manager;
+
 	//track a reference to the screens the manager can use to display level info
 	private LevelInfo[] screens;
 
+	private WorldData currentWorld;
 	private LevelData currentLevel;
 	private bool previousLevelExists;
 	private bool nextLevelExists;
@@ -21,11 +24,19 @@ public class LevelSelectManager : MonoBehaviour {
 
 	//track a reference to the camera
 	private MenuCameraController menuCameraController;
-
-	//TODO probably remove
+	
 	void Awake(){
+		//TODO remove
 		if (LevelManager.manager == null) {
 			Application.LoadLevel (0);
+		}
+
+		//set up singleton instance, destroy if a LevelDataManager already exists.
+		if (manager == null) {
+			manager = this;
+			DontDestroyOnLoad (this);
+		} else if (manager != this) {
+			Destroy(gameObject);
 		}
 	}
 
@@ -53,6 +64,11 @@ public class LevelSelectManager : MonoBehaviour {
 
 	public bool IsAPreviousLevel(){
 		return previousLevelExists;
+	}
+
+	public void StartWorldLevelsDisplay(WorldData world){
+		currentWorld = world;
+		worldDisplay.DisplayWorldLevels (world);
 	}
 
 	public void StartLevelInfoDisplay(int levelID){

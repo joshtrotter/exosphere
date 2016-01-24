@@ -10,8 +10,6 @@ public class LevelInfo : MonoBehaviour {
 
 	//a reference to the level we are currently displaying
 	private LevelData currentLevel;
-	private LevelData previousLevel;
-	private LevelData nextLevel;
 
 	public Text levelName;
 	public Text levelCompletion;

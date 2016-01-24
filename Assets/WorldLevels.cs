@@ -6,7 +6,6 @@ public class WorldLevels : MonoBehaviour {
 
 	public Text title;
 	private LevelSelectManager levelSelectManager;
-	private WorldData currentWorld;
 	private LevelIcon[] levelIcons;
 
 	public Sprite collectedStar;
@@ -17,12 +16,16 @@ public class WorldLevels : MonoBehaviour {
 
 	void Start(){
 		GetComponentInChildren<Canvas> ().renderMode = RenderMode.WorldSpace;
-		currentWorld = LevelDataManager.manager.GetCurrentWorldData ();
-		title.text = currentWorld.worldName;
+	}
+
+	public void DisplayWorldLevels (WorldData world)
+	{
+		RenderSettings.skybox = world.skybox;
+		title.text = world.worldName;
 		levelSelectManager = GetComponentInParent<LevelSelectManager> ();
 		levelIcons = GetComponentsInChildren<LevelIcon> ();
 		for (int i = 0; i < levelIcons.Length; i++) {
-			levelIcons[i].DisplayLevelInfo(currentWorld.GetXthChildData (i));
+			levelIcons [i].DisplayLevelInfo (world.GetXthChildData (i));
 		}
 	}
 
