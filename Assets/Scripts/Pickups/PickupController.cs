@@ -30,7 +30,25 @@ public class PickupController : MonoBehaviour
 	private void Awake ()
 	{
 		// Set up the references to other game objects
-		ball = GetComponent<BallController> (); 
+		ball = GetComponent<BallController> ();
+
+		PickupSlot[] slots = HUD.controller.GetComponentsInChildren<PickupSlot> ();
+
+		foreach (PickupSlot slot in slots) {
+			if (slot.name == "LeftPickupSlot") {
+				leftSlot = slot;
+			} else if (slot.name == "RightPickupSlot") {
+				rightSlot = slot;
+			}
+			else if (slot.name == "UpperLeftPickupSlot") {
+				upperLeftSlot = slot;
+			}
+			else if (slot.name == "UpperRightPickupSlot") {
+				upperRightSlot = slot;
+			}
+		}
+
+		dragManager = HUD.controller.GetComponentInChildren<DragManager> ();
 	}
 
 	public void AddPickup (Pickup pickup)
@@ -45,6 +63,7 @@ public class PickupController : MonoBehaviour
 			slot = FindBestAvailableSlot ();
 		}
 		if (slot != null) {
+			Debug.Log ("Equipping Pickup in slot " + slot.name);
 			slot.EquipPickup (pickup);
 		}
 		PulseAllSlots ();

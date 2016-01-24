@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fe53e4db19b07408a9ffd460b5ad9f83
+timeCreated: 1452509330
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - transformMaterial: {fileID: 2100000, guid: 48ca4edd30ae5e44f96d7d93c83c6606, type: 2}
+  - transformPhysicMaterial: {fileID: 13400000, guid: cb53640b1bf1c4cfb90adbbfc84d45e9,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

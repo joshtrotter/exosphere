@@ -15,7 +15,7 @@ public abstract class Pickup : MonoBehaviour
 	public abstract String GetId ();
 	public abstract int GetMaxCharges ();
 
-	public void Reset()
+	public virtual void Reset()
 	{
 		this.charges = GetMaxCharges();
 	}
