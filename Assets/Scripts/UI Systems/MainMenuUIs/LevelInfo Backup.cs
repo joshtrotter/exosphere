@@ -4,12 +4,17 @@ using System.Collections;
 
 /* this class displays a summary of all info about a level and provides access to the Play button; 
  */
-public class LevelInfo : MonoBehaviour {
+/*
+public class LevelInfoBackup : UISystem {
+	/*
+	public static LevelInfo controller;
 
 	private Canvas canvas;
 
 	//a reference to the level we are currently displaying
 	private LevelData currentLevel;
+	private LevelData previousLevel;
+	private LevelData nextLevel;
 
 	public Text levelName;
 	public Text levelCompletion;
@@ -34,32 +39,44 @@ public class LevelInfo : MonoBehaviour {
 	private Vector3 startPos;
 	private Vector3 endPos;
 
-	public void Start(){
+	public override void Awake(){
+		controller = this;
 		canvas = GetComponentInChildren<Canvas> ();
-		//little bit hacky but we're just gonna roll with it
-		canvas.renderMode = RenderMode.WorldSpace;
+		base.Awake ();
 	}
 
 	public void DisplayLevelInfo(LevelData newLevel){
 		currentLevel = newLevel;
-		SetLatestInfo ();
-	}
-
-	public LevelData GetCurrentLevel(){
-		return currentLevel;
+		Deregister ();
+		RequestToBeShown ();
 	}
 
 	//tells the levelManager to load the currently displayed level
 	public void PlayLevelButton(){
-		if (GetComponentInParent<LevelSelectManager> ().IsSafeToPlay ()) {
-			LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
-			LevelManager.manager.ReloadLevel ();
-		}
+		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID());
+		LevelManager.manager.ReloadLevel ();	
 	}
-	
+
+	public void GoToNextLevel(){
+		DisplayLevelInfo (nextLevel);
+	}
+
+	public void GoToPreviousLevel(){
+		DisplayLevelInfo (previousLevel);
+	}
+
+	public override void Show(){
+		SetLatestInfo ();
+		canvas.gameObject.SetActive (true);
+	}
+
+	public override void Hide(){
+		canvas.gameObject.SetActive (false);
+	}
+
 	//updates all text fields and images with the latest data that has been saved
 	private void SetLatestInfo(){
-		//Debug.Log ("Displaying data for " + currentLevel.GetLevelName ());
+		Debug.Log ("Displaying data for " + currentLevel.GetLevelName ());
 		levelName.text = currentLevel.GetLevelName();
 
 		//completion
@@ -80,5 +97,33 @@ public class LevelInfo : MonoBehaviour {
 		goldenBallFound.text = currentLevel.GetGoldenBallFoundAsString ();
 		goldenBallStar.sprite = currentLevel.GoldenBallHasBeenCollected () ? collectedStar : uncollectedStar;
 
+		//nav buttons
+		nextLevel = LevelDataManager.manager.GetNextLevelData (currentLevel);
+		previousLevel = LevelDataManager.manager.GetPreviousLevelData (currentLevel);
+		nextButton.interactable = nextLevel != null ? true : false;
+		previousButton.interactable = previousLevel != null ? true : false;
+
 	}
+
+	public void BeginSwipe(){
+		startPos = Input.mousePosition;
+		Debug.Log (startPos);
+	}
+
+	public void EndSwipe(){
+		endPos = Input.mousePosition;
+		Debug.Log (endPos);
+		if (startPos.x - endPos.x < 80) {
+			Debug.Log ("Swipe right");
+			if (previousLevel != null) GoToPreviousLevel();
+		} else if (startPos.x - endPos.x > 80) {
+			Debug.Log ("Swipe left");
+			if (nextLevel != null) GoToNextLevel();
+		} else {
+			Debug.Log("No change");
+		}
+	}
+
+
 }
+*/

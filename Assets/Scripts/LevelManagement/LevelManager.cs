@@ -32,7 +32,7 @@ public class LevelManager : MonoBehaviour {
 
 		//ReloadLevel ();
 		//TODO remove
-		goldenBallFound = true;
+		//goldenBallFound = true;
 		//collected = 5;
 	}
 

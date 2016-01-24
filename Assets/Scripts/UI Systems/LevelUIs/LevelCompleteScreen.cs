@@ -24,9 +24,21 @@ public class LevelCompleteScreen : UISystem {
 	//private LevelManager levelManager;
 
 	public override void Awake(){
-
 		controller = this;
 		base.Awake ();
+		SetAllInactive ();
+	}
+
+	private void SetAllInactive ()
+	{
+		supplyCrateTitleText.gameObject.SetActive (false);
+		cratesFoundText.gameObject.SetActive (false);
+		goldenBallFoundText.gameObject.SetActive (false);
+		timeTrialUnlockedText.gameObject.SetActive (false);
+		newLevelUnlockedText.gameObject.SetActive (false);
+		cratesStarEarned.gameObject.SetActive (false);
+		cratesNewBest.gameObject.SetActive (false);
+		goldenBallStarEarned.gameObject.SetActive (false);
 	}
 
 	public void LevelComplete(float time){
@@ -34,17 +46,16 @@ public class LevelCompleteScreen : UISystem {
 		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
 		
 		displayList.Clear ();
+
 		//set up summary and update save data
-		
 		//crates
 		AddToDisplayList (supplyCrateTitleText);
 		cratesFoundText.text = LevelManager.manager.GetNumCollectablesFound ();
 		AddToDisplayList (cratesFoundText);
 		
 		//goldenball
-		if (LevelManager.manager.goldenBallFound) {
-			AddToDisplayList(goldenBallFoundText);
-		}
+		AddToDisplayList(goldenBallFoundText);
+		goldenBallFoundText.text = "Golden Ball " + levelData.GetGoldenBallFoundAsString ();
 		
 		//unlocks
 		if (!levelData.HasBeenCompleted()) {
@@ -74,7 +85,6 @@ public class LevelCompleteScreen : UISystem {
 		
 	public override void Show(){
 		levelCompleteCanvas.gameObject.SetActive (true);
-		GetComponentInChildren<TextGroupBestFit> ().FitText ();
 		StartCoroutine (RevealSummary ());
 	}
 
@@ -93,13 +103,12 @@ public class LevelCompleteScreen : UISystem {
 	public void BackToMenu(){
 		HUD.controller.Deregister ();
 		Deregister ();
+		Application.LoadLevel (0);
 	}
 
 	public override void Hide(){
 		//make everything invisible to allow step by step reveal on next show
-		/*foreach (Text text in displayList) {
-			text.gameObject.SetActive(false);
-		}*/
+		SetAllInactive ();
 		levelCompleteCanvas.gameObject.SetActive (false);
 	}
 

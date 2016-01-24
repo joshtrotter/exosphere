@@ -14,8 +14,7 @@ public class LevelDataManager : MonoBehaviour {
 	public static LevelDataManager manager;
 
 	public int levelToLoad;
-	
-	public LevelPermanentData[] permanentData;
+
 	[SerializeField]
 	private WorldData[] worldDataList;
 	private Dictionary<int, WorldData> allWorldData = new Dictionary<int, WorldData>();
@@ -30,7 +29,10 @@ public class LevelDataManager : MonoBehaviour {
 		} else if (manager != this) {
 			Destroy(gameObject);
 		}
+		SetupLevelData ();
+	}
 
+	private void SetupLevelData(){
 		//initialize allLevelData dict with each of the permanentData objects we have created 
 		foreach (WorldData worldData in worldDataList){
 			allWorldData[worldData.worldID] = worldData;
@@ -45,25 +47,35 @@ public class LevelDataManager : MonoBehaviour {
 	//TODO remove
 	void Start(){
 		allLevelData [levelToLoad].Unlock ();
-		//Save ();
-		LevelInfo.controller.DisplayLevelInfo (allLevelData [levelToLoad]);
+		//foreach (int id in allLevelData.Keys) {
+			//allLevelData[id].Unlock();
+		//}
+		//LevelInfo.controller.DisplayLevelInfo (allLevelData [levelToLoad]);
+		LevelSelectManager.manager.StartWorldLevelsDisplay (GetCurrentWorldData ());
 	}
 
 	public LevelData GetCurrentLevelData(){
 		return allLevelData [LevelManager.manager.currentLevel];
 	}
 
-	public LevelData GetNextLevelData(LevelData currentLevel){
-		WorldData parentWorld = allWorldData [currentLevel.GetParentID ()];
-		int levelID = parentWorld.GetNextLevelID (currentLevel);
+	public WorldData GetCurrentWorldData(){
+		return allWorldData [GetCurrentLevelData ().GetParentID ()];
+	}
+
+	public LevelData GetNextLevelData(LevelData level){
+		WorldData parentWorld = allWorldData [level.GetParentID ()];
+		int levelID = parentWorld.GetNextLevelID (level);
 		return levelID != 0 ? allLevelData [levelID] : null;
 	}
 
-	public LevelData GetPreviousLevelData(LevelData currentLevel){
-		WorldData parentWorld = allWorldData [currentLevel.GetParentID ()];
-		int levelID = parentWorld.GetPreviousLevelID (currentLevel);
+	public LevelData GetPreviousLevelData(LevelData level){
+		WorldData parentWorld = allWorldData [level.GetParentID ()];
+		int levelID = parentWorld.GetPreviousLevelID (level);
 		return levelID != 0 ? allLevelData [levelID] : null;
+	}
 
+	public LevelData GetLevelData(int levelID){
+		return allLevelData [levelID];
 	}
 
 	//saves all necessary data to file
@@ -94,11 +106,21 @@ public class LevelDataManager : MonoBehaviour {
 			List<LevelSaveData> saveDataList = (List<LevelSaveData>)bf.Deserialize(file);
 			file.Close ();
 
-			//build the savedData dictionary
+			//add the save data to the dictionary
 			foreach (LevelSaveData saveData in saveDataList){
 				allLevelData[saveData.levelID].SetSavedData(saveData);
 			}
 		}
 
+	}
+
+	public void ClearSaveData()
+	{
+		if (File.Exists (Application.persistentDataPath + "/exosphereData.dat")) {
+			File.Delete (Application.persistentDataPath + "/exosphereData.dat");
+		}
+		allLevelData.Clear();
+		SetupLevelData();
+		Start ();
 	}
 }

@@ -25,6 +25,7 @@ public class UISystemController : MonoBehaviour {
 		} else if (controller != this) {
 			Destroy(gameObject);
 		}
+
 		for (int i=0; i < UISystems.Length; i++) {
 			WantsToBeShown[UISystems[i]] = false;
 			UIRanks.Add(UISystems[i],i);
@@ -63,7 +64,7 @@ public class UISystemController : MonoBehaviour {
 				} 
 			}
 
-			if (NewUIToShow != null) {
+			if (NewUIToShow != null && NewUIToShow != CurrentlyShownUI) {
 				if (CurrentlyShownUI != null) {
 					CurrentlyShownUI.Hide ();
 				}

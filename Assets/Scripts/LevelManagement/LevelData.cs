@@ -48,12 +48,16 @@ public class LevelData {
 		return permData.totalCollectables;
 	}
 
+	public int GetStarsRequiredToUnlock(){
+		return permData.starsRequiredToUnlock;
+	}
+
 	public int GetNumCollectablesFound(){
 		return saveData.numCollectablesFound;
 	}
 	//returns a formatted time string if the target time is visible to the user, otherwise returns "Hidden"
 	public string GetTargetTimeAsString(){
-		if (IsUnlocked ()) {
+		if (HasBeenCompleted ()) {
 			return FloatToTimeString (permData.targetTime);
 		} else {
 			return "Hidden";
