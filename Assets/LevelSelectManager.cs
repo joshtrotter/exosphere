@@ -6,7 +6,7 @@ public class LevelSelectManager : MonoBehaviour {
 
 	public static LevelSelectManager manager;
 
-	//track a reference to the screens the manager can use to display level info
+	//find the screens the manager can use to display level info
 	private LevelInfo[] screens;
 
 	private WorldData currentWorld;
@@ -26,29 +26,18 @@ public class LevelSelectManager : MonoBehaviour {
 	private MenuCameraController menuCameraController;
 	
 	void Awake(){
-		//TODO remove
-		if (LevelManager.manager == null) {
-			Application.LoadLevel (0);
-		}
-
 		//set up singleton instance, destroy if a LevelDataManager already exists.
 		if (manager == null) {
 			manager = this;
-			DontDestroyOnLoad (this);
+			//DontDestroyOnLoad (this);
 		} else if (manager != this) {
 			Destroy(gameObject);
 		}
-	}
 
-	void Start(){
 		screens = GetComponentsInChildren<LevelInfo> ();
 		menuCameraController = GetComponentInChildren<MenuCameraController> ();
 		worldDisplay = GetComponentInChildren<WorldLevels> ();
-
-		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
-
-		currentLevel = LevelDataManager.manager.GetCurrentLevelData ();
-
+		
 		currentScreen = screens [0];
 		previousScreen = screens [1];
 		nextScreen = screens [2];
@@ -58,22 +47,14 @@ public class LevelSelectManager : MonoBehaviour {
 		return currentScreen;
 	}
 
-	public bool IsANextLevel(){
-		return nextLevelExists;
-	}
-
-	public bool IsAPreviousLevel(){
-		return previousLevelExists;
-	}
-
 	public void StartWorldLevelsDisplay(WorldData world){
 		currentWorld = world;
 		worldDisplay.DisplayWorldLevels (world);
+		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
 	}
 
 	public void StartLevelInfoDisplay(int levelID){
 		currentLevel = LevelDataManager.manager.GetLevelData (levelID);
-		//currentScreen.transform.position = new Vector3 (0, 0, 0);
 		currentScreen.transform.localRotation = Quaternion.Euler (worldDisplay.transform.localEulerAngles - new Vector3 (-36, 0, 0));
 		currentScreen.DisplayLevelInfo (currentLevel);
 
@@ -86,7 +67,6 @@ public class LevelSelectManager : MonoBehaviour {
 
 	public void ReturnToWorldDisplay(){
 		worldDisplay.transform.localRotation = Quaternion.Euler (currentScreen.transform.localEulerAngles - new Vector3 (36, 0, 0));
-		currentScreen.DisplayLevelInfo (currentLevel);
 		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
 		menuCameraController.shouldMonitorSwiping = false;
 	}
@@ -136,8 +116,6 @@ public class LevelSelectManager : MonoBehaviour {
 	
 	private void SetupAsPrevious(LevelInfo screen){		
 		LevelData previousLevel = LevelDataManager.manager.GetPreviousLevelData (currentLevel);
-		//screen.GetComponentInChildren<MoveBetweenTargets2D> ().transform.localRotation = Quaternion.identity;
-		//screen.GetComponentInChildren<MoveBetweenTargets2D> ().ResetRotation ();
 		if (previousLevel != null) {
 			screen.DisplayLevelInfo (previousLevel);
 			screen.transform.localRotation = Quaternion.Euler (currentScreen.transform.localRotation.eulerAngles - new Vector3 (0, 36, 0));
@@ -151,8 +129,6 @@ public class LevelSelectManager : MonoBehaviour {
 	private void SetupAsNext(LevelInfo screen){
 		LevelData nextLevel = LevelDataManager.manager.GetNextLevelData (currentLevel);
 		screen.transform.localRotation = Quaternion.Euler(currentScreen.transform.localRotation.eulerAngles + new Vector3 (0, 36, 0));
-		//screen.GetComponentInChildren<MoveBetweenTargets2D> ().transform.localRotation = Quaternion.identity;
-		//screen.GetComponentInChildren<MoveBetweenTargets2D> ().ResetRotation ();
 		if (nextLevel != null) {
 			screen.DisplayLevelInfo (nextLevel);
 			nextLevelExists = true;
