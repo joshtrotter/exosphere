@@ -26,7 +26,7 @@ public class PopupController : MonoBehaviour {
 	}
 
 	public void CollectableFound(){
-		StartCoroutine(WaitToBeShown("Supply Crate Collected (" + LevelManager.manager.GetNumCollectablesFound() + ")"));
+		StartCoroutine(WaitToBeShown("Supply Crate Found (" + LevelManager.manager.GetNumCollectablesFound() + ")"));
 	}
 	
 	public void CheckpointReached(){
