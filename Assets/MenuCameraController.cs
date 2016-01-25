@@ -7,7 +7,8 @@ public class MenuCameraController : MonoBehaviour {
 	private Vector3 startPos;
 	private Vector3 lastPos;
 	private float startTime;
-	private bool isASwipe;
+	private bool isAHorizontalSwipe;
+	private bool isAVerticalSwipe;
 	private float swipeSpeed = 30f;
 
 	public float swipeThreshold = 100f;
@@ -23,6 +24,7 @@ public class MenuCameraController : MonoBehaviour {
 	}
 
 	void Update () {
+		shouldMonitorSwiping = true;
 		if (shouldMonitorSwiping) {
 			MonitorSwiping ();
 #if UNITY_EDITOR
@@ -35,6 +37,7 @@ public class MenuCameraController : MonoBehaviour {
 		}
 	}
 
+	//applies a subtle, constant sway to the camera
 	private void CameraShake(){
 		GetComponentInChildren<Camera> ().DOShakeRotation (10,1.1f,0).Play ().SetLoops (-1);
 	}
@@ -44,6 +47,8 @@ public class MenuCameraController : MonoBehaviour {
 		//check for screen swiping and update camera accordingly
 		if (Input.touchCount > 0) {
 			Touch touch = Input.GetTouch (0);
+
+			Vector3 target = transform.localRotation.eulerAngles;
 			switch (touch.phase) {
 
 			case TouchPhase.Began:
@@ -54,49 +59,75 @@ public class MenuCameraController : MonoBehaviour {
 
 			case TouchPhase.Moved:
 				//detect whether the finger initially moves far enough to count as a swipe movement
-				if (Mathf.Abs (touch.position.x - startPos.x) > swipeThreshold) {
-					isASwipe = true;
+				if (Mathf.Abs (touch.position.x - startPos.x) > swipeThreshold && !isAVerticalSwipe) {
+					isAHorizontalSwipe = true;
 				}
-				float changeInX = touch.position.x - lastPos.x;
-				if (isASwipe) {
-					Vector3 target = transform.localRotation.eulerAngles;
+
+				if (Mathf.Abs (touch.position.y - startPos.y) > swipeThreshold && !isAHorizontalSwipe){
+					isAVerticalSwipe = true;
+				}
+
+				if (isAHorizontalSwipe) {
+					float changeInX = touch.position.x - lastPos.x;
 					target.y -= ((changeInX / Screen.width) * 36);
 					DOTween.CompleteAll ();
 					transform.DOLocalRotate (target, Time.deltaTime).Play ();
 				}
-				lastPos.x = touch.position.x;
+
+				if (isAVerticalSwipe) {
+					float changeInY = touch.position.y - lastPos.y;
+					target.x += ((changeInY / Screen.height) * 36);
+					DOTween.CompleteAll ();
+					transform.DOLocalRotate (target, Time.deltaTime).Play ();
+				}
+
+				lastPos = touch.position;
 				break;
 
 			case TouchPhase.Ended:
-				if (isASwipe) {
+				if (isAHorizontalSwipe) {
 					swipeSpeed = (((startPos.x - touch.position.x) / Screen.width) * 36) / (Time.time - startTime);
 					swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
-					//swipeSpeed = Mathf.Max (Mathf.Abs (swipeSpeed),30);
-					Vector3 target = transform.localRotation.eulerAngles;
+
 					target.y += (swipeSpeed * 0.3f);
+
 					screenManager.SetClosestScreenAsFocused (Quaternion.Euler (target));
 					FocusCameraOnCurrentScreen ();
-					isASwipe = false;
+					isAHorizontalSwipe = false;
+				}
+
+				if (isAVerticalSwipe){
+					swipeSpeed = (((startPos.y - touch.position.y) / Screen.height) * 36) / (Time.time - startTime);
+					swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
+
+					target.x -= (swipeSpeed * 0.3f);
+
+					screenManager.MoveBetweenVerticalLayers(Quaternion.Euler (target));
+					isAVerticalSwipe = false;
 				}
 				break;
 			}
 		}
 		//check camera position and update infoScreens accordingly
-		if (isASwipe) {
+		if (isAHorizontalSwipe) {
 			screenManager.SetClosestScreenAsFocused (transform.localRotation);
 		}
 	}
 
 	public bool IsSwiping(){
-		return isASwipe;
+		return isAHorizontalSwipe || isAVerticalSwipe;
 	}
 
 	public void FocusCameraOnCurrentScreen ()
 	{
 		Vector3 target = screenManager.GetCurrentScreen().transform.localRotation.eulerAngles;
-		float distance = Mathf.Abs(target.y - transform.localEulerAngles.y);
+		float Xdistance = Mathf.Abs(target.x - transform.localEulerAngles.x);
+		float Ydistance = Mathf.Abs(target.y - transform.localEulerAngles.y);
+		float distance = Mathf.Max(Xdistance,Ydistance);
+		//float distance = Vector3.Angle (target, transform.localEulerAngles);
 		distance = distance > 180 ? 360 - distance : distance;
 		float time = (distance / Mathf.Abs (swipeSpeed));
+		Debug.Log (time);
 		FocusCamera (target, time);
 
 	}
