@@ -10,7 +10,7 @@ public class BillBoard : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		this.transform.rotation = Camera.main.transform.rotation;
+		this.transform.rotation = GameObject.FindGameObjectWithTag ("CameraRig").transform.rotation;
 	}
 }
 

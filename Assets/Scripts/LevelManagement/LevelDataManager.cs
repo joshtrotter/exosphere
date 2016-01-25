@@ -47,9 +47,9 @@ public class LevelDataManager : MonoBehaviour {
 	//TODO remove
 	void Start(){
 		allLevelData [levelToLoad].Unlock ();
-		//foreach (int id in allLevelData.Keys) {
-			//allLevelData[id].Unlock();
-		//}
+		foreach (int id in allLevelData.Keys) {
+			allLevelData[id].Unlock();
+		}
 		//LevelInfo.controller.DisplayLevelInfo (allLevelData [levelToLoad]);
 		LevelSelectManager.manager.StartWorldLevelsDisplay (GetCurrentWorldData ());
 	}
