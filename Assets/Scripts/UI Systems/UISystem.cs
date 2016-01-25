@@ -21,6 +21,7 @@ public abstract class UISystem : MonoBehaviour {
 	
 	public virtual void Deregister(){
 		UISystemController.controller.Deregister (this);
+		Hide ();
 	}
 
 	public abstract void Show ();

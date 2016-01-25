@@ -70,15 +70,16 @@ public class MenuCameraController : MonoBehaviour {
 				if (isAHorizontalSwipe) {
 					float changeInX = touch.position.x - lastPos.x;
 					target.y -= ((changeInX / Screen.width) * 36);
+					DOTween.CompleteAll ();
+					transform.DOLocalRotate (target, Time.deltaTime).Play ();
 				}
 
 				if (isAVerticalSwipe) {
 					float changeInY = touch.position.y - lastPos.y;
 					target.x += ((changeInY / Screen.height) * 36);
+					DOTween.CompleteAll ();
+					transform.DOLocalRotate (target, Time.deltaTime).Play ();
 				}
-
-				DOTween.CompleteAll ();
-				transform.DOLocalRotate (target, Time.deltaTime).Play ();
 
 				lastPos = touch.position;
 				break;

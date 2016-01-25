@@ -51,7 +51,7 @@ public class LevelDataManager : MonoBehaviour {
 			//allLevelData[id].Unlock();
 		//}
 		//LevelInfo.controller.DisplayLevelInfo (allLevelData [levelToLoad]);
-		LevelSelectManager.manager.StartWorldLevelsDisplay (GetCurrentWorldData ());
+		//LevelSelectManager.manager.StartWorldLevelsDisplay (GetCurrentWorldData ());
 	}
 
 	public LevelData GetCurrentLevelData(){

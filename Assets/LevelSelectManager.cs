@@ -50,9 +50,11 @@ public class LevelSelectManager : MonoBehaviour {
 	}
 
 	public void StartWorldLevelsDisplay(WorldData world){
+		Debug.Log ("Start world levels display");
 		currentWorld = world;
 		currentLevel = world.GetXthChildData (0);
 		worldDisplay.DisplayWorldLevels (world);
+		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles - new Vector3 (36, 0, 0), 0);
 		ReturnToWorldDisplay ();
 	}
 
@@ -64,6 +66,7 @@ public class LevelSelectManager : MonoBehaviour {
 	}
 	
 	public void StartLevelInfoDisplay(int levelID){
+		Debug.Log ("Start level info display");
 		focusedOnWorldLayer = false;
 		currentLevel = LevelDataManager.manager.GetLevelData (levelID);
 		currentScreen.transform.localRotation = Quaternion.Euler (worldDisplay.transform.localEulerAngles - new Vector3 (-36, 0, 0));
@@ -102,7 +105,11 @@ public class LevelSelectManager : MonoBehaviour {
 			}
 		} else { //focused on currentlevel
 			if (ShouldChangeDownOrRight(change)){
-				PlayLevel(currentLevel.GetLevelID ());
+				if (currentLevel.IsUnlocked()){
+					PlayLevel(currentLevel.GetLevelID ());
+				} else {
+					menuCameraController.FocusCameraOnCurrentScreen();
+				}
 			} else if (ShouldChangeUpOrLeft(change)){
 				ReturnToWorldDisplay();
 			} else {
@@ -126,9 +133,11 @@ public class LevelSelectManager : MonoBehaviour {
 		Debug.Log ("WORLD SELECT");
 	}
 
-	public void PlayLevel(int levelID){
-		menuCameraController.FocusCameraOnCurrentScreen();
-		Debug.Log ("PLAYING LEVEL " + levelID);
+	public void PlayLevel(int levelID){	
+		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
+		DOTween.CompleteAll ();
+		menuCameraController.transform.DOLocalRotate(currentScreen.transform.localEulerAngles + new Vector3 (36, 0, 0), 1).Play ().OnComplete(LevelManager.manager.ReloadLevel);  
+	
 	}
 	
 	//sets the next level screen to be the new focused and current level screen

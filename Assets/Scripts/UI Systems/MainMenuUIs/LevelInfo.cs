@@ -34,8 +34,11 @@ public class LevelInfo : MonoBehaviour {
 	private Vector3 startPos;
 	private Vector3 endPos;
 
+	private LevelSelectManager levelSelectManager;
+
 	public void Start(){
 		canvas = GetComponentInChildren<Canvas> ();
+		levelSelectManager = GetComponentInParent<LevelSelectManager> ();
 		//little bit hacky but we're just gonna roll with it
 		canvas.renderMode = RenderMode.WorldSpace;
 	}
@@ -51,9 +54,8 @@ public class LevelInfo : MonoBehaviour {
 
 	//tells the levelManager to load the currently displayed level
 	public void PlayLevelButton(){
-		if (GetComponentInParent<LevelSelectManager> ().IsSafeToPress ()) {
-			LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
-			LevelManager.manager.ReloadLevel ();
+		if (levelSelectManager.IsSafeToPress ()) {
+			levelSelectManager.PlayLevel (currentLevel.GetLevelID());
 		}
 	}
 	
