@@ -51,7 +51,7 @@ public class LevelInfo : MonoBehaviour {
 
 	//tells the levelManager to load the currently displayed level
 	public void PlayLevelButton(){
-		if (GetComponentInParent<LevelSelectManager> ().IsSafeToPlay ()) {
+		if (GetComponentInParent<LevelSelectManager> ().IsSafeToPress ()) {
 			LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
 			LevelManager.manager.ReloadLevel ();
 		}

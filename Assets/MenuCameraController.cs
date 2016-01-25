@@ -24,6 +24,7 @@ public class MenuCameraController : MonoBehaviour {
 	}
 
 	void Update () {
+		shouldMonitorSwiping = true;
 		if (shouldMonitorSwiping) {
 			MonitorSwiping ();
 #if UNITY_EDITOR
@@ -46,6 +47,8 @@ public class MenuCameraController : MonoBehaviour {
 		//check for screen swiping and update camera accordingly
 		if (Input.touchCount > 0) {
 			Touch touch = Input.GetTouch (0);
+
+			Vector3 target = transform.localRotation.eulerAngles;
 			switch (touch.phase) {
 
 			case TouchPhase.Began:
@@ -66,19 +69,17 @@ public class MenuCameraController : MonoBehaviour {
 
 				if (isAHorizontalSwipe) {
 					float changeInX = touch.position.x - lastPos.x;
-					Vector3 target = transform.localRotation.eulerAngles;
 					target.y -= ((changeInX / Screen.width) * 36);
-					DOTween.CompleteAll ();
-					transform.DOLocalRotate (target, Time.deltaTime).Play ();
 				}
 
 				if (isAVerticalSwipe) {
 					float changeInY = touch.position.y - lastPos.y;
-					Vector3 target = transform.localRotation.eulerAngles;
 					target.x += ((changeInY / Screen.height) * 36);
-					DOTween.CompleteAll ();
-					transform.DOLocalRotate (target, Time.deltaTime).Play ();
 				}
+
+				DOTween.CompleteAll ();
+				transform.DOLocalRotate (target, Time.deltaTime).Play ();
+
 				lastPos = touch.position;
 				break;
 
@@ -87,7 +88,6 @@ public class MenuCameraController : MonoBehaviour {
 					swipeSpeed = (((startPos.x - touch.position.x) / Screen.width) * 36) / (Time.time - startTime);
 					swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
 
-					Vector3 target = transform.localRotation.eulerAngles;
 					target.y += (swipeSpeed * 0.3f);
 
 					screenManager.SetClosestScreenAsFocused (Quaternion.Euler (target));
@@ -96,6 +96,12 @@ public class MenuCameraController : MonoBehaviour {
 				}
 
 				if (isAVerticalSwipe){
+					swipeSpeed = (((startPos.y - touch.position.y) / Screen.height) * 36) / (Time.time - startTime);
+					swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
+
+					target.x -= (swipeSpeed * 0.3f);
+
+					screenManager.MoveBetweenVerticalLayers(Quaternion.Euler (target));
 					isAVerticalSwipe = false;
 				}
 				break;
@@ -114,9 +120,13 @@ public class MenuCameraController : MonoBehaviour {
 	public void FocusCameraOnCurrentScreen ()
 	{
 		Vector3 target = screenManager.GetCurrentScreen().transform.localRotation.eulerAngles;
-		float distance = Mathf.Abs(target.y - transform.localEulerAngles.y);
+		float Xdistance = Mathf.Abs(target.x - transform.localEulerAngles.x);
+		float Ydistance = Mathf.Abs(target.y - transform.localEulerAngles.y);
+		float distance = Mathf.Max(Xdistance,Ydistance);
+		//float distance = Vector3.Angle (target, transform.localEulerAngles);
 		distance = distance > 180 ? 360 - distance : distance;
 		float time = (distance / Mathf.Abs (swipeSpeed));
+		Debug.Log (time);
 		FocusCamera (target, time);
 
 	}

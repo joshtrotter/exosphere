@@ -30,6 +30,8 @@ public class WorldLevels : MonoBehaviour {
 	}
 
 	public void LevelSelectedButton(int levelID){
-		levelSelectManager.StartLevelInfoDisplay (levelID);
+		if (levelSelectManager.IsSafeToPress ()) {
+			levelSelectManager.StartLevelInfoDisplay (levelID);
+		}
 	}
 }

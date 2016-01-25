@@ -24,6 +24,8 @@ public class LevelSelectManager : MonoBehaviour {
 
 	//track a reference to the camera
 	private MenuCameraController menuCameraController;
+
+	private bool focusedOnWorldLayer;
 	
 	void Awake(){
 		//set up singleton instance, destroy if a LevelDataManager already exists.
@@ -49,11 +51,20 @@ public class LevelSelectManager : MonoBehaviour {
 
 	public void StartWorldLevelsDisplay(WorldData world){
 		currentWorld = world;
+		currentLevel = world.GetXthChildData (0);
 		worldDisplay.DisplayWorldLevels (world);
-		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
+		ReturnToWorldDisplay ();
 	}
 
+	public void ReturnToWorldDisplay(){
+		focusedOnWorldLayer = true;
+		worldDisplay.transform.localRotation = Quaternion.Euler (currentScreen.transform.localEulerAngles - new Vector3 (36, 0, 0));
+		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
+		menuCameraController.shouldMonitorSwiping = false;
+	}
+	
 	public void StartLevelInfoDisplay(int levelID){
+		focusedOnWorldLayer = false;
 		currentLevel = LevelDataManager.manager.GetLevelData (levelID);
 		currentScreen.transform.localRotation = Quaternion.Euler (worldDisplay.transform.localEulerAngles - new Vector3 (-36, 0, 0));
 		currentScreen.DisplayLevelInfo (currentLevel);
@@ -65,25 +76,61 @@ public class LevelSelectManager : MonoBehaviour {
 		menuCameraController.shouldMonitorSwiping = true;
 	}
 
-	public void ReturnToWorldDisplay(){
-		worldDisplay.transform.localRotation = Quaternion.Euler (currentScreen.transform.localEulerAngles - new Vector3 (36, 0, 0));
-		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
-		menuCameraController.shouldMonitorSwiping = false;
-	}
 
 	//finds the screen whose localRotation is closest to the given rotation and sets this screen as currentScreen,
 	//and sets up other screens around it
 	public void SetClosestScreenAsFocused(Quaternion rotation){
 		float comparison = (rotation.eulerAngles.y - currentScreen.transform.localEulerAngles.y);
-		if ((comparison > 18 && comparison < 180) || (comparison > -342 && comparison < -180)) {
-			//next screen is closer
+		if (ShouldChangeDownOrRight(comparison)) {
 			SetNextAsFocused ();
-		} else if ((comparison < 342 && comparison > 180) || (comparison < -18 && comparison > -180)) {
-			//previous screen is closer
+		} else if (ShouldChangeUpOrLeft(comparison)) {
 			SetPreviousAsFocused();
 		} //else current screen is still closest, no change needed
 	}
 
+	//focuses the screen on the correct screen after a vertical swipe
+	public void MoveBetweenVerticalLayers(Quaternion rotation){
+		float currentX = focusedOnWorldLayer ? worldDisplay.transform.localEulerAngles.x : currentScreen.transform.localEulerAngles.x;
+		float change = (rotation.eulerAngles.x - currentX);
+		if (focusedOnWorldLayer) {
+			if (ShouldChangeDownOrRight(change)){
+				StartLevelInfoDisplay(currentLevel.GetLevelID ());
+			} else if (ShouldChangeUpOrLeft(change)){
+				ReturnToWorldSelect();
+			} else {
+				menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
+			}
+		} else { //focused on currentlevel
+			if (ShouldChangeDownOrRight(change)){
+				PlayLevel(currentLevel.GetLevelID ());
+			} else if (ShouldChangeUpOrLeft(change)){
+				ReturnToWorldDisplay();
+			} else {
+				menuCameraController.FocusCameraOnCurrentScreen();
+			}
+		}
+	}
+
+	//determines whether a change is strong enough and in the right direction for a upwards or leftward screen change
+	private bool ShouldChangeUpOrLeft(float change){
+		return (change < 342 && change > 180) || (change < -18 && change > -180);
+	}
+
+	//determins whether a change is strong enough and in the right direction for a downwards or rightward screen change
+	private bool ShouldChangeDownOrRight(float change){
+		return (change > 18 && change < 180) || (change > -342 && change < -180);
+	}
+
+	public void ReturnToWorldSelect(){
+		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
+		Debug.Log ("WORLD SELECT");
+	}
+
+	public void PlayLevel(int levelID){
+		menuCameraController.FocusCameraOnCurrentScreen();
+		Debug.Log ("PLAYING LEVEL " + levelID);
+	}
+	
 	//sets the next level screen to be the new focused and current level screen
 	private void SetNextAsFocused(){
 		if (nextLevelExists) {
@@ -140,7 +187,7 @@ public class LevelSelectManager : MonoBehaviour {
 
 	//info screens will check before loading a level whether the button press was allowed
 	//ie if in the middle of a swipe then the level won't load as the button press was probably not intentional
-	public bool IsSafeToPlay(){
+	public bool IsSafeToPress(){
 		return !menuCameraController.IsSwiping ();
 	}
 }
