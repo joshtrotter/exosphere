@@ -7,7 +7,7 @@ public abstract class Pickup : MonoBehaviour
 
 	private int charges;
 
-	void Awake()
+	protected void Awake()
 	{
 		Reset ();
 	}

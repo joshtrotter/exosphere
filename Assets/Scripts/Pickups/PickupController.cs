@@ -27,7 +27,7 @@ public class PickupController : MonoBehaviour
 	public float pulseTime = 2f;
 	private BallController ball;
 
-	private void Awake ()
+	private void Start ()
 	{
 		// Set up the references to other game objects
 		ball = GetComponent<BallController> ();
@@ -63,7 +63,6 @@ public class PickupController : MonoBehaviour
 			slot = FindBestAvailableSlot ();
 		}
 		if (slot != null) {
-			Debug.Log ("Equipping Pickup in slot " + slot.name);
 			slot.EquipPickup (pickup);
 		}
 		PulseAllSlots ();

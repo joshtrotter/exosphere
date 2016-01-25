@@ -81,6 +81,7 @@ public class BallController : MonoBehaviour
 					//...otherwise apply brakes normally
 					brakes.ApplyBrakes(brakePower);
 				} else {
+					Debug.Log ("Braking with brakePower " + brakePower + " and velocity " + rb.velocity); 
 					brakes.LockBrakes();
 				}
 			}

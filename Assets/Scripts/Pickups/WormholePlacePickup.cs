@@ -17,7 +17,6 @@ public class WormholePlacePickup : Pickup
 
 	protected override void Apply(BallController ball)
 	{
-		Debug.Log ("Placing Wormhole at " + ball.transform.position);
 		jumpPickup.SetJumpLocation (ball.transform);
 	}
 
