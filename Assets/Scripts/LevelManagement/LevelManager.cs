@@ -30,7 +30,7 @@ public class LevelManager : MonoBehaviour {
 			Destroy(gameObject);
 		}
 
-		ReloadLevel ();
+		//ReloadLevel ();
 		//TODO remove
 		//goldenBallFound = true;
 		//collected = 5;
