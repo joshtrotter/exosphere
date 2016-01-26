@@ -54,7 +54,8 @@ public class PickupController : MonoBehaviour
 	public void AddPickup (Pickup pickup)
 	{
 		//Play a particle effect
-		//TODO pickupEffect.Play ();
+		pickupEffect.Play ();
+		HUD.controller.SendMessage("PickupAcquired", pickup);
 
 		//Before adding pickup to a new slot, check if we already have it equipped somewhere...
 		PickupSlot slot = FindSlotWithPickup (pickup);

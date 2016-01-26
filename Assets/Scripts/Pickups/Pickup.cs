@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class Pickup : MonoBehaviour
 {
 	public Sprite sprite;
+	public String displayName;
 
 	private int charges;
 
@@ -14,6 +15,10 @@ public abstract class Pickup : MonoBehaviour
 
 	public abstract String GetId ();
 	public abstract int GetMaxCharges ();
+
+	public String GetDisplayName() {
+		return displayName;
+	}
 
 	public virtual void Reset()
 	{

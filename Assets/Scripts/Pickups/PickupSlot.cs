@@ -40,12 +40,13 @@ public class PickupSlot : MonoBehaviour
 
 	public void EquipPickup (Pickup pickup)
 	{
+		Debug.Log ("Equipping Pickup " + pickup.name);
 		this.pickup = pickup;
 		if (pickup != null) {
 			//pickupImageTransform.position = homeCoords;
-			Vector3 targetPos = pickupImageTransform.position;
-			pickupImageTransform.position = targetPos + equipAnimPos;
-			pickupImageTransform.DOMove(targetPos, equipAnimSpeed).Play();
+			Vector3 tweenTargetPos = pickupImageTransform.position;
+			pickupImageTransform.position = tweenTargetPos + equipAnimPos;
+			pickupImageTransform.DOMove(tweenTargetPos, equipAnimSpeed).Play();
 			this.pickupImage.sprite = pickup.sprite;
 		}
 		UpdateVisibility ();
@@ -96,7 +97,7 @@ public class PickupSlot : MonoBehaviour
 	{
 		//TODO temporarily just using green for the highlight - replace with something better
 		if (IsEquipped ()) {
-			pickupImage.CrossFadeColor (Color.green, 0.2f, true, false);
+			pickupImage.CrossFadeColor (Color.grey, 0.2f, true, false);
 		}
 	}
 

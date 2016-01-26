@@ -45,6 +45,7 @@ public class WormholeJumpPickup : Pickup
 			GetCameraRig ().GetComponent<AmazeballCam> ().enabled = false;
 
 			float travelTime = CalculateTravelTimeToWormhole(ball.transform.position);
+			Vibration.Vibrate (Convert.ToInt64(travelTime) * 1000L);
 
 			DOTween.Sequence ()
 				.Append (GetCameraRig ().transform.DOMove (jumpLocation.transform.position, travelTime))

@@ -39,6 +39,12 @@ public class PopupController : MonoBehaviour {
 		}
 	}
 
+	public void PickupAcquired(Pickup pickup) {
+		if (pickup.GetDisplayName () != null && !"".Equals(pickup.GetDisplayName())) {
+			StartCoroutine (WaitToBeShown (pickup.GetDisplayName ()));
+		}
+	}
+
 	private IEnumerator WaitToBeShown(string popup){
 		while (HUD.controller.hidden) {
 			yield return new WaitForEndOfFrame();
