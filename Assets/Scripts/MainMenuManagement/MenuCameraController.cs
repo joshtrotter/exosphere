@@ -124,10 +124,8 @@ public class MenuCameraController : MonoBehaviour {
 		float Xdistance = Mathf.Abs(target.x - transform.localEulerAngles.x);
 		float Ydistance = Mathf.Abs(target.y - transform.localEulerAngles.y);
 		float distance = Mathf.Max(Xdistance,Ydistance);
-		//float distance = Vector3.Angle (target, transform.localEulerAngles);
 		distance = distance > 180 ? 360 - distance : distance;
 		float time = (distance / Mathf.Abs (swipeSpeed));
-		Debug.Log (time);
 		FocusCamera (target, time);
 
 	}

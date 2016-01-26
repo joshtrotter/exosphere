@@ -4,8 +4,6 @@ using System.Collections;
 
 public class LevelSelectManager : MonoBehaviour {
 
-	public static LevelSelectManager manager;
-
 	//find the screens the manager can use to display level info
 	private LevelInfo[] screens;
 
@@ -22,23 +20,18 @@ public class LevelSelectManager : MonoBehaviour {
 	//track a reference to the worldLevels screen
 	private WorldLevels worldDisplay;
 
-	//track a reference to the camera
+	//track a reference to the menu camera
 	private MenuCameraController menuCameraController;
+
+	private WorldSelectManager worldSelectManager;
 
 	private bool focusedOnWorldLayer;
 	
 	void Awake(){
-		//set up singleton instance, destroy if a LevelDataManager already exists.
-		if (manager == null) {
-			manager = this;
-			//DontDestroyOnLoad (this);
-		} else if (manager != this) {
-			Destroy(gameObject);
-		}
-
 		screens = GetComponentsInChildren<LevelInfo> ();
 		menuCameraController = GetComponentInChildren<MenuCameraController> ();
 		worldDisplay = GetComponentInChildren<WorldLevels> ();
+		worldSelectManager = GetComponent<WorldSelectManager> ();
 		
 		currentScreen = screens [0];
 		previousScreen = screens [1];
@@ -50,7 +43,6 @@ public class LevelSelectManager : MonoBehaviour {
 	}
 
 	public void StartWorldLevelsDisplay(WorldData world){
-		Debug.Log ("Start world levels display");
 		currentWorld = world;
 		currentLevel = world.GetXthChildData (0);
 		worldDisplay.DisplayWorldLevels (world);
@@ -66,7 +58,6 @@ public class LevelSelectManager : MonoBehaviour {
 	}
 	
 	public void StartLevelInfoDisplay(int levelID){
-		Debug.Log ("Start level info display");
 		focusedOnWorldLayer = false;
 		currentLevel = LevelDataManager.manager.GetLevelData (levelID);
 		currentScreen.transform.localRotation = Quaternion.Euler (worldDisplay.transform.localEulerAngles - new Vector3 (-36, 0, 0));
@@ -129,8 +120,8 @@ public class LevelSelectManager : MonoBehaviour {
 	}
 
 	public void ReturnToWorldSelect(){
-		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
-		Debug.Log ("WORLD SELECT");
+		menuCameraController.FocusCamera ((worldDisplay.transform.localEulerAngles - new Vector3(36, 0 ,0)), 1);
+		worldSelectManager.ExitWorld ();
 	}
 
 	public void PlayLevel(int levelID){	
