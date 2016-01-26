@@ -9,7 +9,6 @@ public class FanBlower : MonoBehaviour {
 
 	void OnTriggerEnter(Collider coll) {
 		if (coll.CompareTag ("Player")) {
-			Debug.Log ("Controlling Flight");
 			coll.gameObject.GetComponent<BallController>().inControlledFlight = true;
 		}
 	}
@@ -21,7 +20,6 @@ public class FanBlower : MonoBehaviour {
 
 	void OnTriggerExit(Collider coll) {
 		if (coll.CompareTag ("Player")) {
-			Debug.Log ("Not Controlling Flight");
 			coll.gameObject.GetComponent<BallController>().inControlledFlight = false;
 		}
 	}

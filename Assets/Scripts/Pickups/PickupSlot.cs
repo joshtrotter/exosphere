@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using DG.Tweening;
 
 public class PickupSlot : MonoBehaviour
 {
-
 	public Image slotImage;
 	public Image pickupImage;
+
+	public Vector3 equipAnimPos = new Vector3 (0f, 0f, 0f);
+	public float equipAnimSpeed = 1f;
 	
 	private Pickup pickup;
 	private RectTransform pickupImageTransform;
@@ -40,6 +43,9 @@ public class PickupSlot : MonoBehaviour
 		this.pickup = pickup;
 		if (pickup != null) {
 			//pickupImageTransform.position = homeCoords;
+			Vector3 targetPos = pickupImageTransform.position;
+			pickupImageTransform.position = targetPos + equipAnimPos;
+			pickupImageTransform.DOMove(targetPos, equipAnimSpeed).Play();
 			this.pickupImage.sprite = pickup.sprite;
 		}
 		UpdateVisibility ();

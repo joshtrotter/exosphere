@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BrakeController : MonoBehaviour
 {
+	public bool brakeLockEnabled = true;
+
 	//How much drag the brakes should apply to the ball
 	public float brakeDragFactor = 10f;
 	
@@ -48,6 +50,13 @@ public class BrakeController : MonoBehaviour
 		neutralFriction = material.dynamicFriction;
 	}
 
+	public void SetBrakeLockEnabled(bool enabled) {
+		this.brakeLockEnabled = enabled;
+		if (!enabled) {
+			UnlockBrakes();
+		}
+	}
+
 	public Boolean IsBrakeLocked() {
 		return isBrakeLocked;
 	}
@@ -78,20 +87,22 @@ public class BrakeController : MonoBehaviour
 	//Called when the ball should enter a brake lock slide
 	public void LockBrakes ()
 	{
-		//set the brake locked status - this will be used to ignore user input while brake locked
-		isBrakeLocked = true;
-		//lock the balls current rotation so it looks like it is sliding rather than rolling
-		rb.freezeRotation = true;
+		if (brakeLockEnabled) {
+			//set the brake locked status - this will be used to ignore user input while brake locked
+			isBrakeLocked = true;
+			//lock the balls current rotation so it looks like it is sliding rather than rolling
+			rb.freezeRotation = true;
 		
-		//remove drag and reduce friction on the ball so that it slides for a while
-		rb.drag = 0.0f;
-		material.dynamicFriction = neutralFriction * brakeLockFrictionScale;
+			//remove drag and reduce friction on the ball so that it slides for a while
+			rb.drag = 0.0f;
+			material.dynamicFriction = neutralFriction * brakeLockFrictionScale;
 		
-		//TODO this is a temporary colour effect - replace with skid marks, smoke, sound effects etc to the skid
-		GetComponent<Renderer> ().material.SetColor("_EmissionColor", Color.red * 10f);
+			//TODO this is a temporary colour effect - replace with skid marks, smoke, sound effects etc to the skid
+			GetComponent<Renderer> ().material.SetColor ("_EmissionColor", Color.red * 10f);
 		
-		//Start a coroutine to check for the end of the brake lock
-		StartCoroutine (WaitForEndOfBrakeLockSlide ());
+			//Start a coroutine to check for the end of the brake lock
+			StartCoroutine (WaitForEndOfBrakeLockSlide ());
+		}
 	}
 	
 	//Called when the ball should exit a brake lock slide

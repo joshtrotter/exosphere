@@ -54,7 +54,7 @@ public class PickupController : MonoBehaviour
 	public void AddPickup (Pickup pickup)
 	{
 		//Play a particle effect
-		pickupEffect.Play ();
+		//TODO pickupEffect.Play ();
 
 		//Before adding pickup to a new slot, check if we already have it equipped somewhere...
 		PickupSlot slot = FindSlotWithPickup (pickup);
@@ -110,9 +110,9 @@ public class PickupController : MonoBehaviour
 				slot = rightSlot;
 			} else if (!leftSlot.IsEquipped ()) {
 				slot = leftSlot;
-			} else if (!upperRightSlot.IsEquipped ()) {
+			} else if (upperRightSlot != null && !upperRightSlot.IsEquipped ()) {
 				slot = upperRightSlot;
-			} else if (!upperLeftSlot.IsEquipped ()) {
+			} else if (upperLeftSlot != null && !upperLeftSlot.IsEquipped ()) {
 				slot = upperLeftSlot;
 			}
 		} else {
@@ -120,9 +120,9 @@ public class PickupController : MonoBehaviour
 				slot = leftSlot;
 			} else if (!rightSlot.IsEquipped ()) {
 				slot = rightSlot;
-			} else if (!upperLeftSlot.IsEquipped ()) {
+			} else if (upperLeftSlot != null && !upperLeftSlot.IsEquipped ()) {
 				slot = upperLeftSlot;
-			} else if (!upperRightSlot.IsEquipped ()) {
+			} else if (upperRightSlot != null && !upperRightSlot.IsEquipped ()) {
 				slot = upperRightSlot;
 			}
 		}
@@ -136,9 +136,9 @@ public class PickupController : MonoBehaviour
 			slot = rightSlot;
 		} else if (pickup.Equals (leftSlot.GetPickup ())) {
 			slot = leftSlot;
-		} else if (pickup.Equals (upperRightSlot.GetPickup ())) {
+		} else if (pickup.Equals (upperRightSlot != null && upperRightSlot.GetPickup ())) {
 			slot = upperRightSlot;
-		} else if (pickup.Equals (upperLeftSlot.GetPickup ())) {
+		} else if (pickup.Equals (upperLeftSlot != null && upperLeftSlot.GetPickup ())) {
 			slot = upperLeftSlot;
 		}
 		return slot;
@@ -148,8 +148,12 @@ public class PickupController : MonoBehaviour
 	{
 		rightSlot.Pulse (pulseTime);
 		leftSlot.Pulse (pulseTime);
-		upperRightSlot.Pulse (pulseTime);
-		upperLeftSlot.Pulse (pulseTime);
+		if (upperRightSlot != null) {
+			upperRightSlot.Pulse (pulseTime);
+		}
+		if (upperLeftSlot != null) {
+			upperLeftSlot.Pulse (pulseTime);
+		}
 	}
 	
 }

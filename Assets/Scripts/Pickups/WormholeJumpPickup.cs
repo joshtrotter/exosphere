@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 using DG.Tweening;
 
 public class WormholeJumpPickup : Pickup
@@ -44,7 +45,6 @@ public class WormholeJumpPickup : Pickup
 			GetCameraRig ().GetComponent<AmazeballCam> ().enabled = false;
 
 			float travelTime = CalculateTravelTimeToWormhole(ball.transform.position);
-			Debug.Log ("travel time = " + travelTime);
 
 			DOTween.Sequence ()
 				.Append (GetCameraRig ().transform.DOMove (jumpLocation.transform.position, travelTime))
@@ -56,7 +56,6 @@ public class WormholeJumpPickup : Pickup
 	private float CalculateTravelTimeToWormhole(Vector3 ballPos) {
 		Vector3 distance = this.jumpLocation.transform.position - ballPos;
 		float distanceScale = Mathf.InverseLerp (wormholeMinTravelDistance, wormholeMaxTravelDistance, distance.magnitude);
-		Debug.Log ("distance scale = " + distanceScale);
 		return Mathf.Lerp (wormholeMinTravelTime, wormholeMaxTravelTime, distanceScale);
 	}
 
@@ -72,7 +71,7 @@ public class WormholeJumpPickup : Pickup
 		wormholeExplosion.transform.position = wormhole.transform.position;
 		wormholeExplosion.Play ();
 		ball.gameObject.GetComponent<Renderer>().enabled = true;
-		Reset ();
+		StartCoroutine (UnlockBrakesIfRequired(ball.gameObject.GetComponent<BrakeController> ()));
 	}
 
 	public void SetJumpLocation (Transform jumpLocation)
@@ -92,6 +91,16 @@ public class WormholeJumpPickup : Pickup
 			cameraRig = GameObject.FindGameObjectWithTag ("CameraRig");
 		}
 		return cameraRig;
+	}
+
+	private IEnumerator UnlockBrakesIfRequired(BrakeController brakes) {
+		for (int i = 1; i <= 2; i++) {
+			if (brakes.IsBrakeLocked()) {
+				brakes.UnlockBrakes ();
+			}
+			yield return new WaitForEndOfFrame();
+		}	
+		Reset ();
 	}
 
 }

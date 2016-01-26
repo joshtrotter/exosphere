@@ -64,6 +64,8 @@ public class UISystemController : MonoBehaviour {
 				} 
 			}
 
+
+
 			if (NewUIToShow != null && NewUIToShow != CurrentlyShownUI) {
 				if (CurrentlyShownUI != null) {
 					CurrentlyShownUI.Hide ();

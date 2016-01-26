@@ -9,6 +9,7 @@ using UnityStandardAssets.CrossPlatformInput;
  */ 
 public class BallInputReader : MonoBehaviour
 {
+	public bool allowDraggingPickups = false;
 	public float pickupTimeThreshold;
 
 	// Reference to the ball controller.
@@ -27,7 +28,7 @@ public class BallInputReader : MonoBehaviour
 	private float brakeForce;
 
 	// A reference to the main camera in the scenes transform
-	private Transform cam; 
+	private Transform cam;
 
 	private void Awake ()
 	{
@@ -60,15 +61,15 @@ public class BallInputReader : MonoBehaviour
 
 		//If we detect a touch then start tracking it
 		if (CrossPlatformInputManager.GetButtonDown ("Right")) {
-			StartCoroutine(TrackButtonPress("Right", PickupController.Slot.RIGHT, CrossPlatformInputManager.GetLastKnownPos("Right"), Time.time));
+			StartCoroutine (TrackButtonPress ("Right", PickupController.Slot.RIGHT, CrossPlatformInputManager.GetLastKnownPos ("Right"), Time.time));
 		}
 		if (CrossPlatformInputManager.GetButtonDown ("Left")) {
-			StartCoroutine(TrackButtonPress("Left", PickupController.Slot.LEFT, CrossPlatformInputManager.GetLastKnownPos("Left"), Time.time));
+			StartCoroutine (TrackButtonPress ("Left", PickupController.Slot.LEFT, CrossPlatformInputManager.GetLastKnownPos ("Left"), Time.time));
 		}
 
 		//If we detect a shake then trigger the response
 		if (CrossPlatformInputManager.GetButtonDown ("Shake")) {
-			transforms.RemoveCurrent();
+			transforms.RemoveCurrent ();
 		}
 	}
 
@@ -83,7 +84,7 @@ public class BallInputReader : MonoBehaviour
 		}
 	}
 
-	private IEnumerator TrackButtonPress(String buttonName, PickupController.Slot slot, Vector2 startPos, float startTime)
+	private IEnumerator TrackButtonPress (String buttonName, PickupController.Slot slot, Vector2 startPos, float startTime)
 	{
 		bool isDrag = false;
 		pickups.TouchPickup (slot);
@@ -91,19 +92,21 @@ public class BallInputReader : MonoBehaviour
 		//Wait for the button to be released
 		while (CrossPlatformInputManager.GetButton(buttonName)) {
 			//If the button is not released within the threshold time then this touch is treated as a drag
-			if (!isDrag && Time.time - startTime > pickupTimeThreshold) {
-				isDrag = true;
-				pickups.StartDragging(slot, CrossPlatformInputManager.GetLastKnownPos(buttonName));
+			if (allowDraggingPickups) {
+				if (!isDrag && Time.time - startTime > pickupTimeThreshold) {
+					isDrag = true;
+					pickups.StartDragging (slot, CrossPlatformInputManager.GetLastKnownPos (buttonName));
+				}
+				if (isDrag) {
+					pickups.Drag (CrossPlatformInputManager.GetLastKnownPos (buttonName));
+				}
 			}
-			if (isDrag) {
-				pickups.Drag(CrossPlatformInputManager.GetLastKnownPos(buttonName));
-			}
-			yield return new WaitForFixedUpdate();
+			yield return new WaitForFixedUpdate ();
 		}
 		if (!isDrag) {
 			pickups.UsePickup (slot);
 		} else {
-			pickups.EndDrag();
+			pickups.EndDrag ();
 		}
 	}
 
