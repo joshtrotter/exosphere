@@ -13,7 +13,8 @@ public class MenuCameraController : MonoBehaviour {
 
 	public float swipeThreshold = 100f;
 	//keep track of whether or not this script should be monitoring swipe input
-	public bool shouldMonitorSwiping;
+	public bool shouldMonitorHorizontalSwiping;
+	public bool shouldMonitorVerticalSwiping;
 
 	//keep a reference to the LevelInfoManager
 	private LevelSelectManager screenManager;
@@ -24,17 +25,16 @@ public class MenuCameraController : MonoBehaviour {
 	}
 
 	void Update () {
-		shouldMonitorSwiping = true;
-		if (shouldMonitorSwiping) {
-			MonitorSwiping ();
+		MonitorSwiping ();
 #if UNITY_EDITOR
+		if (shouldMonitorHorizontalSwiping) {
 			if (Input.GetKeyDown (KeyCode.RightArrow)) {
 				ArrowKeySwipe(36);
 			} else if (Input.GetKeyDown (KeyCode.LeftArrow)){
 				ArrowKeySwipe (-36);
 			}
-#endif
 		}
+#endif
 	}
 
 	//applies a subtle, constant sway to the camera
@@ -59,11 +59,11 @@ public class MenuCameraController : MonoBehaviour {
 
 			case TouchPhase.Moved:
 				//detect whether the finger initially moves far enough to count as a swipe movement
-				if (Mathf.Abs (touch.position.x - startPos.x) > swipeThreshold && !isAVerticalSwipe) {
+				if (!isAVerticalSwipe && shouldMonitorHorizontalSwiping && Mathf.Abs (touch.position.x - startPos.x) > swipeThreshold) {
 					isAHorizontalSwipe = true;
 				}
 
-				if (Mathf.Abs (touch.position.y - startPos.y) > swipeThreshold && !isAHorizontalSwipe){
+				if (!isAHorizontalSwipe && shouldMonitorVerticalSwiping && Mathf.Abs (touch.position.y - startPos.y) > swipeThreshold){
 					isAVerticalSwipe = true;
 				}
 
@@ -86,7 +86,7 @@ public class MenuCameraController : MonoBehaviour {
 
 			case TouchPhase.Ended:
 				if (isAHorizontalSwipe) {
-					swipeSpeed = (((startPos.x - touch.position.x) / Screen.width) * 54) / (Time.time - startTime);
+					swipeSpeed = (((startPos.x - touch.position.x) / Screen.width) * 36) / (Time.time - startTime);
 					swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
 
 					target.y += (swipeSpeed * 0.3f);
@@ -141,10 +141,8 @@ public class MenuCameraController : MonoBehaviour {
 	{
 		Vector3 target = transform.localEulerAngles;
 		target.y += num;
-		if (target.y < 360 && target.y > 0) {
-			screenManager.SetClosestScreenAsFocused (Quaternion.Euler (target));
-			FocusCameraOnCurrentScreen ();
-		}
+		screenManager.SetClosestScreenAsFocused (Quaternion.Euler (target));
+		FocusCameraOnCurrentScreen ();
 	}
 #endif
 }

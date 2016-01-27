@@ -5,7 +5,8 @@ using System.Collections;
 
 public class WorldSelectManager : MonoBehaviour {
 
-	public CanvasRenderer background;
+	public CanvasRenderer movingPanel;
+	public Image background;
 	private CanvasGroup canvas;
 	private LevelSelectManager levelSelectManager;
 	private WorldInfo worldInfo;
@@ -15,20 +16,35 @@ public class WorldSelectManager : MonoBehaviour {
 	//the distance between the different layers
 	public float worldGap = 716;
 
+	private Vector3 startPos;
+	private Vector3 lastPos;
+	private float startTime;
+	private bool isAVerticalSwipe;
+	private float swipeSpeed = 30f;
+	
+	public float swipeThreshold = 100f;
+
 	void Awake(){
 		canvas = GetComponentInChildren<CanvasGroup> ();
 		levelSelectManager = GetComponent<LevelSelectManager> ();
 		worldInfo = GetComponentInChildren<WorldInfo> ();
 		rectTransform = worldInfo.GetComponent<RectTransform> ();
+
+		worldGap = Screen.height * 3;
+		background.rectTransform.sizeDelta = new Vector2 (background.rectTransform.sizeDelta.x, worldGap * 6);
+		rectTransform.offsetMax = new Vector2 (rectTransform.offsetMax.x, worldGap);
+		rectTransform.offsetMin = new Vector2 (rectTransform.offsetMin.x, worldGap);
 	}
 
 	void Update(){
-		int newWorldNumber = (int)(-0.5 * Mathf.Floor (background.transform.localPosition.y / (worldGap / 2)));
+		/*int newWorldNumber = (int)(-0.5 * Mathf.Floor (background.transform.localPosition.y / (worldGap / 2)));
 		if (worldNumber != newWorldNumber) {
 			//Debug.Log (newWorldNumber + ", " + worldNumber);
 			worldNumber = newWorldNumber;
 			UpdateWorldInfo ();
-		}
+		}*/	
+		UpdateWorldInfo ();
+		MonitorSwiping ();
 	}
 
 	//changes position and display of the world info screen to display correct data
@@ -41,14 +57,23 @@ public class WorldSelectManager : MonoBehaviour {
 		}
 	}
 
-	public void MoveScreenToWorld (int worldChange)
+	public void MoveScreenToWorld (int worldChange = 0)
 	{
-		background.transform.DOLocalMove (new Vector3 (0, -1 * ((worldNumber + worldChange) * worldGap), 0), 1).Play ();
+		worldNumber += worldChange;
+		movingPanel.transform.DOLocalMove (new Vector3 (0, -1 * (worldNumber * worldGap), 0), 1).Play ();
 	}
 
 	public void EnterWorld(WorldData world){
-		levelSelectManager.StartWorldLevelsDisplay (world);
-		canvas.DOFade (0, 1).Play ().OnComplete(Disable);
+		if (!isAVerticalSwipe){
+			levelSelectManager.StartWorldLevelsDisplay (world);
+			canvas.DOFade (0, 1).Play ().OnComplete(Disable);
+		}
+	}
+
+	public void InitiateWorldPurchaseOptions(WorldData world){
+		if (!isAVerticalSwipe){
+			Debug.Log ("Send them somewhere they can give us the moolah!");
+		}
 	}
 
 	public void ExitWorld(){
@@ -59,4 +84,69 @@ public class WorldSelectManager : MonoBehaviour {
 	private void Disable(){
 		canvas.gameObject.SetActive (false);
 	}
+
+	private void MonitorSwiping ()
+	{
+		//check for screen swiping and update camera accordingly
+		if (Input.touchCount > 0) {
+			Touch touch = Input.GetTouch (0);
+			
+			Vector3 target = movingPanel.transform.localPosition;
+			switch (touch.phase) {
+				
+			case TouchPhase.Began:
+				startPos = touch.position;
+				lastPos = touch.position;
+				startTime = Time.time;
+				break;
+				
+			case TouchPhase.Moved:
+				//detect whether the finger initially moves far enough to count as a swipe movement
+				if ( Mathf.Abs (touch.position.y - startPos.y) > swipeThreshold){
+					isAVerticalSwipe = true;
+				}
+				
+				if (isAVerticalSwipe) {
+					float changeInY = touch.position.y - lastPos.y;
+					target.y += ((changeInY / Screen.height) * (worldGap * 1.5f));
+					if (target.y <= 0 && target.y >= -1 * (worldGap * LevelDataManager.manager.GetNumberOfWorlds())){
+						DOTween.CompleteAll ();
+						movingPanel.transform.DOLocalMove(target, Time.deltaTime).Play ();
+					}
+				}
+				
+				lastPos = touch.position;
+				break;
+				
+			case TouchPhase.Ended:
+				if (isAVerticalSwipe){
+					swipeSpeed = (((startPos.y - touch.position.y) / Screen.height) * (worldGap)) / (Time.time - startTime);
+					swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
+					//Debug.Log (swipeSpeed);
+					target.y -= (swipeSpeed * 0.3f);
+					//Debug.Log (background.transform.localPosition + ", " + target);
+					//background.transform.DOLocalMove(target, 0.3f).Play ().OnKill (MoveScreenToWorld);
+					if (target.y <= 0 && target.y >= -1 * (worldGap * LevelDataManager.manager.GetNumberOfWorlds())){
+						CheckForClosestWorld(target.y);
+					}
+					MoveScreenToWorld(0);
+					isAVerticalSwipe = false;
+				}
+				break;
+			}
+
+			if (isAVerticalSwipe) {
+				CheckForClosestWorld(movingPanel.transform.localPosition.y);
+			}
+		}
+	}
+
+	private void CheckForClosestWorld(float target_y){
+		if ((-1 * target_y) < ((worldNumber * worldGap) - (worldGap * 0.3))) {
+			worldNumber -= 1;
+		} else if ((-1 * target_y) > (worldNumber * worldGap) + (worldGap * 0.3)) {
+			worldNumber += 1;
+		}
+	}
+
 }

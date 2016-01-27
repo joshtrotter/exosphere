@@ -34,7 +34,7 @@ public class WorldInfo : MonoBehaviour {
 		if (currentWorld.unlocked) {
 			worldSelectManager.EnterWorld (currentWorld);
 		} else if (!isLastWorld) {
-			Debug.Log ("Send them somewhere they can give us the moolah!");
+			worldSelectManager.InitiateWorldPurchaseOptions(currentWorld);
 		}
 	}
 

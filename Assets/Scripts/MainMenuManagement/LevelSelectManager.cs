@@ -47,6 +47,8 @@ public class LevelSelectManager : MonoBehaviour {
 		currentLevel = world.GetXthChildData (0);
 		worldDisplay.DisplayWorldLevels (world);
 		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles - new Vector3 (36, 0, 0), 0);
+		
+		menuCameraController.shouldMonitorVerticalSwiping = true;
 		ReturnToWorldDisplay ();
 	}
 
@@ -54,7 +56,7 @@ public class LevelSelectManager : MonoBehaviour {
 		focusedOnWorldLayer = true;
 		worldDisplay.transform.localRotation = Quaternion.Euler (currentScreen.transform.localEulerAngles - new Vector3 (36, 0, 0));
 		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
-		menuCameraController.shouldMonitorSwiping = false;
+		menuCameraController.shouldMonitorHorizontalSwiping = false;
 	}
 	
 	public void StartLevelInfoDisplay(int levelID){
@@ -67,7 +69,7 @@ public class LevelSelectManager : MonoBehaviour {
 		SetupAsNext (nextScreen);
 
 		menuCameraController.FocusCamera (currentScreen.transform.localEulerAngles, 1);
-		menuCameraController.shouldMonitorSwiping = true;
+		menuCameraController.shouldMonitorHorizontalSwiping = true;
 	}
 
 
@@ -121,6 +123,7 @@ public class LevelSelectManager : MonoBehaviour {
 
 	public void ReturnToWorldSelect(){
 		menuCameraController.FocusCamera ((worldDisplay.transform.localEulerAngles - new Vector3(36, 0 ,0)), 1);
+		menuCameraController.shouldMonitorVerticalSwiping = false;
 		worldSelectManager.ExitWorld ();
 	}
 
