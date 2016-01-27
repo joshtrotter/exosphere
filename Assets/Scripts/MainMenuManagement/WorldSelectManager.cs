@@ -9,6 +9,8 @@ public class WorldSelectManager : MonoBehaviour {
 	private CanvasGroup canvas;
 	private LevelSelectManager levelSelectManager;
 	private WorldInfo worldInfo;
+	private RectTransform rectTransform;
+	private int worldNumber = 0;
 
 	//the distance between the different layers
 	public float worldGap = 716;
@@ -17,18 +19,31 @@ public class WorldSelectManager : MonoBehaviour {
 		canvas = GetComponentInChildren<CanvasGroup> ();
 		levelSelectManager = GetComponent<LevelSelectManager> ();
 		worldInfo = GetComponentInChildren<WorldInfo> ();
+		rectTransform = worldInfo.GetComponent<RectTransform> ();
 	}
 
-	public void Launch(){
-		background.transform.DOLocalMove (new Vector3(0,-worldGap,0), 1).Play ();
-		RectTransform rectTransform = worldInfo.GetComponent<RectTransform> ();
-		rectTransform.offsetMax = new Vector2 (rectTransform.offsetMax.x, worldGap);
-		rectTransform.offsetMin = new Vector2 (rectTransform.offsetMin.x, worldGap);
-		worldInfo.DisplayWorldInfo (worldInfo.currentWorld);
+	void Update(){
+		int newWorldNumber = (int)(-0.5 * Mathf.Floor (background.transform.localPosition.y / (worldGap / 2)));
+		if (worldNumber != newWorldNumber) {
+			//Debug.Log (newWorldNumber + ", " + worldNumber);
+			worldNumber = newWorldNumber;
+			UpdateWorldInfo ();
+		}
 	}
 
-	public void BackToOpeningScreen(){
-		background.transform.DOLocalMove (new Vector3(0,0,0),1).Play(); 
+	//changes position and display of the world info screen to display correct data
+	private void UpdateWorldInfo ()
+	{
+		if (worldNumber > 0) {
+			rectTransform.offsetMax = new Vector2 (rectTransform.offsetMax.x, (worldNumber * worldGap));
+			rectTransform.offsetMin = new Vector2 (rectTransform.offsetMin.x, (worldNumber * worldGap));
+			worldInfo.DisplayWorldInfo (LevelDataManager.manager.GetWorldData (worldNumber));
+		}
+	}
+
+	public void MoveScreenToWorld (int worldChange)
+	{
+		background.transform.DOLocalMove (new Vector3 (0, -1 * ((worldNumber + worldChange) * worldGap), 0), 1).Play ();
 	}
 
 	public void EnterWorld(WorldData world){

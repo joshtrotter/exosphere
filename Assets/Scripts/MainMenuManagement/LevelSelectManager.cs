@@ -139,19 +139,19 @@ public class LevelSelectManager : MonoBehaviour {
 			currentScreen = nextScreen;
 			nextScreen = oldPreviousScreen;
 			SetupScreens ();
-		}
+		} //else current screen will remain focused
 
 	}
 
-	//sets the previous level screen to be the new focused and current level screen
+	//se	ts the previous level screen to be the new focused and current level screen
 	private void SetPreviousAsFocused(){
-		if (previousLevelExists) {
+		if (previousLevelExists) { 
 			LevelInfo oldNextScreen = nextScreen;
 			nextScreen = currentScreen;
 			currentScreen = previousScreen;
 			previousScreen = oldNextScreen;
 			SetupScreens ();
-		}
+		} //else current screen will remain focused
 	}
 
 	//moves screens around the current screen and sets them to display correct data

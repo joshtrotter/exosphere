@@ -6,8 +6,14 @@ public class WorldInfo : MonoBehaviour {
 
 	public WorldData currentWorld;
 	private WorldSelectManager worldSelectManager;
+	private bool isLastWorld;
 
 	public Text title;
+	public Text completionStatus;
+	public Text stars;
+	public Button upButton;
+	public CanvasRenderer newLevels;
+	public Button enterWorldButton;
 
 	void Start(){
 		worldSelectManager = GetComponentInParent<WorldSelectManager> ();
@@ -15,14 +21,39 @@ public class WorldInfo : MonoBehaviour {
 
 	public void DisplayWorldInfo(WorldData newWorld){
 		currentWorld = newWorld;
-		SetLatestInfo ();
+		if (currentWorld.worldID == LevelDataManager.manager.GetNumberOfWorlds ()) {
+			isLastWorld = true;
+			SetUpAsLastLevel();
+		} else {
+			isLastWorld = false;
+			SetLatestInfo ();
+		}
 	}
 
 	public void EnterWorld(){
-		worldSelectManager.EnterWorld (currentWorld);
+		if (currentWorld.unlocked) {
+			worldSelectManager.EnterWorld (currentWorld);
+		} else if (!isLastWorld) {
+			Debug.Log ("Send them somewhere they can give us the moolah!");
+		}
+	}
+
+	public void ReturnToOpeningScreen(){
+		worldSelectManager.MoveScreenToWorld (-currentWorld.worldID);
 	}
 
 	private void SetLatestInfo(){
+		upButton.interactable = true; 
+		enterWorldButton.gameObject.SetActive (true);
+		newLevels.gameObject.SetActive (false);
 		title.text = currentWorld.worldName;
+		completionStatus.text = currentWorld.GetCompletionStatus ();
+		stars.text = currentWorld.GetStarStatus ();
+	}
+
+	private void SetUpAsLastLevel(){
+		upButton.interactable = false; 
+		enterWorldButton.gameObject.SetActive (false);
+		newLevels.gameObject.SetActive (true);
 	}
 }

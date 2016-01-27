@@ -69,7 +69,7 @@ public class MenuCameraController : MonoBehaviour {
 
 				if (isAHorizontalSwipe) {
 					float changeInX = touch.position.x - lastPos.x;
-					target.y -= ((changeInX / Screen.width) * 36);
+					target.y -= ((changeInX / Screen.width) * 54);
 					DOTween.CompleteAll ();
 					transform.DOLocalRotate (target, Time.deltaTime).Play ();
 				}
@@ -86,7 +86,7 @@ public class MenuCameraController : MonoBehaviour {
 
 			case TouchPhase.Ended:
 				if (isAHorizontalSwipe) {
-					swipeSpeed = (((startPos.x - touch.position.x) / Screen.width) * 36) / (Time.time - startTime);
+					swipeSpeed = (((startPos.x - touch.position.x) / Screen.width) * 54) / (Time.time - startTime);
 					swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
 
 					target.y += (swipeSpeed * 0.3f);

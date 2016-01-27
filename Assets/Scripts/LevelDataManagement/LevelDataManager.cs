@@ -49,9 +49,8 @@ public class LevelDataManager : MonoBehaviour {
 		allLevelData [levelToLoad].Unlock ();
 		foreach (int id in allLevelData.Keys) {
 			allLevelData[id].Unlock();
+			//allLevelData[id].Complete ();
 		}
-		//LevelInfo.controller.DisplayLevelInfo (allLevelData [levelToLoad]);
-		//LevelSelectManager.manager.StartWorldLevelsDisplay (GetCurrentWorldData ());
 	}
 
 	public LevelData GetCurrentLevelData(){
@@ -76,6 +75,14 @@ public class LevelDataManager : MonoBehaviour {
 
 	public LevelData GetLevelData(int levelID){
 		return allLevelData [levelID];
+	}
+
+	public WorldData GetWorldData(int worldID){
+		return allWorldData [worldID];
+	}
+
+	public int GetNumberOfWorlds(){
+		return allWorldData.Keys.Count;
 	}
 
 	//saves all necessary data to file
