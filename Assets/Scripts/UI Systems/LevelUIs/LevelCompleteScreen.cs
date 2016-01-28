@@ -24,7 +24,13 @@ public class LevelCompleteScreen : UISystem {
 	//private LevelManager levelManager;
 
 	public override void Awake(){
-		controller = this;
+		//set up singleton instance
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		base.Awake ();
 		SetAllInactive ();
 	}
@@ -98,12 +104,18 @@ public class LevelCompleteScreen : UISystem {
 		//add to list
 		displayList.Add (text);
 	}
-
-	//TODO remove
+	
 	public void BackToMenu(){
-		HUD.controller.Deregister ();
 		Deregister ();
+		Debug.Log ("Loading level loader from level complete screen");
 		Application.LoadLevel (0);
+		MainMenuController.controller.ReturnFocusToWorldLevels ();
+	}
+
+	public void ReplayLevel(){
+		Deregister ();
+		Debug.Log ("Restarting level");
+		LevelManager.manager.FirstLoadLevel ();
 	}
 
 	public override void Hide(){

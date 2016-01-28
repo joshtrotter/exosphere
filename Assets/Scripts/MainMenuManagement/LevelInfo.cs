@@ -36,11 +36,14 @@ public class LevelInfo : MonoBehaviour {
 
 	private LevelSelectManager levelSelectManager;
 
+	public Camera worldCamera;
+
 	public void Start(){
 		canvas = GetComponentInChildren<Canvas> ();
 		levelSelectManager = GetComponentInParent<LevelSelectManager> ();
 		//little bit hacky but we're just gonna roll with it
 		canvas.renderMode = RenderMode.WorldSpace;
+		canvas.worldCamera = worldCamera;
 	}
 
 	public void DisplayLevelInfo(LevelData newLevel){

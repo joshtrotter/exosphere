@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using DG.Tweening;
 
@@ -33,7 +33,7 @@ public class Collectable : HasLevelState {
 		if (coll.CompareTag("Player")) {
 			this.coll.enabled = false;
 			RegisterStateChange(COLLECTED_STATE);
-			LevelManager.manager.RemoveCollectable();
+			LevelManager.manager.CollectSupplyCrate();
 			HUD.controller.SendMessage ("CollectableFound");
 			Collect ();
 		}

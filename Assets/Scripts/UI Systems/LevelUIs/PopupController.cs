@@ -13,7 +13,13 @@ public class PopupController : MonoBehaviour {
 	public float fadeOutTIme = 1f;
 
 	void Awake(){
-		controller = this;
+		//set up singleton instance
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		Color invisible = popupText.color;
 		invisible.a = 0;
 		popupText.color = invisible;

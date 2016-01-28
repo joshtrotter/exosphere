@@ -17,7 +17,13 @@ public class CallibrationUI : UISystem {
 	private Canvas canvas;
 
 	public override void Awake(){
-		controller = this;
+		//set up singleton instance
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		canvas = GetComponentInChildren<Canvas> ();
 		base.Awake ();
 	}

@@ -12,7 +12,13 @@ public class HUD : UISystem {
 
 	public override void Awake()
 	{
-		controller = this;
+		//set up singleton instance
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		HUDCanvas = GetComponentInChildren<Canvas> ();
 		base.Awake ();
 	}
@@ -27,5 +33,11 @@ public class HUD : UISystem {
 	{
 		hidden = true;
 		HUDCanvas.gameObject.SetActive (false);
+	}
+
+	public override void Deregister(){
+		UISystemController.controller.Deregister (this);
+		TutorialMessageController.controller.CloseMessage ();
+		Hide ();
 	}
 }

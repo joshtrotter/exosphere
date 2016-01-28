@@ -25,6 +25,7 @@ public class WorldSelectManager : MonoBehaviour {
 	public float swipeThreshold = 100f;
 
 	void Awake(){
+		DontDestroyOnLoad (this);
 		canvas = GetComponentInChildren<CanvasGroup> ();
 		levelSelectManager = GetComponent<LevelSelectManager> ();
 		worldInfo = GetComponentInChildren<WorldInfo> ();
@@ -60,7 +61,7 @@ public class WorldSelectManager : MonoBehaviour {
 	public void MoveScreenToWorld (int worldChange = 0)
 	{
 		worldNumber += worldChange;
-		movingPanel.transform.DOLocalMove (new Vector3 (0, -1 * (worldNumber * worldGap), 0), 1).Play ();
+		movingPanel.transform.DOLocalMove (new Vector3 (0, -1 * (worldNumber * worldGap), 0), 1).Play ().OnUpdate(CheckForClosestWorldToCurrentPosition);
 	}
 
 	public void EnterWorld(WorldData world){
@@ -74,6 +75,14 @@ public class WorldSelectManager : MonoBehaviour {
 		if (!isAVerticalSwipe){
 			Debug.Log ("Send them somewhere they can give us the moolah!");
 		}
+	}
+
+	public void ReturnToOpeningScreen(){
+		Debug.Log (worldNumber * worldGap);
+		movingPanel.transform.DOLocalMoveY (0, 0).Play ();
+		worldNumber = 0;
+		canvas.alpha = 1f;
+		canvas.gameObject.SetActive (true);
 	}
 
 	public void ExitWorld(){
@@ -121,8 +130,8 @@ public class WorldSelectManager : MonoBehaviour {
 			case TouchPhase.Ended:
 				if (isAVerticalSwipe){
 					swipeSpeed = (((startPos.y - touch.position.y) / Screen.height) * (worldGap)) / (Time.time - startTime);
-					swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
-					//Debug.Log (swipeSpeed);
+					//swipeSpeed = swipeSpeed > 0 ? Mathf.Max (swipeSpeed, 30) : Mathf.Min (swipeSpeed, -30);
+					Debug.Log (swipeSpeed);
 					target.y -= (swipeSpeed * 0.3f);
 					//Debug.Log (background.transform.localPosition + ", " + target);
 					//background.transform.DOLocalMove(target, 0.3f).Play ().OnKill (MoveScreenToWorld);
@@ -136,9 +145,13 @@ public class WorldSelectManager : MonoBehaviour {
 			}
 
 			if (isAVerticalSwipe) {
-				CheckForClosestWorld(movingPanel.transform.localPosition.y);
+				CheckForClosestWorldToCurrentPosition();
 			}
 		}
+	}
+
+	private void CheckForClosestWorldToCurrentPosition(){
+		CheckForClosestWorld (movingPanel.transform.localPosition.y);
 	}
 
 	private void CheckForClosestWorld(float target_y){

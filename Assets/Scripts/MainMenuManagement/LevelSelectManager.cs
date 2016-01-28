@@ -42,6 +42,10 @@ public class LevelSelectManager : MonoBehaviour {
 		return currentScreen;
 	}
 
+	public WorldData GetCurrentWorld(){
+		return currentWorld;
+	}
+
 	public void StartWorldLevelsDisplay(WorldData world){
 		currentWorld = world;
 		currentLevel = world.GetXthChildData (0);
@@ -130,7 +134,7 @@ public class LevelSelectManager : MonoBehaviour {
 	public void PlayLevel(int levelID){	
 		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
 		DOTween.CompleteAll ();
-		menuCameraController.transform.DOLocalRotate(currentScreen.transform.localEulerAngles + new Vector3 (36, 0, 0), 1).Play ().OnComplete(LevelManager.manager.ReloadLevel);  
+		menuCameraController.transform.DOLocalRotate(currentScreen.transform.localEulerAngles + new Vector3 (36, 0, 0), 1).Play ().OnComplete(LevelManager.manager.FirstLoadLevel);  
 	
 	}
 	
