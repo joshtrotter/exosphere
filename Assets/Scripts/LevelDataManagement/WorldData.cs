@@ -67,14 +67,18 @@ public class WorldData : ScriptableObject {
 	}
 
 	public string GetStarStatus(){
-		if (unlocked) {
-			int starsEarned = 0;
-			foreach (LevelPermanentData level in childLevels){
-				starsEarned += LevelDataManager.manager.GetLevelData (level.levelID).GetStarsEarned();
-			}
-			return starsEarned + "/" + (3 * childLevels.Count);
-		} else {
-			return "available for purchase";
+		//if (unlocked) {
+		int starsEarned = 0;
+		foreach (LevelPermanentData level in childLevels){
+			starsEarned += LevelDataManager.manager.GetLevelData (level.levelID).GetStarsEarned();
 		}
+		return starsEarned + "/" + (3 * childLevels.Count);
+		/*} else {
+			return "available for purchase";
+		}*/
+	}
+
+	public bool IsUnlocked(){
+		return unlocked;
 	}
 }

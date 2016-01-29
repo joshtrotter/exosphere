@@ -11,9 +11,11 @@ public class WorldInfo : MonoBehaviour {
 	public Text title;
 	public Text completionStatus;
 	public Text stars;
+	public Text availableForPurchase;
 	public Button upButton;
 	public CanvasRenderer newLevels;
 	public Button enterWorldButton;
+	public Image starImage;
 
 	void Start(){
 		worldSelectManager = GetComponentInParent<WorldSelectManager> ();
@@ -48,7 +50,17 @@ public class WorldInfo : MonoBehaviour {
 		newLevels.gameObject.SetActive (false);
 		title.text = currentWorld.worldName;
 		completionStatus.text = currentWorld.GetCompletionStatus ();
-		stars.text = currentWorld.GetStarStatus ();
+
+		if (currentWorld.IsUnlocked ()) {
+			availableForPurchase.gameObject.SetActive(false);
+			stars.text = currentWorld.GetStarStatus ();
+			stars.gameObject.SetActive(true);
+			starImage.gameObject.SetActive(true);
+		} else {
+			stars.gameObject.SetActive(false);
+			starImage.gameObject.SetActive(false);
+			availableForPurchase.gameObject.SetActive(true);
+		}
 	}
 
 	private void SetUpAsLastLevel(){

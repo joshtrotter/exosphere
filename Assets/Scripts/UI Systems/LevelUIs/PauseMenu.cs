@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 using System.Collections;
 
 public class PauseMenu : UISystem {
@@ -9,7 +10,7 @@ public class PauseMenu : UISystem {
 	public GameObject unpauseButton;
 	public GameObject pauseMenu;
 	public CallibrationUI callibrator;
-	private CanvasGroup canvasGroup;
+	//private CanvasGroup canvasGroup;
 
 	public override void Awake(){
 		//set up singleton instance
@@ -29,15 +30,17 @@ public class PauseMenu : UISystem {
 
 	public void Unpause()
 	{
-		Deregister ();
-		Hide ();
+		Time.timeScale = 1f;
+		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (Deregister).Play ();
 	}
 
 	public override void Show ()
 	{
 		Time.timeScale = 0f;
 		unpauseButton.SetActive (true);
+		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0).Play ();
 		pauseMenu.SetActive (true);
+		pauseMenu.transform.DOLocalMoveY (0, 0.5f).SetUpdate (true).Play ();
 	}
 
 	public override void Hide ()
@@ -53,6 +56,10 @@ public class PauseMenu : UISystem {
 	}
 
 	public void MainMenu(){
+		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (ContinueToMainMenu).Play ();
+	}
+
+	private void ContinueToMainMenu(){
 		Deregister ();
 		Debug.Log ("Loading level loader from PauseMenu");
 		Application.LoadLevel (0);
@@ -60,6 +67,10 @@ public class PauseMenu : UISystem {
 	}
 
 	public void LevelSelect(){
+		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (ContinueToLevelSelect).Play ();
+	}
+
+	private void ContinueToLevelSelect(){
 		Deregister ();
 		Debug.Log ("Loading level loader from PauseMenu");
 		Application.LoadLevel (0);

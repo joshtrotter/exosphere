@@ -9,29 +9,24 @@ public class MainMenuController : UISystem {
 	private LevelSelectManager levelSelectManager;
 	private WorldSelectManager worldSelectManager;
 
-	public delegate void SetMenuFocus();
-
-	public SetMenuFocus setMenuFocus;
-
 	public override void Awake(){
 		//set up singleton instance
 		if (controller == null) {
 			controller = this;
 			DontDestroyOnLoad (this);
-
 			base.Awake ();
 		} else if (controller != this) {
 			Destroy(gameObject);
 		}
 
-		OnLevelWasLoaded ();
 		levelSelectManager = mainMenuSystem.GetComponent<LevelSelectManager>();
 		worldSelectManager = mainMenuSystem.GetComponent<WorldSelectManager>();
+		OnLevelWasLoaded ();
 	}
 	
 	private void OnLevelWasLoaded(){
 		if (Application.loadedLevel == 0) {
-			if (setMenuFocus != null) setMenuFocus();
+			SetSkybox ();
 			RequestToBeShown ();
 		} else {
 			Deregister ();
@@ -46,18 +41,33 @@ public class MainMenuController : UISystem {
 		mainMenuSystem.SetActive (false);
 	}
 
+	private void SetSkybox(){
+		WorldData world = levelSelectManager.GetCurrentWorld ();
+		if (world != null)
+			RenderSettings.skybox = world.skybox;
+	}
+
 	public void ReturnFocusToMainMenu(){
-		setMenuFocus = new SetMenuFocus(ReturnFocusToMainMenu);
 		Debug.Log ("returning focus to main menu");
 		worldSelectManager.ReturnToOpeningScreen ();
 	}
 
 	public void ReturnFocusToWorldLevels(){
-		setMenuFocus = new SetMenuFocus(ReturnFocusToWorldLevels);
 		Debug.Log ("Returning focus to world levels");
 		levelSelectManager.StartWorldLevelsDisplay (levelSelectManager.GetCurrentWorld());
 	}
 
-	public void ReturnFocusToLevel(){
+	public void ReturnFocusToNextLevel(){
+		Debug.Log ("returning focus to next level");
+		levelSelectManager.StartWorldLevelsDisplay (levelSelectManager.GetCurrentWorld());
+		levelSelectManager.StartLevelInfoDisplay (LevelDataManager.manager.GetNextLevelData().GetLevelID());
 	}
+
+
+	public void ReturnFocusToNextWorld(){
+		Debug.Log ("Returning focus to next world");
+		levelSelectManager.ReturnToWorldSelect ();
+		worldSelectManager.MoveScreenToWorld (1);
+	}
+
 }
