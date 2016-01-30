@@ -1,4 +1,4 @@
-﻿
+﻿using DG.Tweening;
 using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
@@ -6,6 +6,8 @@ using UnityStandardAssets.CrossPlatformInput;
 public class CallibrationUI : UISystem {
 
 	public static CallibrationUI controller;
+
+	public GameObject dropPanel;
 
 	private AmazeballTiltInput tiltInput;
 	
@@ -17,7 +19,13 @@ public class CallibrationUI : UISystem {
 	private Canvas canvas;
 
 	public override void Awake(){
-		controller = this;
+		//set up singleton instance
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		canvas = GetComponentInChildren<Canvas> ();
 		base.Awake ();
 	}
@@ -45,7 +53,6 @@ public class CallibrationUI : UISystem {
 
 	public void FinishCalibration()
 	{
-		Deregister ();
 		tiltInput.ConfigureVerticalOrientationOffset ();
 		
 		//unfreeze ball
@@ -54,13 +61,13 @@ public class CallibrationUI : UISystem {
 		//reset ball velocity
 		rbBall.velocity = ballVelocity;
 		rbBall.angularVelocity = ballAngularVelocity;
-
-		Hide ();
+		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).OnComplete (Deregister).Play ();
 	}
 
 	public override void Show ()
 	{
 		canvas.gameObject.SetActive (true);
+		dropPanel.transform.DOLocalMoveY (0, 0.5f).Play ();
 	}
 
 	public void StartCalibration()

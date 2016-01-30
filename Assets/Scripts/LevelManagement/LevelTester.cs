@@ -25,10 +25,10 @@ public class LevelTester : MonoBehaviour {
 	}
 
 	void OnLevelWasLoaded(){
-		Debug.Log ("Level " + Application.loadedLevel + " loaded.");
+		//Debug.Log ("Level " + Application.loadedLevel + " loaded.");
 		if (Application.loadedLevel == 0 && thisLevel != 0) {
 			LevelManager.manager.SetCurrentLevel (thisLevel);
-			LevelManager.manager.ReloadLevel ();
+			LevelManager.manager.FirstLoadLevel ();
 		}
 	}
 }

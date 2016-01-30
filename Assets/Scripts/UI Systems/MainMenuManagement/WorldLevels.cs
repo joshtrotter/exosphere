@@ -16,14 +16,14 @@ public class WorldLevels : MonoBehaviour {
 
 	void Start(){
 		GetComponentInChildren<Canvas> ().renderMode = RenderMode.WorldSpace;
+		levelSelectManager = GetComponentInParent<LevelSelectManager> ();
+		levelIcons = GetComponentsInChildren<LevelIcon> ();
 	}
 
 	public void DisplayWorldLevels (WorldData world)
 	{
 		RenderSettings.skybox = world.skybox;
 		title.text = world.worldName;
-		levelSelectManager = GetComponentInParent<LevelSelectManager> ();
-		levelIcons = GetComponentsInChildren<LevelIcon> ();
 		for (int i = 0; i < levelIcons.Length; i++) {
 			levelIcons [i].DisplayLevelInfo (world.GetXthChildData (i));
 		}

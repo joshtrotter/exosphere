@@ -23,7 +23,13 @@ public class TutorialMessageController : MonoBehaviour {
 	private GameObject imageInstance;
 
 	void Awake(){
-		controller = this;
+		//set up singleton instance
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		leftDisplayPanel = leftMessageText.transform.parent.gameObject;
 		rightDisplayPanel = rightMessageText.transform.parent.gameObject;
 

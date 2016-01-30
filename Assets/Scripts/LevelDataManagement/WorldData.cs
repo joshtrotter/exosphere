@@ -51,4 +51,34 @@ public class WorldData : ScriptableObject {
 		}
 		return ind;
 	}
+
+	public string GetCompletionStatus(){
+		if (unlocked) {
+			int numCompleted = 0;
+			foreach (LevelPermanentData level in childLevels){
+				if (LevelDataManager.manager.GetLevelData (level.levelID).HasBeenCompleted()){
+					numCompleted += 1;
+				}
+			}
+			return numCompleted + "/" + childLevels.Count;
+		} else {
+			return "Locked";
+		}
+	}
+
+	public string GetStarStatus(){
+		//if (unlocked) {
+		int starsEarned = 0;
+		foreach (LevelPermanentData level in childLevels){
+			starsEarned += LevelDataManager.manager.GetLevelData (level.levelID).GetStarsEarned();
+		}
+		return starsEarned + "/" + (3 * childLevels.Count);
+		/*} else {
+			return "available for purchase";
+		}*/
+	}
+
+	public bool IsUnlocked(){
+		return unlocked;
+	}
 }

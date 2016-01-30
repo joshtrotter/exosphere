@@ -12,8 +12,7 @@ public class LevelManager : MonoBehaviour {
 	private float cameraAngle;
 	private GameObject player;
 	private GameObject cameraRig;
-
-	//private int numCollectables;
+	
 	public int collected;
 	public bool goldenBallFound;
 
@@ -41,7 +40,14 @@ public class LevelManager : MonoBehaviour {
 		this.currentLevel = level;
 	}
 
+	public void FirstLoadLevel() {
+		Debug.Log ("First loading level");
+		firstLoad = true;
+		Application.LoadLevel (currentLevel);
+	}
+
 	public void ReloadLevel() {
+		Debug.Log ("Reloading level");
 		TearDown ();
 		Application.LoadLevel (currentLevel);
 	}
@@ -75,9 +81,15 @@ public class LevelManager : MonoBehaviour {
 		if (StartSpawn == null) {
 			StartSpawn = GameObject.FindGameObjectWithTag ("Player");
 		}
+		ResetLevelToInitialState ();
 		SetSpawnLocation(StartSpawn.transform);
 		SetCameraRotation (StartSpawn.transform.localRotation.eulerAngles.y);
-		//numCollectables = Object.FindObjectsOfType<Collectable> ().Length;
+	}
+
+	private void ResetLevelToInitialState(){
+		collected = 0;
+		goldenBallFound = false;
+		objectStates.Clear ();
 	}
 
 	private void OnReload()
@@ -135,8 +147,9 @@ public class LevelManager : MonoBehaviour {
 		objectStates[objectId] = objectState;
 	}
 
-	public void RemoveCollectable() {
+	public void CollectSupplyCrate() {
 		collected++;
+		Debug.Log ("Collected supply crate, new total " + collected);
 	}
 
 	public string GetNumCollectablesFound(){

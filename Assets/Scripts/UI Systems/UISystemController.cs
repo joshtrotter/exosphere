@@ -22,14 +22,16 @@ public class UISystemController : MonoBehaviour {
 		if (controller == null) {
 			controller = this;
 			DontDestroyOnLoad (this);
+
+			for (int i=0; i < UISystems.Length; i++) {
+				WantsToBeShown[UISystems[i]] = false;
+				UIRanks.Add(UISystems[i],i);
+			}
+
 		} else if (controller != this) {
 			Destroy(gameObject);
 		}
-
-		for (int i=0; i < UISystems.Length; i++) {
-			WantsToBeShown[UISystems[i]] = false;
-			UIRanks.Add(UISystems[i],i);
-		}
+	
 	}
 
 	//a UISystem has informed the controller that it wants to be shown
@@ -58,7 +60,9 @@ public class UISystemController : MonoBehaviour {
 		int NewUIRank = CurrentlyShownUIRank;
 		foreach (UISystem UI in WantsToBeShown.Keys) {
 			if (WantsToBeShown [UI]) {
-				if (UIRanks [UI] < NewUIRank) { //found different UI to display
+
+				int outRank = int.MaxValue;
+				if ((UIRanks.TryGetValue(UI, out outRank)) && outRank < NewUIRank) { //found different UI to display
 					NewUIToShow = UI;
 					NewUIRank = UIRanks [UI];
 				} 

@@ -24,7 +24,13 @@ public class LevelCompleteScreen : UISystem {
 	//private LevelManager levelManager;
 
 	public override void Awake(){
-		controller = this;
+		//set up singleton instance
+		if (controller == null) {
+			controller = this;
+			DontDestroyOnLoad (this);
+		} else if (controller != this) {
+			Destroy(gameObject);
+		}
 		base.Awake ();
 		SetAllInactive ();
 	}
@@ -54,16 +60,15 @@ public class LevelCompleteScreen : UISystem {
 		AddToDisplayList (cratesFoundText);
 		
 		//goldenball
-		AddToDisplayList(goldenBallFoundText);
 		goldenBallFoundText.text = "Golden Ball " + levelData.GetGoldenBallFoundAsString ();
+		AddToDisplayList(goldenBallFoundText);
 		
 		//unlocks
 		if (!levelData.HasBeenCompleted()) {
 			levelData.Complete ();
 			AddToDisplayList(timeTrialUnlockedText);
-			AddToDisplayList(newLevelUnlockedText);
 		}
-		
+
 		//stars and records
 		if (levelData.GetNumCollectablesFound() < LevelManager.manager.collected) {
 			levelData.SetNumCollectablesFound (LevelManager.manager.collected);
@@ -76,6 +81,20 @@ public class LevelCompleteScreen : UISystem {
 		if (!levelData.GoldenBallHasBeenCollected() && LevelManager.manager.goldenBallFound){
 			levelData.SetGoldenBallCollected();
 			AddToDisplayList(goldenBallStarEarned);
+		}
+
+		//check for new level unlocks
+		//unlock next level if it isn't already
+		LevelData nextLevel = LevelDataManager.manager.GetNextLevelData();
+		if (nextLevel != null && !nextLevel.IsUnlocked ()) {
+			Debug.Log ("Unlocking " + nextLevel.GetLevelName());
+			nextLevel.Unlock ();
+			AddToDisplayList (newLevelUnlockedText);
+		} else { //if the next level is already unlocked, it is possible the player has earnt enough stars to unlock a level even further ahead
+			if (LevelDataManager.manager.CheckForNewStarUnlocks() > 0){
+				AddToDisplayList (newLevelUnlockedText);
+				Debug.Log ("Unlocked new level based on stars");
+			}
 		}
 		
 		LevelDataManager.manager.Save ();
@@ -98,12 +117,30 @@ public class LevelCompleteScreen : UISystem {
 		//add to list
 		displayList.Add (text);
 	}
-
-	//TODO remove
+	
 	public void BackToMenu(){
-		HUD.controller.Deregister ();
 		Deregister ();
+		Debug.Log ("Loading level loader from level complete screen");
 		Application.LoadLevel (0);
+		MainMenuController.controller.ReturnFocusToWorldLevels ();
+	}
+
+	public void ReplayLevel(){
+		Deregister ();
+		Debug.Log ("Restarting level");
+		LevelManager.manager.FirstLoadLevel ();
+	}
+
+	public void NextLevel(){
+		Deregister ();
+		Debug.Log ("Loading level loader from level complete screen");
+		LevelData nextLevel = LevelDataManager.manager.GetNextLevelData ();
+		Application.LoadLevel (0);
+		if (nextLevel != null) {
+			MainMenuController.controller.ReturnFocusToNextLevel ();
+		} else {
+			MainMenuController.controller.ReturnFocusToNextWorld ();
+		}
 	}
 
 	public override void Hide(){

@@ -42,11 +42,17 @@ public class LevelSelectManager : MonoBehaviour {
 		return currentScreen;
 	}
 
+	public WorldData GetCurrentWorld(){
+		return currentWorld;
+	}
+
 	public void StartWorldLevelsDisplay(WorldData world){
 		currentWorld = world;
 		currentLevel = world.GetXthChildData (0);
 		worldDisplay.DisplayWorldLevels (world);
 		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles - new Vector3 (36, 0, 0), 0);
+		
+		menuCameraController.shouldMonitorVerticalSwiping = true;
 		ReturnToWorldDisplay ();
 	}
 
@@ -54,7 +60,7 @@ public class LevelSelectManager : MonoBehaviour {
 		focusedOnWorldLayer = true;
 		worldDisplay.transform.localRotation = Quaternion.Euler (currentScreen.transform.localEulerAngles - new Vector3 (36, 0, 0));
 		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles, 1);
-		menuCameraController.shouldMonitorSwiping = false;
+		menuCameraController.shouldMonitorHorizontalSwiping = false;
 	}
 	
 	public void StartLevelInfoDisplay(int levelID){
@@ -67,7 +73,7 @@ public class LevelSelectManager : MonoBehaviour {
 		SetupAsNext (nextScreen);
 
 		menuCameraController.FocusCamera (currentScreen.transform.localEulerAngles, 1);
-		menuCameraController.shouldMonitorSwiping = true;
+		menuCameraController.shouldMonitorHorizontalSwiping = true;
 	}
 
 
@@ -121,13 +127,14 @@ public class LevelSelectManager : MonoBehaviour {
 
 	public void ReturnToWorldSelect(){
 		menuCameraController.FocusCamera ((worldDisplay.transform.localEulerAngles - new Vector3(36, 0 ,0)), 1);
+		menuCameraController.shouldMonitorVerticalSwiping = false;
 		worldSelectManager.ExitWorld ();
 	}
 
 	public void PlayLevel(int levelID){	
 		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
 		DOTween.CompleteAll ();
-		menuCameraController.transform.DOLocalRotate(currentScreen.transform.localEulerAngles + new Vector3 (36, 0, 0), 1).Play ().OnComplete(LevelManager.manager.ReloadLevel);  
+		menuCameraController.transform.DOLocalRotate(currentScreen.transform.localEulerAngles + new Vector3 (36, 0, 0), 1).Play ().OnComplete(LevelManager.manager.FirstLoadLevel);  
 	
 	}
 	
@@ -139,19 +146,19 @@ public class LevelSelectManager : MonoBehaviour {
 			currentScreen = nextScreen;
 			nextScreen = oldPreviousScreen;
 			SetupScreens ();
-		}
+		} //else current screen will remain focused
 
 	}
 
-	//sets the previous level screen to be the new focused and current level screen
+	//se	ts the previous level screen to be the new focused and current level screen
 	private void SetPreviousAsFocused(){
-		if (previousLevelExists) {
+		if (previousLevelExists) { 
 			LevelInfo oldNextScreen = nextScreen;
 			nextScreen = currentScreen;
 			currentScreen = previousScreen;
 			previousScreen = oldNextScreen;
 			SetupScreens ();
-		}
+		} //else current screen will remain focused
 	}
 
 	//moves screens around the current screen and sets them to display correct data

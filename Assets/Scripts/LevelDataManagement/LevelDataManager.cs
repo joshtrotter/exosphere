@@ -42,16 +42,17 @@ public class LevelDataManager : MonoBehaviour {
 		}
 		//load and add all the users saved data to the allLevelData dictionary
 		Load ();
+		//do an integrity check on unlcoks based on stars, will also unlock any 0-star levels
+		CheckForNewStarUnlocks ();
 	}
 
 	//TODO remove
-	void Start(){
-		allLevelData [levelToLoad].Unlock ();
-		foreach (int id in allLevelData.Keys) {
-			allLevelData[id].Unlock();
-		}
-		//LevelInfo.controller.DisplayLevelInfo (allLevelData [levelToLoad]);
-		//LevelSelectManager.manager.StartWorldLevelsDisplay (GetCurrentWorldData ());
+	 void Start(){
+		//allLevelData [levelToLoad].Unlock ();
+		//foreach (int id in allLevelData.Keys) {
+			//allLevelData[id].Unlock();
+			//allLevelData[id].Complete ();
+		//}
 	}
 
 	public LevelData GetCurrentLevelData(){
@@ -62,7 +63,9 @@ public class LevelDataManager : MonoBehaviour {
 		return allWorldData [GetCurrentLevelData ().GetParentID ()];
 	}
 
-	public LevelData GetNextLevelData(LevelData level){
+	public LevelData GetNextLevelData(LevelData level = null){
+		if (level == null) //use current level
+			level = GetCurrentLevelData ();
 		WorldData parentWorld = allWorldData [level.GetParentID ()];
 		int levelID = parentWorld.GetNextLevelID (level);
 		return levelID != 0 ? allLevelData [levelID] : null;
@@ -76,6 +79,35 @@ public class LevelDataManager : MonoBehaviour {
 
 	public LevelData GetLevelData(int levelID){
 		return allLevelData [levelID];
+	}
+
+	public WorldData GetWorldData(int worldID){
+		return allWorldData [worldID];
+	}
+
+	public int GetNumberOfWorlds(){
+		return allWorldData.Keys.Count;
+	}
+
+	public int CountAllStarsEarned(){
+		int starsEarned = 0;
+		foreach (LevelData level in allLevelData.Values) {
+			starsEarned += level.GetStarsEarned();
+		}
+		return starsEarned;
+	}
+
+	//checks whether any new levels should be unlocked due to star count, and returns the number that were
+	public int CheckForNewStarUnlocks(){
+		int newLevelsUnlocked = 0;
+		int starsEarned = CountAllStarsEarned ();
+		foreach (LevelData level in allLevelData.Values) {
+			if (!level.IsUnlocked() && starsEarned >= level.GetStarsRequiredToUnlock()){
+				level.Unlock ();
+				newLevelsUnlocked += 1;
+			}
+		}
+		return newLevelsUnlocked;
 	}
 
 	//saves all necessary data to file
@@ -116,11 +148,11 @@ public class LevelDataManager : MonoBehaviour {
 
 	public void ClearSaveData()
 	{
+		Debug.Log ("Clearing all save data");
 		if (File.Exists (Application.persistentDataPath + "/exosphereData.dat")) {
 			File.Delete (Application.persistentDataPath + "/exosphereData.dat");
 		}
 		allLevelData.Clear();
 		SetupLevelData();
-		Start ();
 	}
 }
