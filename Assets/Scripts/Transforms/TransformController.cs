@@ -7,6 +7,8 @@ public class TransformController : MonoBehaviour {
 	public BallTransform standardTransform;
 	public BallTransform currentTransform;
 
+	public ParticleSystem morphEffect;
+
 	//Control the force and duration of the atomizer explosion when shaking off a transform
 	public float atomizerForce = 15f;
 	public float atomizerDuration = 1f;
@@ -26,8 +28,11 @@ public class TransformController : MonoBehaviour {
 		if (newTransform != currentTransform) {
 			currentTransform.Remove (ballController);
 			newTransform.Apply (ballController);
-			currentTransform = newTransform;	
-			HUD.controller.SendMessage("MorphApplied", currentTransform);
+			currentTransform = newTransform;
+			if (currentTransform != standardTransform) {
+				morphEffect.Play();
+				HUD.controller.SendMessage("MorphApplied", currentTransform);
+			}
 		}
 	}
 
