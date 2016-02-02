@@ -15,7 +15,7 @@ public class DestructibleWallPiece : DestructibleObject {
 	}
 
 	void OnCollisionEnter(Collision coll){
-		if (!hasMoved && Vector3.Distance(transform.position, startPos) > 1){
+		if (!hasMoved && Vector3.Distance(transform.position, startPos) > 0.5){
 			StartCoroutine(WaitToDie());
 			hasMoved = true;
 		}
