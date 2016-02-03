@@ -13,7 +13,7 @@ public class GlassTransform : BallTransform {
 	public float slowTurnSpeed = 1.5f;
 
 	//A reference to the shattering particle effect that should be used when the ball breaks
-	public ParticleSystem shatterParticles;
+	//public ParticleSystem shatterParticles;
 
 	public override void Apply(BallController ball){
 		base.Apply (ball);

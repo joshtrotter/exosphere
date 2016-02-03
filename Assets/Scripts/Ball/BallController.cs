@@ -93,6 +93,10 @@ public class BallController : MonoBehaviour
 		return targetVelocity;
 	}
 
+	public float GetMovePower(){
+		return movePower;
+	}
+
 
 	//Utility method for checking if the ball is grounded
 	public Boolean IsOnGround ()
