@@ -15,6 +15,7 @@ public class ManualDoor : Door {
 
 	private float openY;
 	private float closedY;
+	private float currentOpenAmount;
 	
 	void Awake()
 	{
@@ -49,9 +50,7 @@ public class ManualDoor : Door {
 	private IEnumerator MoveUp(){
 		while (IsOpening) {
 			yield return new WaitForEndOfFrame();
-			Vector3 newPos = transform.position;
-			newPos.y = Mathf.Lerp (transform.position.y, openY, doorSpeed * Time.deltaTime);
-			transform.position = newPos;
+			SetOpenAmount (currentOpenAmount + doorSpeed * Time.deltaTime);
 			if (transform.position.y >= openY){
 				IsOpening = false;
 			}
@@ -61,13 +60,19 @@ public class ManualDoor : Door {
 	private IEnumerator MoveDown(){
 		while (IsClosing) {
 			yield return new WaitForEndOfFrame();
-			Vector3 newPos = transform.position;
-			newPos.y = Mathf.Lerp (transform.position.y, closedY, doorSpeed * Time.deltaTime);
-			transform.position = newPos;
+			SetOpenAmount (currentOpenAmount - doorSpeed * Time.deltaTime);
 			if (transform.position.y <= closedY){
 				IsClosing = false;
 			}
 		}
+	}
+
+	public void SetOpenAmount(float openAmount) {
+		openAmount = Mathf.Clamp01 (openAmount);
+		currentOpenAmount = openAmount;
+		Vector3 newPos = transform.position;
+		newPos.y = Mathf.Lerp (closedY, openY, openAmount);
+		transform.position = newPos;
 	}
 
 	public override void Lock(){
