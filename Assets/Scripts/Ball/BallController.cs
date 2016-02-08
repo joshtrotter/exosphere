@@ -13,7 +13,9 @@ public class BallController : MonoBehaviour
 	// The speed with which the balls velocity is adjusted to match the camera rotation (too slow and the ball becomes hard to turn, too fast and the movement feels unrealistic)
 	public float turnResponsiveness = 1f;
 	// The maximum velocity the ball can rotate at
-	public float maxAngularVelocity = 17.5f; 
+	public float maxAngularVelocity = 17.5f;
+	// Enabling this will cause the ball to lock brakes like a car
+	public bool allowBrakeLocks = false;
 	 
 	//Hold a reference to the brake controller script
 	private BrakeController brakes;
@@ -54,7 +56,7 @@ public class BallController : MonoBehaviour
 				rb.AddForce (moveDirection * movePower);
 
 				//If the player attempts to turn sharply at a high velocity then they will skid out
-				if (brakes.CheckForBrakeLockOnTurn(moveDirection)) {
+				if (allowBrakeLocks && brakes.CheckForBrakeLockOnTurn(moveDirection)) {
 					brakes.LockBrakes();
 				}
 
@@ -78,11 +80,11 @@ public class BallController : MonoBehaviour
 		if (!brakes.IsBrakeLocked()) {
 			if (IsOnGround ()) {
 				//Lock the brakes if the player is applying a hard brake and the ball is travelling above the brakeLockVelocity...
-				if (!brakes.CheckForBrakeLockOnBrake(brakePower)) {
+				if (allowBrakeLocks && brakes.CheckForBrakeLockOnBrake(brakePower)) {
+					brakes.LockBrakes();
+				} else {
 					//...otherwise apply brakes normally
 					brakes.ApplyBrakes(brakePower);
-				} else {
-					brakes.LockBrakes();
 				}
 			}
 		}
