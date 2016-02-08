@@ -18,4 +18,13 @@ public class PressureControlledElevator : PressureReceiver {
 		newPos.y = baseY + Mathf.Clamp01 (pressureAmount) * height * (pressureToRaise ? 1 : -1);
 		transform.position = newPos;
 	}
+
+	void OnCollisionStay(Collision coll){
+		coll.transform.parent = this.transform;
+	}
+
+	void OnCollisionExit(Collision coll){
+		coll.transform.parent = null;
+	}
 }
+;
