@@ -24,6 +24,10 @@ public abstract class UISystem : MonoBehaviour {
 		Hide ();
 	}
 
+	public virtual void BackKey(){
+
+	}
+
 	public abstract void Show ();
 
 	public abstract void Hide ();

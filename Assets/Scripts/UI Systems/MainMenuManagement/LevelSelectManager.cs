@@ -37,7 +37,7 @@ public class LevelSelectManager : MonoBehaviour {
 		previousScreen = screens [1];
 		nextScreen = screens [2];
 	}
-	
+
 	public LevelInfo GetCurrentScreen(){
 		return currentScreen;
 	}
@@ -196,5 +196,14 @@ public class LevelSelectManager : MonoBehaviour {
 	//ie if in the middle of a swipe then the level won't load as the button press was probably not intentional
 	public bool IsSafeToPress(){
 		return !menuCameraController.IsSwiping ();
+	}
+
+	//the main menu controller will call this function when the back button is pressed
+	public void BackButton(){
+		if (focusedOnWorldLayer){
+			ReturnToWorldSelect();
+		} else {
+			ReturnToWorldDisplay();
+		}
 	}
 }

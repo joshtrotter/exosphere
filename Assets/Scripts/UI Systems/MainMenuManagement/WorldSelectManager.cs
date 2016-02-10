@@ -13,6 +13,8 @@ public class WorldSelectManager : MonoBehaviour {
 	private RectTransform rectTransform;
 	private int worldNumber = 0;
 
+	private bool isShown;
+
 	//the distance between the different layers
 	public float worldGap = 716;
 
@@ -26,6 +28,8 @@ public class WorldSelectManager : MonoBehaviour {
 
 	void Awake(){
 		DontDestroyOnLoad (this);
+		isShown = true;
+
 		canvas = GetComponentInChildren<CanvasGroup> ();
 		levelSelectManager = GetComponent<LevelSelectManager> ();
 		worldInfo = GetComponentInChildren<WorldInfo> ();
@@ -67,6 +71,7 @@ public class WorldSelectManager : MonoBehaviour {
 
 	public void EnterWorld(WorldData world){
 		if (!isAVerticalSwipe){
+			isShown = false;
 			levelSelectManager.StartWorldLevelsDisplay (world);
 			canvas.DOFade (0, 1).Play ().OnComplete(Disable);
 		}
@@ -87,6 +92,7 @@ public class WorldSelectManager : MonoBehaviour {
 	}
 
 	public void ExitWorld(){
+		isShown = true;
 		canvas.gameObject.SetActive (true);
 		canvas.DOFade (1, 1).Play ();
 	}
@@ -159,6 +165,11 @@ public class WorldSelectManager : MonoBehaviour {
 		} else if ((-1 * target_y) > (worldNumber * worldGap) + (worldGap * 0.3)) {
 			worldNumber += 1;
 		}
+	}
+	
+	//the main menu controller will call this function when the back button is pressed
+	public void BackButton(){
+		if (isShown) ReturnToOpeningScreen ();
 	}
 
 }

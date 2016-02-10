@@ -76,4 +76,8 @@ public class PauseMenu : UISystem {
 		Application.LoadLevel (0);
 		MainMenuController.controller.ReturnFocusToWorldLevels ();
 	}
+
+	public override void BackKey(){
+		Unpause ();
+	}
 }

@@ -14,10 +14,14 @@ public class WorldLevels : MonoBehaviour {
 	public Sprite uncompletedLevel;
 	public Sprite completedLevel;
 
+	void Awake(){
+		//this line can go in start if we don't skip straight to the troposphere world levels screen
+		levelIcons = GetComponentsInChildren<LevelIcon> ();
+	}
+
 	void Start(){
 		GetComponentInChildren<Canvas> ().renderMode = RenderMode.WorldSpace;
 		levelSelectManager = GetComponentInParent<LevelSelectManager> ();
-		levelIcons = GetComponentsInChildren<LevelIcon> ();
 	}
 
 	public void DisplayWorldLevels (WorldData world)

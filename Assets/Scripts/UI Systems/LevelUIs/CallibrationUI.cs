@@ -27,6 +27,7 @@ public class CallibrationUI : UISystem {
 			Destroy(gameObject);
 		}
 		canvas = GetComponentInChildren<Canvas> ();
+		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0).Play ();
 		base.Awake ();
 	}
 

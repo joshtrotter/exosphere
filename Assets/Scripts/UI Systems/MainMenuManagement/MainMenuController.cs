@@ -11,25 +11,40 @@ public class MainMenuController : UISystem {
 
 	public override void Awake(){
 		//set up singleton instance
+		Debug.Log ("MainMenuController awake, instance ID: " + GetInstanceID());
 		if (controller == null) {
+			Debug.Log ("static variable is null");
 			controller = this;
 			DontDestroyOnLoad (this);
 			base.Awake ();
+
+			levelSelectManager = mainMenuSystem.GetComponent<LevelSelectManager>();
+			worldSelectManager = mainMenuSystem.GetComponent<WorldSelectManager>();
+			OnLevelWasLoaded ();
+
 		} else if (controller != this) {
+			Debug.Log ("Destroying");
 			Destroy(gameObject);
 		}
 
-		levelSelectManager = mainMenuSystem.GetComponent<LevelSelectManager>();
-		worldSelectManager = mainMenuSystem.GetComponent<WorldSelectManager>();
-		OnLevelWasLoaded ();
+
 	}
 	
 	private void OnLevelWasLoaded(){
-		if (Application.loadedLevel == 0) {
-			SetSkybox ();
-			RequestToBeShown ();
-		} else {
-			Deregister ();
+		if (controller == this) {
+			if (Application.loadedLevel == 0) {
+				SetSkybox ();
+				RequestToBeShown ();
+			} else {
+				Deregister ();
+			}
+		}
+	}
+
+	//TODO remove. Causes the game to skip to the troposphere level select menu when started
+	void Start(){
+		if (Application.loadedLevel == 0 && controller == this) {
+			worldSelectManager.EnterWorld (LevelDataManager.manager.GetWorldData (1));
 		}
 	}
 
@@ -41,7 +56,13 @@ public class MainMenuController : UISystem {
 		mainMenuSystem.SetActive (false);
 	}
 
+	public override void BackKey(){
+		worldSelectManager.BackButton ();
+		levelSelectManager.BackButton ();
+	}
+
 	private void SetSkybox(){
+		Debug.Log ("Setting skybox for instance " + GetInstanceID());
 		WorldData world = levelSelectManager.GetCurrentWorld ();
 		if (world != null)
 			RenderSettings.skybox = world.skybox;

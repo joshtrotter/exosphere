@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 
 public class LevelCompleteScreen : UISystem {
 
 	public static LevelCompleteScreen controller;
+
+	public GameObject dropPanel;
 
 	public Text supplyCrateTitleText;
 	public Text cratesFoundText;
@@ -17,6 +20,8 @@ public class LevelCompleteScreen : UISystem {
 	public Text goldenBallStarEarned;
 
 	private List<Text> displayList = new List<Text> ();
+
+	private int buttonPress;
 
 	public Canvas levelCompleteCanvas;
 
@@ -32,6 +37,7 @@ public class LevelCompleteScreen : UISystem {
 			Destroy(gameObject);
 		}
 		base.Awake ();
+		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0).Play ();
 		SetAllInactive ();
 	}
 
@@ -104,6 +110,7 @@ public class LevelCompleteScreen : UISystem {
 		
 	public override void Show(){
 		levelCompleteCanvas.gameObject.SetActive (true);
+		dropPanel.transform.DOLocalMoveY (0, 0.5f).Play ();
 		StartCoroutine (RevealSummary ());
 	}
 
@@ -117,22 +124,54 @@ public class LevelCompleteScreen : UISystem {
 		//add to list
 		displayList.Add (text);
 	}
+	public override void Hide(){
+		//make everything invisible to allow step by step reveal on next show
+		SetAllInactive ();
+		levelCompleteCanvas.gameObject.SetActive (false);
+	}
+
+	private IEnumerator RevealSummary(){
+		yield return new WaitForSeconds(1.5f);
+		foreach (Text text in displayList) {
+			text.color = Color.white;
+			yield return new WaitForSeconds(1f);
+		}
+	}
+
+	//functions to deal with button presses and smoothly closing the level complete screen;
 	
-	public void BackToMenu(){
+	public void ButtonPress(int button){
+		buttonPress = button;
+		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).OnComplete (CallButtonFunction).Play ();
+	}
+	
+	private void CallButtonFunction(){
 		Deregister ();
+		switch (buttonPress) {
+		case 0:
+			BackToMenu ();
+			break;
+		case 1:
+			ReplayLevel ();
+			break;
+		case 2:
+			NextLevel ();
+			break;
+		}
+	}
+	
+	private void BackToMenu(){
 		Debug.Log ("Loading level loader from level complete screen");
 		Application.LoadLevel (0);
 		MainMenuController.controller.ReturnFocusToWorldLevels ();
 	}
-
-	public void ReplayLevel(){
-		Deregister ();
+	
+	private void ReplayLevel(){
 		Debug.Log ("Restarting level");
 		LevelManager.manager.FirstLoadLevel ();
 	}
-
-	public void NextLevel(){
-		Deregister ();
+	
+	private void NextLevel(){
 		Debug.Log ("Loading level loader from level complete screen");
 		LevelData nextLevel = LevelDataManager.manager.GetNextLevelData ();
 		Application.LoadLevel (0);
@@ -143,17 +182,9 @@ public class LevelCompleteScreen : UISystem {
 		}
 	}
 
-	public override void Hide(){
-		//make everything invisible to allow step by step reveal on next show
-		SetAllInactive ();
-		levelCompleteCanvas.gameObject.SetActive (false);
+	public override void BackKey(){
+		ButtonPress (0);
 	}
+	
 
-	private IEnumerator RevealSummary(){
-		yield return new WaitForSeconds(1f);
-		foreach (Text text in displayList) {
-			text.color = Color.white;
-			yield return new WaitForSeconds(1f);
-		}
-	}
 }

@@ -40,4 +40,8 @@ public class HUD : UISystem {
 		TutorialMessageController.controller.CloseMessage ();
 		Hide ();
 	}
+
+	public override void BackKey(){
+		PauseMenu.controller.Pause ();
+	}
 }
