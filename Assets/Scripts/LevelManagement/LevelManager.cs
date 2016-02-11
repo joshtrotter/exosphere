@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour {
@@ -69,8 +70,8 @@ public class LevelManager : MonoBehaviour {
 				firstLoad = false;
 			} else {
 				OnReload();
+				SetupLevel ();
 			}
-			SetupLevel ();
 		}
 	}
 
@@ -84,6 +85,33 @@ public class LevelManager : MonoBehaviour {
 		ResetLevelToInitialState ();
 		SetSpawnLocation(StartSpawn.transform);
 		SetCameraRotation (StartSpawn.transform.localRotation.eulerAngles.y);
+		StartCoroutine(PerformLevelInit ());
+	}
+
+	private IEnumerator PerformLevelInit() {
+		StartSequence startSequence = GameObject.FindGameObjectWithTag ("LevelStartController").GetComponent<StartSequence> ();
+		
+		if (startSequence != null) {
+			AmazeballCam camController = GameObject.FindGameObjectWithTag ("CameraRig").GetComponent<AmazeballCam>();
+			GameObject ball = GameObject.FindGameObjectWithTag("Player");
+
+			//disable player and controls
+			camController.enabled = false;
+			ball.GetComponent<Renderer>().enabled = false;
+			ball.GetComponent<Rigidbody>().isKinematic = true;
+
+			startSequence.init ();
+			while (!startSequence.IsCompleted()) {
+				yield return new WaitForEndOfFrame();
+			}
+
+			//enable player and controls
+			camController.enabled = true;
+			ball.GetComponent<Renderer>().enabled = true;
+			ball.GetComponent<Rigidbody>().isKinematic = false;
+		}
+
+		SetupLevel ();
 	}
 
 	private void ResetLevelToInitialState(){
