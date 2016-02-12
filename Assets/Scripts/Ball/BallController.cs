@@ -45,7 +45,6 @@ public class BallController : MonoBehaviour
 	//Invoked when acceleration is being applied
 	public void Accelerate (Vector3 moveDirection)
 	{
-//		Debug.Log (moveDirection);
 		//Disable acceleration while brake locked
 		if (!brakes.IsBrakeLocked()) {
 			//If we are accelerating then we definitely aren't braking so return the drag values to neutral
