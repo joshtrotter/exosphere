@@ -4,10 +4,17 @@ using System.Collections;
 public class TriggerSwitch : Switch {
 
 	public bool activateOnExit = false;
+	public bool activateOnceOnly = false;
+	private bool hasBeenActivated;
 
 	void OnTriggerEnter(Collider coll){
 		if (coll.CompareTag("Player")){
-			target.Activate();
+			if (!hasBeenActivated){
+				target.Activate();
+			}
+			if (activateOnceOnly){
+				hasBeenActivated = true;
+			}
 		}
 	}
 

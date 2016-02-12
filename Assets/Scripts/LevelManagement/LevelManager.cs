@@ -89,9 +89,10 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	private IEnumerator PerformLevelInit() {
-		StartSequence startSequence = GameObject.FindGameObjectWithTag ("LevelStartController").GetComponent<StartSequence> ();
+		GameObject levelStartController = GameObject.FindGameObjectWithTag ("LevelStartController");
 		
-		if (startSequence != null) {
+		if (levelStartController != null) {
+			StartSequence startSequence = levelStartController.GetComponent<StartSequence> ();
 			AmazeballCam camController = GameObject.FindGameObjectWithTag ("CameraRig").GetComponent<AmazeballCam>();
 			GameObject ball = GameObject.FindGameObjectWithTag("Player");
 
