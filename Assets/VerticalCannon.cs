@@ -32,6 +32,7 @@ public class VerticalCannon : MonoBehaviour {
 		//disable player control of the ball
 		BallInputReader ballInput = rb.GetComponent<BallInputReader> ();
 		ballInput.enabled = false;
+		rb.GetComponent<BrakeController> ().ReleaseBrakes ();
 
 		//position ball within the centre of the cannon correctly
 		rb.velocity = Vector3.zero;

@@ -63,6 +63,8 @@ public class BallController : MonoBehaviour
 				targetVelocity = moveDirection.normalized * rb.velocity.magnitude;
 				//If we jump straight to the target velocity the movement will not feel smooth when the camera turn so we will lerp there over time
 				rb.velocity = Vector3.Lerp (rb.velocity, targetVelocity, Time.deltaTime * turnResponsiveness);
+			} else {
+				brakes.ReleaseBrakes();
 			}
 		}
 	}
@@ -85,6 +87,8 @@ public class BallController : MonoBehaviour
 					//...otherwise apply brakes normally
 					brakes.ApplyBrakes(brakePower);
 				}
+			} else {
+				brakes.ReleaseBrakes();
 			}
 		}
 	}
