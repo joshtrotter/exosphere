@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using DG.Tweening;
 using UnityStandardAssets.CrossPlatformInput;
 
 /**
@@ -63,7 +64,7 @@ public class AmazeballCam : MonoBehaviour
 		// Adjust the look angle by an amount proportional to the turn speed and horizontal input.
 		camAngle += (x * turnSpeed * Time.deltaTime * targetFps) % 360f;
 		// Rotate the rig (the root object) around Y axis only:
-		transform.localRotation = Quaternion.Euler (0f, camAngle, 0f);
+		transform.localRotation = Quaternion.Euler (transform.localEulerAngles.x, camAngle, transform.localEulerAngles.z);
 			
 		// Adjust the pivot tilt between zero and the min/max tilt values based on the vertical input
 		pivotTilt = y > 0 ? Mathf.Lerp (0, -minTilt, y) : Mathf.Lerp (0, maxTilt, -y);
@@ -76,6 +77,10 @@ public class AmazeballCam : MonoBehaviour
 	{
 		// Move the rig towards the ball position.
 		transform.position = Vector3.Lerp (transform.position, ball.position, Time.deltaTime * moveSpeed);
+	}
+
+	public void movePivot(Vector3 move, float duration = 1f){
+		pivot.transform.DOBlendableLocalMoveBy (move, duration).Play ();
 	}
 
    

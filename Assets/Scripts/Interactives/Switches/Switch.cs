@@ -7,7 +7,7 @@ public class Switch : HasLevelState {
 	protected const int OFF_STATE = 1;
 
 	//store a reference to the object to be activated by the switch
-	public SwitchableObject target;
+	public SwitchableObject[] targets;
 	
 	public virtual void SwapState(){
 		if (currentState == ON_STATE) {
@@ -19,12 +19,16 @@ public class Switch : HasLevelState {
 	
 	public virtual void TurnOn(){
 		RegisterStateChange (ON_STATE);
-		target.Activate ();
+		foreach (SwitchableObject target in targets) {
+			target.Activate ();
+		}
 	}
 	
 	public virtual void TurnOff(){
 		RegisterStateChange (OFF_STATE);
-		target.Activate ();
+		foreach (SwitchableObject target in targets) {
+			target.Activate ();
+		}
 	}
 
 	public override void ReloadState(int state) {
