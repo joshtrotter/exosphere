@@ -23,13 +23,15 @@ public class PressureControlledElevator : PressureReceiver {
 		transform.position = startPos + Mathf.Clamp01 (pressureAmount) * posChange;
 	}
 
-	void OnTriggerStay(Collider coll){
-		Debug.Log ("Staying in trigger");
-		coll.transform.parent = this.transform;
+	void OnTriggerEnter(Collider coll){
+		//Debug.Log ("Staying in trigger");
+		if (coll.CompareTag ("Player")) {
+			coll.transform.parent = this.transform;
+		}
 	}
 
 	void OnTriggerExit(Collider coll){
-		Debug.Log ("exiting trigger");
+		//Debug.Log ("exiting trigger");
 		coll.transform.parent = null;
 	}
 }

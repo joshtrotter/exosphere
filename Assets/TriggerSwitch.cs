@@ -10,7 +10,7 @@ public class TriggerSwitch : Switch {
 	void OnTriggerEnter(Collider coll){
 		if (coll.CompareTag("Player")){
 			if (!hasBeenActivated){
-				target.Activate();
+				SwapState();
 			}
 			if (activateOnceOnly){
 				hasBeenActivated = true;
@@ -20,7 +20,7 @@ public class TriggerSwitch : Switch {
 
 	void OnTriggerExit(Collider coll){
 		if (activateOnExit && coll.CompareTag("Player")){
-			target.Activate();
+			SwapState();
 		}
 	}
 }
