@@ -29,9 +29,9 @@ public class WormholeJumpPickup : Pickup
 	public override void Reset ()
 	{
 		base.Reset ();
-		this.jumpLocation = null;
-		this.wormhole.gameObject.SetActive (false);
-		this.wormhole.enableEmission = false;
+		//this.jumpLocation = null;
+		//this.wormhole.gameObject.SetActive (false);
+		//this.wormhole.enableEmission = false;
 	}
 
 	protected override void Apply (BallController ball)
@@ -45,7 +45,7 @@ public class WormholeJumpPickup : Pickup
 			GetCameraRig ().GetComponent<AmazeballCam> ().enabled = false;
 
 			float travelTime = CalculateTravelTimeToWormhole(ball.transform.position);
-			Vibration.Vibrate (Convert.ToInt64(travelTime) * 1000L);
+			//Vibration.Vibrate (Convert.ToInt64(travelTime) * 1000L);
 
 			DOTween.Sequence ()
 				.Append (GetCameraRig ().transform.DOMove (jumpLocation.transform.position, travelTime))
