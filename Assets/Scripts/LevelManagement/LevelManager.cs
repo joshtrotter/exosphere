@@ -117,16 +117,13 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	private void ResetLevelToInitialState(){
-		collected = 0;
-		goldenBallFound = false;
+		ClearUnsavedProgress ();
 		objectStates.Clear ();
 	}
 
 	private void OnReload()
 	{
-		collected = 0;
-		goldenBallFound = false;
-		tempObjectStates.Clear ();
+		ClearUnsavedProgress ();
 		HasLevelState[] statefulLevelObjects = Object.FindObjectsOfType<HasLevelState> ();
 		foreach (HasLevelState obj in statefulLevelObjects) {
 			int rememberedState = 0;
@@ -134,6 +131,13 @@ public class LevelManager : MonoBehaviour {
 				obj.ReloadState(rememberedState);
 			}
 		}
+	}
+
+	private void ClearUnsavedProgress ()
+	{
+		collected = 0;
+		goldenBallFound = false;
+		tempObjectStates.Clear ();
 	}
 
 	private void SetupLevel() 
