@@ -20,10 +20,15 @@ public class Checkpoint : MonoBehaviour {
 		if (coll.CompareTag ("Player")) {
 			ResetSpawnPoint();
 			ResetCamera();
-			ResetPlayer (coll.gameObject);
+			SaveLevelProgress();
+			//ResetPlayer (coll.gameObject);
 			HUD.controller.SendMessage("CheckpointReached");
 			VisualizeCheckpoint();
 		}
+	}
+
+	private void SaveLevelProgress(){
+		LevelManager.manager.UpdateLevelProgress ();
 	}
 
 	private void ResetSpawnPoint() {
@@ -34,6 +39,7 @@ public class Checkpoint : MonoBehaviour {
 		LevelManager.manager.SetCameraRotation(this.cameraAngle);
 	}
 
+	//no longer used
 	private void ResetPlayer(GameObject ball) {
 		ball.GetComponent<TransformController> ().RemoveCurrent ();
 	}

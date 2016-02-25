@@ -41,6 +41,7 @@ public class Collectable : HasLevelState {
 
 	public override void ReloadState(int state) {
 		if (state == COLLECTED_STATE) {
+			LevelManager.manager.CollectSupplyCrate();
 			OnCollectionComplete ();
 		}
 	}

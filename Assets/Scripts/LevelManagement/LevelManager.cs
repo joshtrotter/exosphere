@@ -18,6 +18,7 @@ public class LevelManager : MonoBehaviour {
 	public bool goldenBallFound;
 
 	private Dictionary<string, int> objectStates = new Dictionary<string, int>();
+	private Dictionary<string, int> tempObjectStates = new Dictionary<string, int>();
 
 	private bool firstLoad = true;
 	
@@ -123,6 +124,9 @@ public class LevelManager : MonoBehaviour {
 
 	private void OnReload()
 	{
+		collected = 0;
+		goldenBallFound = false;
+		tempObjectStates.Clear ();
 		HasLevelState[] statefulLevelObjects = Object.FindObjectsOfType<HasLevelState> ();
 		foreach (HasLevelState obj in statefulLevelObjects) {
 			int rememberedState = 0;
@@ -173,7 +177,15 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void RegisterObjectState(string objectId, int objectState) {
-		objectStates[objectId] = objectState;
+		tempObjectStates[objectId] = objectState;
+	}
+
+	public void UpdateLevelProgress(){
+		//update saved objectStates
+		foreach (string objectID in tempObjectStates.Keys) {
+			objectStates[objectID] = tempObjectStates[objectID];
+		}
+		tempObjectStates.Clear ();
 	}
 
 	public void CollectSupplyCrate() {

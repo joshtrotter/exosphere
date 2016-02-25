@@ -16,6 +16,10 @@ public class WormholeJumpPickup : Pickup
 	private GameObject cameraRig;
 	private GameObject jumpLocation;
 
+	void Start(){
+		RemoveWormhole ();
+	}
+
 	public override String GetId ()
 	{
 		return "WormholeJump";
@@ -32,6 +36,13 @@ public class WormholeJumpPickup : Pickup
 		//this.jumpLocation = null;
 		//this.wormhole.gameObject.SetActive (false);
 		//this.wormhole.enableEmission = false;
+	}
+
+	//clears away a currently placed wormhole after a jump
+	private void RemoveWormhole(){
+		this.jumpLocation = null;
+		this.wormhole.gameObject.SetActive (false);
+		this.wormhole.enableEmission = false;
 	}
 
 	protected override void Apply (BallController ball)
@@ -101,7 +112,7 @@ public class WormholeJumpPickup : Pickup
 			}
 			yield return new WaitForEndOfFrame();
 		}	
-		Reset ();
+		RemoveWormhole ();
 	}
 
 }
