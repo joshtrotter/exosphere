@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ZoomPad : SwitchableObject {
 
-	private BallController ball;
+	//private BallController ball;
 	public Renderer[] floatingArrows;
 	public float zoomSpeed = 3f;
 	private Color offColor;
@@ -52,10 +52,23 @@ public class ZoomPad : SwitchableObject {
 	}
 
 	void OnTriggerEnter(Collider coll){
-		if (IsOn && coll.gameObject.CompareTag("Player")){
-			ball = coll.GetComponent<BallController>();
+		if (IsOn){
+			float movePower; 
+			if (coll.gameObject.CompareTag("Player")){
+				movePower = coll.GetComponent<BallController>().GetMovePower();
+				coll.GetComponent<BallInputReader>().enabled = false;
+				coll.GetComponent<BrakeController> ().ReleaseBrakes ();
+			} else {
+				movePower = 10 * coll.attachedRigidbody.mass;
+			}
 			SetAllLightsColor(onColor);
-			coll.attachedRigidbody.AddForce(transform.forward * zoomSpeed * ball.GetMovePower(), ForceMode.Impulse);
+			coll.attachedRigidbody.AddForce(transform.forward * zoomSpeed * movePower, ForceMode.Impulse);
+		}
+	}
+
+	void OnTriggerExit(Collider coll){
+		if (IsOn && coll.CompareTag("Player")){
+			coll.GetComponent<BallInputReader>().enabled = true;
 		}
 	}
 }
