@@ -12,10 +12,14 @@ public class TriggerSwitch : Switch {
 			if (!hasBeenActivated){
 				SwapState();
 			}
-			if (activateOnceOnly){
-				hasBeenActivated = true;
-			}
 		}
+	}
+
+	public override void SwapState(){
+		if (activateOnceOnly) {
+			hasBeenActivated = true;
+		}
+		base.SwapState ();
 	}
 
 	void OnTriggerExit(Collider coll){
@@ -23,4 +27,5 @@ public class TriggerSwitch : Switch {
 			SwapState();
 		}
 	}
+	
 }
