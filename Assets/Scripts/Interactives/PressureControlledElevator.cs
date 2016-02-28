@@ -34,5 +34,7 @@ public class PressureControlledElevator : PressureReceiver {
 		//Debug.Log ("exiting trigger");
 		coll.transform.parent = null;
 	}
+
+	public override void ReloadState (int state){}
 }
 ;

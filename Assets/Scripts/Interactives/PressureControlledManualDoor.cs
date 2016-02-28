@@ -10,4 +10,6 @@ public class PressureControlledManualDoor : PressureReceiver {
 	{
 		door.SetOpenAmount (pressureAmount * (pressureToOpen ? 1 : -1));
 	}
+
+	public override void ReloadState (int state){}
 }

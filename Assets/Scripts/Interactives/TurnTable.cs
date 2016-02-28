@@ -14,6 +14,8 @@ public class TurnTable : PressureReceiver {
 	public float degreesPerSecond = 45f;
 	//degree increments from start rotation to which the turn table will lock to after the player gets off the pressure plate
 	public float lockingIncrement = 90f;
+	//maximum degree difference the turntable will turn. Values close to or greater than 180 have no effect and will allow the turntable to keep turning indefinitely
+	public float maximumTurnAngle = 180f;
 
 
 	void Awake(){
@@ -26,9 +28,14 @@ public class TurnTable : PressureReceiver {
 				StopCoroutine (lockingCoroutine);
 				lockingCoroutine = null;
 			}
-			Vector3 newAngle = transform.localEulerAngles;
-			newAngle.y += Time.deltaTime * pressureAmount * degreesPerSecond * (pressureForClockwiseRotation ? 1 : -1);
-			transform.localRotation = Quaternion.Euler (newAngle);
+			float newAngle = Time.deltaTime * pressureAmount * degreesPerSecond * (pressureForClockwiseRotation ? 1 : -1);
+			if (180 - Mathf.Abs((Mathf.Abs(newAngle + transform.localEulerAngles.y - baseYRot) % 360) - 180) > maximumTurnAngle){
+				Vector3 newRot = transform.localEulerAngles;
+				newRot.y = baseYRot + (maximumTurnAngle * (pressureForClockwiseRotation ? 1 : -1));
+				transform.localRotation = Quaternion.Euler (newRot);
+			} else {
+				transform.localRotation = Quaternion.Euler (transform.localEulerAngles + new Vector3(0f, newAngle, 0f));
+			}
 		} else {
 			if (lockingCoroutine == null){
 				lockingCoroutine = LockTo90Degrees ();
@@ -40,8 +47,11 @@ public class TurnTable : PressureReceiver {
 
 	private IEnumerator LockTo90Degrees(){
 		Vector3 targetAngle = transform.localEulerAngles;
+		//Debug.Log ((baseYRot + Mathf.Round ((targetAngle.y - baseYRot) / lockingIncrement) * lockingIncrement));
 		targetAngle.y = (baseYRot + Mathf.Round((targetAngle.y - baseYRot) / lockingIncrement) * lockingIncrement) % 360;
+		RegisterStateChange (Mathf.RoundToInt (targetAngle.y / lockingIncrement));
 		Debug.Log ("Turntable locking to " + targetAngle);
+		Debug.Log ("Setting state to " + Mathf.RoundToInt (targetAngle.y / lockingIncrement));
 		while (Mathf.Abs(transform.localEulerAngles.y - targetAngle.y) > Mathf.Epsilon) {
 			transform.localEulerAngles = Vector3.RotateTowards(transform.localEulerAngles, targetAngle, Time.deltaTime, 1f);
 			yield return new WaitForFixedUpdate ();
@@ -55,5 +65,9 @@ public class TurnTable : PressureReceiver {
 	
 	void OnCollisionExit(Collision coll){
 		coll.transform.parent = null;
+	}
+
+	public override void ReloadState (int state){
+		transform.localEulerAngles = transform.localEulerAngles + new Vector3 (0f, state * lockingIncrement, 0f);
 	}
 }
