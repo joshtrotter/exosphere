@@ -7,7 +7,7 @@ public class MorphHUDController : MonoBehaviour {
 
 	public Button morphDisplay;
 
-	void Awake(){
+	void OnLevelWasLoaded (){
 		MorphRemoved ();
 	}
 
