@@ -79,6 +79,18 @@ public class PickupController : MonoBehaviour
 		LookupSlot(slot).AddPickupHighlight ();
 	}
 
+	public void RemoveAll() 
+	{
+		rightSlot.RemovePickup();
+		leftSlot.RemovePickup();
+		if (upperRightSlot != null) {
+			upperRightSlot.RemovePickup();
+		}
+		if (upperLeftSlot != null) {
+			upperLeftSlot.RemovePickup();
+		}
+	}
+
 	public void StartDragging(Slot slot, Vector2 fingerPos)
 	{
 		//Shake the phone - hoping to emulate the feel of android drag and drop
