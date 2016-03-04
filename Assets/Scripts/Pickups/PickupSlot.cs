@@ -40,7 +40,6 @@ public class PickupSlot : MonoBehaviour
 
 	public void EquipPickup (Pickup pickup)
 	{
-		Debug.Log ("Equipping Pickup " + pickup.name);
 		this.pickup = pickup;
 		if (pickup != null) {
 			//pickupImageTransform.position = homeCoords;

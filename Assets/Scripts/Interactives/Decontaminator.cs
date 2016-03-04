@@ -15,6 +15,7 @@ public class Decontaminator : MonoBehaviour {
 				jet.Play ();
 			}
 			coll.GetComponent<TransformController>().RemoveCurrent();
+			coll.GetComponent<PickupController>().RemoveAll();
 		}
 	}
 }

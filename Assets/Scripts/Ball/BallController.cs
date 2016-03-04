@@ -8,6 +8,13 @@ using UnityEngine;
  */
 public class BallController : MonoBehaviour
 {
+	[System.Serializable]
+	public class MovementModifiers {
+		public float movePowerScaler;
+		public float brakePowerScaler;
+		public float constantMovePower;
+	}
+
 	// The force added to the ball to move it
 	public float movePower = 10f; 
 	// The speed with which the balls velocity is adjusted to match the camera rotation (too slow and the ball becomes hard to turn, too fast and the movement feels unrealistic)
@@ -16,6 +23,8 @@ public class BallController : MonoBehaviour
 	public float maxAngularVelocity = 17.5f;
 	// Enabling this will cause the ball to lock brakes like a car
 	public bool allowBrakeLocks = false;
+
+	public MovementModifiers movementModifiers;
 	 
 	//Hold a reference to the brake controller script
 	private BrakeController brakes;
@@ -52,7 +61,7 @@ public class BallController : MonoBehaviour
 
 			//Accelerate away from the camera if we are on the ground - TODO do we want to allow mid-air acceleration?
 			if (IsOnGround () || inControlledFlight) {
-				rb.AddForce (moveDirection * movePower);
+				rb.AddForce (moveDirection * movePower * movementModifiers.movePowerScaler);
 
 				//If the player attempts to turn sharply at a high velocity then they will skid out
 				if (allowBrakeLocks && brakes.CheckForBrakeLockOnTurn(moveDirection)) {
@@ -85,11 +94,18 @@ public class BallController : MonoBehaviour
 					brakes.LockBrakes();
 				} else {
 					//...otherwise apply brakes normally
-					brakes.ApplyBrakes(brakePower);
+					brakes.ApplyBrakes(brakePower * movementModifiers.brakePowerScaler);
 				}
 			} else {
 				brakes.ReleaseBrakes();
 			}
+		}
+	}
+
+	public void FixedUpdate() {
+		//TODO experimental - this may not be the best way of adding a constant force
+		if (movementModifiers.constantMovePower > 0f) {
+			rb.AddForce(Vector3.Scale (Camera.main.transform.forward, new Vector3 (1, 0, 1)).normalized * movementModifiers.constantMovePower);
 		}
 	}
 
