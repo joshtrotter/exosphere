@@ -10,7 +10,7 @@ public class PopupController : MonoBehaviour {
 	public Text popupText;
 	public float fadeInTime = 1f;
 	public float displayTime = 3f;
-	public float fadeOutTIme = 1f;
+	public float fadeOutTime = 1f;
 
 	void Awake(){
 		//set up singleton instance
@@ -63,7 +63,7 @@ public class PopupController : MonoBehaviour {
 		DOTween.Sequence ()
 			.Append (popupText.DOFade (1, fadeInTime))
 			.AppendInterval (displayTime)
-			.Append (popupText.DOFade (0, fadeOutTIme));
+			.Append (popupText.DOFade (0, fadeOutTime));
 
 	}
 
