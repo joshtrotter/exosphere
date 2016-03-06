@@ -53,13 +53,11 @@ public class ZoomPad : SwitchableObject {
 
 	void OnTriggerEnter(Collider coll){
 		if (IsOn){
-			float movePower; 
+			float movePower = 10 * coll.attachedRigidbody.mass; 
 			if (coll.gameObject.CompareTag("Player")){
-				movePower = coll.GetComponent<BallController>().GetMovePower();
+				//movePower = coll.GetComponent<BallController>().GetMovePower();
 				coll.GetComponent<BallInputReader>().enabled = false;
 				coll.GetComponent<BrakeController> ().ReleaseBrakes ();
-			} else {
-				movePower = 10 * coll.attachedRigidbody.mass;
 			}
 			SetAllLightsColor(onColor);
 			coll.attachedRigidbody.AddForce(transform.forward * zoomSpeed * movePower, ForceMode.Impulse);
