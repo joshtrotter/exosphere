@@ -10,9 +10,9 @@ public class BallController : MonoBehaviour
 {
 	[System.Serializable]
 	public class MovementModifiers {
-		public float movePowerScaler;
-		public float brakePowerScaler;
-		public float constantMovePower;
+		public float movePowerScaler = 1f;
+		public float brakePowerScaler = 1f;
+		public float constantMovePower = 0f;
 	}
 
 	// The force added to the ball to move it
@@ -24,7 +24,9 @@ public class BallController : MonoBehaviour
 	// Enabling this will cause the ball to lock brakes like a car
 	public bool allowBrakeLocks = false;
 
-	public MovementModifiers movementModifiers;
+	// Provides ability to manipulate the balls movement
+	public MovementModifiers defaultMovementModifiers;
+	private MovementModifiers movementModifiers;
 	 
 	//Hold a reference to the brake controller script
 	private BrakeController brakes;
@@ -49,6 +51,8 @@ public class BallController : MonoBehaviour
 		rb.sleepThreshold = 0.2f;
 		// Set the maximum angular velocity so that the ball doesn't spin too wildly
 		rb.maxAngularVelocity = maxAngularVelocity;
+
+		movementModifiers = defaultMovementModifiers;
 	}
 
 	//Invoked when acceleration is being applied
@@ -103,10 +107,17 @@ public class BallController : MonoBehaviour
 	}
 
 	public void FixedUpdate() {
-		//TODO experimental - this may not be the best way of adding a constant force
 		if (movementModifiers.constantMovePower > 0f) {
 			rb.AddForce(Vector3.Scale (Camera.main.transform.forward, new Vector3 (1, 0, 1)).normalized * movementModifiers.constantMovePower);
 		}
+	}
+
+	public void ModifyMovement(MovementModifiers modifiers) {
+		this.movementModifiers = modifiers;
+	}
+
+	public void ResetMovementModifiersToDefaults() {
+		this.movementModifiers = defaultMovementModifiers;
 	}
 
 	public Vector3 GetTargetVelocity()

@@ -14,7 +14,8 @@ namespace UnityStandardAssets.Cameras
 		public float returnTime = 0.2f;                 // time taken to move back towards desired position, when not clipping (typically should be a higher value than clipMoveTime)
 		public float sphereCastRadius = 0.1f;           // the radius of the sphere used to test for object between camera and target        
 		public float closestDistance = 0f;              // the closest distance the camera can be from the pivot
-		public float closestPivotDistance = 0f;         // the closest distance the pivot can be from the ball
+		public float closestPivotDistance = 0.5f;         // the closest distance the pivot can be from the ball
+		public float trailDistanceToDropPivot = 2.5f;   // the distance at which moving the camera back towards the pivot also causes the pivot to drop towards the ball
 		public float blockedPivotBufferHeight = 0.2f;   // places a buffer between the pivot and the collider that is blocking it from the ball
 		public string dontClipTag = "Player";           // don't clip against objects with this tag (useful for not clipping against the targeted object)
 
@@ -90,10 +91,7 @@ namespace UnityStandardAssets.Cameras
 				Debug.DrawRay (ray.origin, Vector3.up * (targetHeight), Color.red);
 			}
 			
-			currentPivotHeight = Mathf.SmoothDamp (currentPivotHeight, targetHeight, ref pivotMoveVelocity,
-			                                       currentPivotHeight > targetHeight ? clipMoveTime : returnTime);
-			currentPivotHeight = Mathf.Clamp (currentPivotHeight, closestPivotDistance, originalPivotHeight);
-			pivot.localPosition = Vector3.up * currentPivotHeight;
+			adjustPivot (targetHeight);
 		}
 
 		private void CheckForClipBetweenPivotAndCamera ()
@@ -155,8 +153,24 @@ namespace UnityStandardAssets.Cameras
             }
 
 			// hit something so move the camera to a better position            
+			adjustCam (targetDist);
+
+			// keep the ball in view
+			if (currentCamTrailDistance < trailDistanceToDropPivot) {
+				adjustPivot(Mathf.Min(currentPivotHeight, originalPivotHeight - (trailDistanceToDropPivot - currentCamTrailDistance)));
+			}
+		}
+
+		private void adjustPivot(float targetHeight) {
+			currentPivotHeight = Mathf.SmoothDamp (currentPivotHeight, targetHeight, ref pivotMoveVelocity,
+			                                       currentPivotHeight > targetHeight ? clipMoveTime : returnTime);
+			currentPivotHeight = Mathf.Clamp (currentPivotHeight, closestPivotDistance, originalPivotHeight);
+			pivot.localPosition = Vector3.up * currentPivotHeight;
+		}
+
+		private void adjustCam(float targetDist) {
 			currentCamTrailDistance = Mathf.SmoothDamp (currentCamTrailDistance, targetDist, ref camMoveVelocity,
-                                           currentCamTrailDistance > targetDist ? clipMoveTime : returnTime);
+			                                            currentCamTrailDistance > targetDist ? clipMoveTime : returnTime);
 			currentCamTrailDistance = Mathf.Clamp (currentCamTrailDistance, closestDistance, originalCamTrailDistance);
 			cam.localPosition = -Vector3.forward * currentCamTrailDistance;
 		}

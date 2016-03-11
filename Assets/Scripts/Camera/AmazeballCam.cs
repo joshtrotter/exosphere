@@ -22,16 +22,26 @@ public class AmazeballCam : MonoBehaviour
 	// How fast the rig will rotate from the horiztonal axis input
 	public float turnSpeed = 3f;  
 	// The maximum value of the x axis rotation of the pivot
-	public float maxTilt = 15f; 
+	public float maxBrakeTilt = 15f; 
 	// The minimum value of the x axis rotation of the pivot
-	public float minTilt = 5f; 
+	public float maxAccelerateTilt = 5f; 
+	// Adjust the base x axis rotation of the pivot - may be useful if the ball is falling or being propelled upwards
+	public float defaultNeutralTilt = 0f;
 	// The target FPS - used to ensure turn speeds are frame rate independent
 	public int targetFps = 60;
 
 	// The rig's y axis rotation
-	public float camAngle;                    
+	public float camAngle;
+
+	// Constrain the camera angle - used to prevent the camera turning 360 in tunnels 
+	private bool constrainAngle = false;
+	private float minAngle = -180f;
+	private float maxAngle = 180f;
+
 	// The pivot's x axis rotation
-	private float pivotTilt;                    
+	private float pivotTilt; 
+
+	private float neutralTilt;
 
 	// The point at which the camera pivots around
 	private Transform pivot;
@@ -45,6 +55,7 @@ public class AmazeballCam : MonoBehaviour
 		// find the pivot, which must be the parent of the camera
 		pivot = GetComponentInChildren<Camera> ().transform.parent;
 		pivotEulers = pivot.rotation.eulerAngles;
+		neutralTilt = defaultNeutralTilt;
 	}
 
 	void Start ()
@@ -62,12 +73,41 @@ public class AmazeballCam : MonoBehaviour
 		var y = CrossPlatformInputManager.GetAxis ("Vertical");
 			
 		// Adjust the look angle by an amount proportional to the turn speed and horizontal input.
-		camAngle += (x * turnSpeed * Time.deltaTime * targetFps) % 360f;
+		camAngle += x * turnSpeed * Time.deltaTime * targetFps;
+		// Keep the value between -180 and +180
+		camAngle = restrictAngleBetween180s (camAngle);
+
+		//Lock the camera angle if the min/max angle constraints are set
+		if (constrainAngle) {
+			//special case when min and max angle cross the 180 degree centre line
+			if (minAngle > 0f && maxAngle < 0f) {
+				if (camAngle >= 0) {
+					if (camAngle < minAngle) {
+						if (Mathf.Abs (maxAngle) + camAngle < minAngle - camAngle) {
+							camAngle = maxAngle;
+						} else {
+							camAngle = minAngle;
+						}
+					}
+				} else {
+					if (camAngle < maxAngle) {
+						if (camAngle + 360 - minAngle < maxAngle - camAngle) {
+							camAngle = minAngle;
+						} else {
+							camAngle = maxAngle;
+						}
+					}
+				}
+			} else {
+				camAngle = Mathf.Clamp (camAngle, minAngle, maxAngle);
+			}
+		}
+
 		// Rotate the rig (the root object) around Y axis only:
 		transform.localRotation = Quaternion.Euler (transform.localEulerAngles.x, camAngle, transform.localEulerAngles.z);
 			
 		// Adjust the pivot tilt between zero and the min/max tilt values based on the vertical input
-		pivotTilt = y > 0 ? Mathf.Lerp (0, -minTilt, y) : Mathf.Lerp (0, maxTilt, -y);
+		pivotTilt = y > 0 ? Mathf.Lerp (neutralTilt, neutralTilt - maxAccelerateTilt, y) : Mathf.Lerp (neutralTilt, neutralTilt + maxBrakeTilt, -y);
 		// Rotate the pivot around the X axis only
 		Quaternion pivotRotation = Quaternion.Euler (pivotTilt, pivotEulers.y, pivotEulers.z);
 		pivot.localRotation = Quaternion.Slerp (pivot.localRotation, pivotRotation, Time.deltaTime);
@@ -81,6 +121,40 @@ public class AmazeballCam : MonoBehaviour
 
 	public void movePivot(Vector3 move, float duration = 1f){
 		pivot.transform.DOBlendableLocalMoveBy (move, duration).Play ();
+	}
+
+	public void constrainCameraAngle(float startAngle, float angleRange, float duration = 1f) {
+		if (angleRange > 90) {
+			throw new InvalidProgramException("Max supported angleRange is 90");
+		}
+		this.constrainAngle = true;
+		float minAngle = restrictAngleBetween180s(startAngle - angleRange);
+		float maxAngle = restrictAngleBetween180s(startAngle + angleRange);
+		DOTween.To (()=> this.minAngle, x=> this.minAngle = x, minAngle, duration).Play();
+		DOTween.To (()=> this.maxAngle, x=> this.maxAngle = x, maxAngle, duration).Play();
+	}
+
+	public void removeAngleConstraint() {
+		this.constrainAngle = false;
+		minAngle = float.MinValue;
+		maxAngle = float.MaxValue;
+	}
+
+	public void adjustNeutralTilt(float newNeutralTilt, float duration = 1f) {
+		DOTween.To (()=> neutralTilt, x=> neutralTilt = x, newNeutralTilt, duration).Play();
+	}
+
+	public void resetNeutralTilt(float duration = 1f) {
+		DOTween.To (()=> neutralTilt, x=> neutralTilt = x, defaultNeutralTilt, duration).Play();
+	}
+
+	private float restrictAngleBetween180s(float angle) {
+		if (angle > 180f) {
+			angle = angle - 360f;
+		} else if (angle < -180f) {
+			angle = angle + 360f;
+		}
+		return angle;
 	}
 
    
