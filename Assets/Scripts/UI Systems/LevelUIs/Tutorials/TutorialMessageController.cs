@@ -48,13 +48,16 @@ public class TutorialMessageController : MonoBehaviour {
 
 	public void DisplayMessage(TutorialMessage messageObject){
 		//ensure that any previous message is overriden
-		HideMessage ();
-		currentMessage = messageObject;
-		StartCoroutine (SetupMessage ());
+		if (messageObject != currentMessage) { //do not redisplay if already on display
+			HideMessage ();
+			currentMessage = messageObject;
+			StartCoroutine ("SetupMessage");
+		}
 
 	}
 
 	private IEnumerator SetupMessage(){
+		Debug.Log ("Setting up message for display");
 		yield return new WaitForSeconds (0.5f); //wait for previous message to finish hiding
 		if (currentMessage.messageIsOnLeft) {
 			SetupText (leftMessageText, leftDisplayPanel, leftCaption);
@@ -89,7 +92,12 @@ public class TutorialMessageController : MonoBehaviour {
 
 	//hides the message
 	public void HideMessage(TutorialMessage messageToHide = null){
-		if (messageToHide == currentMessage || messageToHide == null) {
+		if (messageToHide == currentMessage) {
+			messageToHide = null;
+			StopCoroutine("SetupMessage");
+			currentMessage = null;
+		}
+		if (messageToHide == null) {
 			leftDisplayPanel.transform.DOLocalMoveX (leftPanelStartX - (Screen.width / 2), 0.5f).Play ();
 			rightDisplayPanel.transform.DOLocalMoveX (rightPanelStartX + (Screen.width / 2), 0.5f).Play ().OnComplete(FinishHiding);
 		}
@@ -104,6 +112,9 @@ public class TutorialMessageController : MonoBehaviour {
 		//hide panels
 		leftDisplayPanel.SetActive (false);
 		rightDisplayPanel.SetActive (false);
+		//set current message to null
+		//StopCoroutine ("SetupMessage");
+		//currentMessage = null;
 	}
 
 	//closes the message and registers that it should not be shown again
