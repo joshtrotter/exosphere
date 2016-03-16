@@ -17,16 +17,12 @@ public abstract class BallTransform : MonoBehaviour
 		ball.GetComponent<Renderer> ().material = transformMaterial;
 		ball.GetComponent<Collider> ().material = transformPhysicMaterial;
 
-		ball.GetComponent<Rigidbody> ().mass *= ballMassScale;
-		ball.movePower *= ballMovePowerScale;
-		ball.GetComponent<Rigidbody> ().maxAngularVelocity += ballMaxAngularVelocityModifier;
+		EnablePhysicalModifiers (ball);
 	}
 
 	public virtual void Remove(BallController ball)
 	{
-		ball.GetComponent<Rigidbody> ().mass /= ballMassScale;
-		ball.movePower /= ballMovePowerScale;
-		ball.GetComponent<Rigidbody> ().maxAngularVelocity -= ballMaxAngularVelocityModifier;
+		DisablePhysicalModifiers (ball);
 	}
 
 	public virtual void OnLaserEnter(LaserDiffuser laserDiffuser, ArcReactorHitInfo hitInfo)
@@ -38,5 +34,17 @@ public abstract class BallTransform : MonoBehaviour
 	{
 
 	}
-	
+
+	public void EnablePhysicalModifiers(BallController ball) {
+		ball.GetComponent<Rigidbody> ().mass *= ballMassScale;
+		ball.movePower *= ballMovePowerScale;
+		ball.GetComponent<Rigidbody> ().maxAngularVelocity += ballMaxAngularVelocityModifier;
+	}
+
+	public void DisablePhysicalModifiers(BallController ball) {
+		ball.GetComponent<Rigidbody> ().mass /= ballMassScale;
+		ball.movePower /= ballMovePowerScale;
+		ball.GetComponent<Rigidbody> ().maxAngularVelocity -= ballMaxAngularVelocityModifier;
+	}
+		
 }

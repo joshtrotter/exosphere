@@ -8,6 +8,8 @@ public class TunnelEntrance : MonoBehaviour {
 	void OnTriggerEnter (Collider coll) {
 		if (coll.CompareTag ("Player")) {
 			coll.material = tunnelPhysicMaterial;
+			BallController ball = coll.GetComponent<BallController>();
+			ball.GetComponent<TransformController>().currentTransform.DisablePhysicalModifiers(ball);
 		}
 	}
 }
