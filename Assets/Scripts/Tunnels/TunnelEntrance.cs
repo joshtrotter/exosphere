@@ -10,6 +10,7 @@ public class TunnelEntrance : MonoBehaviour {
 			coll.material = tunnelPhysicMaterial;
 			BallController ball = coll.GetComponent<BallController>();
 			ball.GetComponent<TransformController>().currentTransform.DisablePhysicalModifiers(ball);
+			ball.GetComponent<LightsController>().TurnLightOn();
 		}
 	}
 }

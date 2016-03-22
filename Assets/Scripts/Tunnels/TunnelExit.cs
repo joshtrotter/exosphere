@@ -14,7 +14,8 @@ public class TunnelExit : MonoBehaviour {
 			coll.material = coll.GetComponent<TransformController>().currentTransform.transformPhysicMaterial;
 			BallController ball = coll.GetComponent<BallController>();
 			ball.GetComponent<TransformController>().currentTransform.EnablePhysicalModifiers(ball);
-			coll.GetComponent<BallController>().ResetMovementModifiersToDefaults();
+			ball.ResetMovementModifiersToDefaults();
+			ball.GetComponent<LightsController>().TurnLightOff();
 			cameraRig.removeAngleConstraint();
 			cameraRig.resetNeutralTilt();
 
