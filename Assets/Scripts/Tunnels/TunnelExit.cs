@@ -16,6 +16,7 @@ public class TunnelExit : MonoBehaviour {
 			ball.GetComponent<TransformController>().currentTransform.EnablePhysicalModifiers(ball);
 			ball.ResetMovementModifiersToDefaults();
 			ball.GetComponent<LightsController>().TurnLightOff();
+			ball.allowBrakeLocks = true;
 			cameraRig.removeAngleConstraint();
 			cameraRig.resetNeutralTilt();
 

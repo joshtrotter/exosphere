@@ -12,7 +12,10 @@ public class MorphHUDController : MonoBehaviour {
 	}
 
 	public void MorphApplied(BallTransform morph){
-		morphDisplay.gameObject.SetActive (true);
+		if (morph != null) {
+			morphDisplay.image.sprite = morph.morphIcon;
+			morphDisplay.gameObject.SetActive (true);
+		}
 	}
 
 	public void MorphRemoved(){

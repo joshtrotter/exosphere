@@ -7,17 +7,15 @@ public class TransformController : MonoBehaviour {
 	public BallTransform standardTransform;
 	public BallTransform currentTransform;
 
-	public ParticleSystem morphEffect;
-
-	//Control the force and duration of the atomizer explosion when shaking off a transform
-	public float atomizerForce = 15f;
-	public float atomizerDuration = 1f;
+	public ParticleSystem shatter;
 
 	private BallController ballController;
+	private LightsController lightsController;
 
 	void Awake() 
 	{
 		ballController = GetComponent<BallController> ();
+		lightsController = GetComponent<LightsController> ();
 		if (currentTransform == null) {
 			currentTransform = standardTransform;
 		}
@@ -29,8 +27,12 @@ public class TransformController : MonoBehaviour {
 			currentTransform.Remove (ballController);
 			newTransform.Apply (ballController);
 			currentTransform = newTransform;
+			lightsController.SetLightColor(currentTransform.morphColor);
 			if (currentTransform != standardTransform) {
-				morphEffect.Play();
+				Transform morphEffect = transform.FindChild("ParticleSystems/" + currentTransform.morphEffectName);
+				if (morphEffect != null) {
+					morphEffect.GetComponent<ParticleSystem>().Play();
+				}
 				HUD.controller.SendMessage("MorphApplied", currentTransform);
 			}
 		}
@@ -39,21 +41,9 @@ public class TransformController : MonoBehaviour {
 	public void RemoveCurrent()
 	{
 		if (currentTransform != standardTransform) {
-			Atomize ();
+			shatter.Play();
 			ApplyTransform(standardTransform);
 			HUD.controller.SendMessage("MorphRemoved");
 		}
-	}
-
-	//Simulates the apperance of the current material bursting off the ball during a transform
-	private void Atomize() {
-		AtomizerEffectGroup atomizerEffect = Atomizer.CreateEffectGroup();
-
-		Pop pop = new Pop();
-		pop.Force = atomizerForce;
-		pop.Duration = atomizerDuration;
-
-		atomizerEffect.Combine (pop);
-		Atomizer.Atomize (gameObject, atomizerEffect, () => {});
 	}
 }
