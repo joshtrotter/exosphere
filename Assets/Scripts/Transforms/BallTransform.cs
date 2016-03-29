@@ -12,31 +12,48 @@ public abstract class BallTransform : MonoBehaviour
 
 	public string morphName;
 
+	public Sprite morphIcon;
+	public Color morphColor;
+
+	public float minEmission = 0.1f;
+	public float maxEmission = 1.5f;
+	public float brakeEmission = 5f;
+
+	public string morphEffectName;
+
 	public virtual void Apply(BallController ball) 
 	{
 		ball.GetComponent<Renderer> ().material = transformMaterial;
 		ball.GetComponent<Collider> ().material = transformPhysicMaterial;
 
-		ball.GetComponent<Rigidbody> ().mass *= ballMassScale;
-		ball.movePower *= ballMovePowerScale;
-		ball.GetComponent<Rigidbody> ().maxAngularVelocity += ballMaxAngularVelocityModifier;
+		EnablePhysicalModifiers (ball);
 	}
 
 	public virtual void Remove(BallController ball)
 	{
-		ball.GetComponent<Rigidbody> ().mass /= ballMassScale;
-		ball.movePower /= ballMovePowerScale;
-		ball.GetComponent<Rigidbody> ().maxAngularVelocity -= ballMaxAngularVelocityModifier;
+		DisablePhysicalModifiers (ball);
 	}
 
 	public virtual void OnLaserEnter(LaserDiffuser laserDiffuser, ArcReactorHitInfo hitInfo)
 	{
-
+		GameObject.FindGameObjectWithTag("Player").GetComponent<BallDestroyer>().Pop();
 	}
 
 	public virtual void OnLaserExit(LaserDiffuser laserDiffuser)
 	{
 
 	}
-	
+
+	public void EnablePhysicalModifiers(BallController ball) {
+		ball.GetComponent<Rigidbody> ().mass *= ballMassScale;
+		ball.movePower *= ballMovePowerScale;
+		ball.GetComponent<Rigidbody> ().maxAngularVelocity += ballMaxAngularVelocityModifier;
+	}
+
+	public void DisablePhysicalModifiers(BallController ball) {
+		ball.GetComponent<Rigidbody> ().mass /= ballMassScale;
+		ball.movePower /= ballMovePowerScale;
+		ball.GetComponent<Rigidbody> ().maxAngularVelocity -= ballMaxAngularVelocityModifier;
+	}
+		
 }

@@ -34,14 +34,14 @@ public class BrakeController : MonoBehaviour
 	private Rigidbody rb;
 	//Hold a reference to the balls physic material
 	private PhysicMaterial material;
-	//Hold a reference to the transform controller
-	private TransformController transformController;
+
+	private BallController ballController;
 
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody> ();
 		material = GetComponent<Collider> ().material;
-		transformController = GetComponent<TransformController> ();
+		ballController = GetComponent<BallController> ();
 
 		//store the balls base drag values so that we can return to these after a brake has finished (we increase drag during a brake)
 		//TODO assumes that neutral drag values are never altered anywhere else
@@ -87,7 +87,7 @@ public class BrakeController : MonoBehaviour
 	//Called when the ball should enter a brake lock slide
 	public void LockBrakes ()
 	{
-		if (brakeLockEnabled) {
+		if (brakeLockEnabled && ballController.IsReallyOnGround()) {
 			//set the brake locked status - this will be used to ignore user input while brake locked
 			isBrakeLocked = true;
 			//lock the balls current rotation so it looks like it is sliding rather than rolling
@@ -96,9 +96,6 @@ public class BrakeController : MonoBehaviour
 			//remove drag and reduce friction on the ball so that it slides for a while
 			rb.drag = 0.0f;
 			material.dynamicFriction = neutralFriction * brakeLockFrictionScale;
-		
-			//TODO this is a temporary colour effect - replace with skid marks, smoke, sound effects etc to the skid
-			GetComponent<Renderer> ().material.SetColor ("_EmissionColor", Color.red * 10f);
 		
 			//Start a coroutine to check for the end of the brake lock
 			StartCoroutine (WaitForEndOfBrakeLockSlide ());
@@ -114,16 +111,12 @@ public class BrakeController : MonoBehaviour
 		material.dynamicFriction = neutralFriction;
 		
 		isBrakeLocked = false;
-		
-		//TODO this is temporary - we will be using better effects for the slide later on
-		GetComponent<Renderer> ().material.SetColor("_EmissionColor", 
-		                                            transformController.currentTransform.transformMaterial.GetColor("_EmissionColor"));
 	}
 	
 	//Unlocks the brakes only after the balls velocity has reduced below the exitBrakeLockVelocity
 	private IEnumerator WaitForEndOfBrakeLockSlide ()
 	{
-		while (rb.velocity.magnitude > exitBrakeLockVelocity) {
+		while (rb.velocity.magnitude > exitBrakeLockVelocity && ballController.IsReallyOnGround()) {
 			yield return new WaitForFixedUpdate ();
 		}
 		UnlockBrakes ();

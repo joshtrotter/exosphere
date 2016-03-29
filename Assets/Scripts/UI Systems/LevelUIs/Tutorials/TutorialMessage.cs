@@ -33,6 +33,7 @@ public class TutorialMessage : HasLevelState {
 	//a value of 0 will never timeout
 	public float timeOut;
 
+	public TutorialMessage nextPage = null;
 
 	void Awake(){
 		message = message.Replace ("\\n", "\n");
@@ -49,6 +50,9 @@ public class TutorialMessage : HasLevelState {
 	}
 
 	private void CloseMessage(){
+		if (nextPage != null) {
+			TutorialMessageController.controller.DisplayMessage(nextPage);
+		}
 		RegisterStateChange (CLOSED_STATE);
 		HideMessage ();
 		this.gameObject.SetActive (false);

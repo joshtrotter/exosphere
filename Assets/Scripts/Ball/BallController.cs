@@ -92,7 +92,7 @@ public class BallController : MonoBehaviour
 	public void Brake (float brakePower)
 	{
 		if (!brakes.IsBrakeLocked()) {
-			if (IsOnGround ()) {
+			if (IsReallyOnGround ()) {
 				//Lock the brakes if the player is applying a hard brake and the ball is travelling above the brakeLockVelocity...
 				if (allowBrakeLocks && brakes.CheckForBrakeLockOnBrake(brakePower)) {
 					brakes.LockBrakes();
@@ -135,6 +135,12 @@ public class BallController : MonoBehaviour
 	{
 		//TODO This is a candidate for future optimization - this method is called a lot and Physics.Raycast is relatively expensive
 		return Physics.Raycast (transform.position, Vector3.down, groundRayLength);
+	}
+
+	public Boolean IsReallyOnGround ()
+	{
+		//TODO This is a candidate for future optimization - this method is called a lot and Physics.Raycast is relatively expensive
+		return Physics.Raycast (transform.position, Vector3.down, 0.6f);
 	}
 	
 }

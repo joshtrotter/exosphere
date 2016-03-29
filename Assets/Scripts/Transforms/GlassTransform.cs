@@ -23,7 +23,7 @@ public class GlassTransform : BallTransform {
 		laserSnapTo = ball.GetComponent<LaserSnapTo> ();
 		laserSnapTo.Enable ();
 		//enable ball shattering
-		ball.gameObject.AddComponent<BallShatterer>();
+		//ball.gameObject.AddComponent<BallShatterer>();
 
 
 	}
