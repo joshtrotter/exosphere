@@ -22,9 +22,6 @@ public class StartSequence : MonoBehaviour {
 	public void init() {
 		cameraRig.GetComponent<SplineController> ().enabled = true;
 		cameraRig.GetComponent<SplineInterpolator> ().enabled = true;
-		Sequence spawnSequence = DOTween.Sequence ()
-			.AppendInterval (cameraWaitTime)
-				.OnComplete (DoSpawn);
 	}
 
 	public bool IsCompleted() {
@@ -39,4 +36,5 @@ public class StartSequence : MonoBehaviour {
 	private void Finalise() {
 		completed = true;
 	}
+	
 }
