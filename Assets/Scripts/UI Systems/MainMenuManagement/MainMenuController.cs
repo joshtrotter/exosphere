@@ -11,9 +11,7 @@ public class MainMenuController : UISystem {
 
 	public override void Awake(){
 		//set up singleton instance
-		Debug.Log ("MainMenuController awake, instance ID: " + GetInstanceID());
 		if (controller == null) {
-			Debug.Log ("static variable is null");
 			controller = this;
 			DontDestroyOnLoad (this);
 			base.Awake ();
@@ -23,7 +21,6 @@ public class MainMenuController : UISystem {
 			OnLevelWasLoaded ();
 
 		} else if (controller != this) {
-			Debug.Log ("Destroying");
 			Destroy(gameObject);
 		}
 
