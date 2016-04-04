@@ -26,20 +26,24 @@ public class SeeSawController : MonoBehaviour {
 
 	void OnTriggerExit(Collider coll) {
 		if (coll.CompareTag ("Player") && !ShouldIgnoreBall()) {
-			float bottomRampDistance = (coll.transform.position - rampBottom.transform.position).magnitude;
-			float topRampDistance = (coll.transform.position - rampTop.transform.position).magnitude;
-
-			if (bottomRampDistance < topRampDistance) {
-				rampBottom.mass = massBias;
-			} else {
-				rampTop.mass = massBias;
-			}
+			ResetBias(coll);
 		}
 	}
 
 	private void RemoveBias() {
 		rampBottom.mass = massBase;
 		rampTop.mass = massBase;
+	}
+
+	public void ResetBias(Collider coll) {
+		float bottomRampDistance = (coll.transform.position - rampBottom.transform.position).magnitude;
+		float topRampDistance = (coll.transform.position - rampTop.transform.position).magnitude;
+		
+		if (bottomRampDistance < topRampDistance) {
+			rampBottom.mass = massBias;
+		} else {
+			rampTop.mass = massBias;
+		}
 	}
 
 	private bool ShouldIgnoreBall() {

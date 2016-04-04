@@ -117,6 +117,8 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	private void ResetLevelToInitialState(){
+		HUD.controller.Hide ();
+		TutorialMessageController.controller.HideMessage ();
 		ClearUnsavedProgress ();
 		objectStates.Clear ();
 	}
