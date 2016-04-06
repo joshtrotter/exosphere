@@ -119,7 +119,9 @@ public class TutorialMessageController : MonoBehaviour {
 
 	//closes the message and registers that it should not be shown again
 	public void CloseMessage(){
-		currentMessage.ExternalTriggerCall (TutorialMessage.TriggerBehaviour.Close);
+		if (currentMessage != null) {
+			currentMessage.ExternalTriggerCall (TutorialMessage.TriggerBehaviour.Close);
+		}
 	}
 
 }

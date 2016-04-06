@@ -65,6 +65,7 @@ public class LevelManager : MonoBehaviour {
 	private void OnLevelWasLoaded() 
 	{
 		Debug.Log ("Level " + Application.loadedLevel + " Loaded");
+		HUD.controller.Deregister ();
 		if (Application.loadedLevel == currentLevel) {
 			if (firstLoad) {
 				OnFirstLoad ();
@@ -116,9 +117,7 @@ public class LevelManager : MonoBehaviour {
 		SetupLevel ();
 	}
 
-	private void ResetLevelToInitialState(){
-		HUD.controller.Hide ();
-		TutorialMessageController.controller.HideMessage ();
+	private void ResetLevelToInitialState() {
 		ClearUnsavedProgress ();
 		objectStates.Clear ();
 	}

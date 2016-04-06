@@ -58,6 +58,7 @@ public class ZoomPad : SwitchableObject {
 				//movePower = coll.GetComponent<BallController>().GetMovePower();
 				coll.GetComponent<BallInputReader>().enabled = false;
 				coll.GetComponent<BrakeController> ().ReleaseBrakes ();
+				coll.GetComponent<LightsController>().TurnLightTrailOn();
 			}
 			SetAllLightsColor(onColor);
 			coll.attachedRigidbody.AddForce(transform.forward * zoomSpeed * movePower, ForceMode.Impulse);

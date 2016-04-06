@@ -47,6 +47,10 @@ public class LevelIcon : MonoBehaviour {
 			star2.gameObject.SetActive (true);
 			star3.gameObject.SetActive (true);
 
+			if (currentLevel.GetPermanentData().levelSprite != null) {
+				background.sprite = currentLevel.GetPermanentData().levelSprite;
+			}
+
 		} else {
 			star1.gameObject.SetActive (false);
 			star2.gameObject.SetActive (false);

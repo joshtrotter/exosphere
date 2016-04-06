@@ -13,6 +13,7 @@ public class ArcReactor_Trail : MonoBehaviour {
 	public float lifetimeThreshold = 1;
 	public float precision = 0.01f;
 	public Transform globalSpaceTransform;
+	public float arcKillDelay = 0.2f;
 
 	public List<SegmentInfo> segments;
 	[HideInInspector]
@@ -39,7 +40,14 @@ public class ArcReactor_Trail : MonoBehaviour {
 		}
 	}
 
+	void OnDisable() {
+		StartCoroutine (KillArc (currentArc));
+	}
 
+	public void OnEnable() {
+		currentArc = null;
+		Initialize ();
+	}
 
 	// Use this for initialization
 	void Awake () 
@@ -129,5 +137,12 @@ public class ArcReactor_Trail : MonoBehaviour {
 			}
 		}
 
+	}
+
+	private IEnumerator KillArc(ArcReactor_Arc arc) {
+		yield return new WaitForSeconds (arcKillDelay);
+		if (arc != null) {
+			arc.DestroyArc ();
+		}
 	}
 }

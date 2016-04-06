@@ -25,12 +25,14 @@ public class HUD : UISystem {
 
 	public override void Show()
 	{
+		Debug.Log (gameObject.GetInstanceID () + " showing HUD");
 		hidden = false;
 		HUDCanvas.gameObject.SetActive (true);
 	}
 
 	public override void Hide()
 	{
+		Debug.Log (gameObject.GetInstanceID () + " hiding HUD");
 		hidden = true;
 		HUDCanvas.gameObject.SetActive (false);
 	}
