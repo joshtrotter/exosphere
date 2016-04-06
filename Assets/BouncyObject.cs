@@ -20,6 +20,7 @@ public class BouncyObject : MonoBehaviour {
 		float powerModifier = 1f;
 		if (coll.gameObject.CompareTag ("Player")) {
 			powerModifier = coll.gameObject.GetComponent<BallController>().GetMovePower();
+			coll.gameObject.GetComponent<LightsController>().TurnLightTrailOn();
 		}
 		//Debug.Log (coll.contacts [0].normal * repulsePower * powerModifier);
 		Debug.DrawRay (this.transform.position, coll.contacts [0].normal * -100, Color.white, 10);

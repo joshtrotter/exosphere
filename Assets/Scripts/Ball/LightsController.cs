@@ -7,6 +7,9 @@ public class LightsController : MonoBehaviour {
 	public float minLightRange = 1f;
 	public float maxLightIntensity = 1.5f;
 	public float maxLightRange = 10f;
+	public float minLightTrailSpeed = 0.33f;
+	public float minLightTrailTime = 0.5f;
+	public float maxLightTrailTime = 2.5f;
 
 	private TransformController transformController;
 	private Light ballLight;
@@ -15,6 +18,8 @@ public class LightsController : MonoBehaviour {
 	private float neutralDrag;
 	private float brakeDragFactor;
 	private float currentHeat;
+	private ArcReactor_Trail trailRenderer;
+	private Coroutine trailLightTracker;
 
 	void Awake () {
 		transformController = transform.GetComponent<TransformController> ();
@@ -23,6 +28,7 @@ public class LightsController : MonoBehaviour {
 		renderer = transform.GetComponent<Renderer> ();
 		neutralDrag = rb.drag;
 		brakeDragFactor = transform.GetComponent<BrakeController> ().brakeDragFactor;
+		trailRenderer = transform.GetComponentInChildren<ArcReactor_Trail> ();
 	}
 
 	void FixedUpdate() {
@@ -72,5 +78,30 @@ public class LightsController : MonoBehaviour {
 
 	public void SetLightColor(Color color) {
 		ballLight.color = color;
+	}
+
+	public void TurnLightTrailOn() {
+		trailRenderer.enabled = true;
+		if (trailLightTracker != null) {
+			StopCoroutine(trailLightTracker);
+		}
+		trailLightTracker = StartCoroutine (TrackTrailLight ());
+	}
+
+	public void TurnLightTrailOff() {
+		trailRenderer.enabled = false;
+	}	
+
+	private IEnumerator TrackTrailLight() {
+		float elapsedTime = 0f;
+		float elapsedTimeRatio = 1f;
+		yield return new WaitForSeconds (minLightTrailTime);
+		while (elapsedTime < maxLightTrailTime && CalculateSpeedModifier() > minLightTrailSpeed) {
+			elapsedTimeRatio = (maxLightTrailTime - elapsedTime) / maxLightTrailTime;
+			trailRenderer.currentArc.sizeMultiplier = CalculateSpeedModifier() * elapsedTimeRatio;
+			elapsedTime += Time.deltaTime;
+			yield return new WaitForEndOfFrame();
+		}
+		TurnLightTrailOff ();
 	}
 }

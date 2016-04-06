@@ -88,7 +88,6 @@ namespace UnityStandardAssets.Cameras
 			// visualise the cam clip effect in the editor
 			if (hitSomething)
 			{
-				Debug.Log ("Hit something between ball and pivot");
 				Debug.DrawRay (ray.origin, Vector3.up * (targetHeight), Color.red);
 			}
 			
@@ -150,7 +149,6 @@ namespace UnityStandardAssets.Cameras
 			// visualise the cam clip effect in the editor
             if (hitSomething)
             {
-				Debug.Log ("Hit something between pivot and camera");
 				Debug.DrawRay (ray.origin, -pivot.forward * (targetDist + sphereCastRadius), Color.red);
             }
 
