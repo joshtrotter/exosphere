@@ -7,7 +7,7 @@ public class Savepoint : MonoBehaviour {
 	public bool saveOnExit;
 
 	void OnTriggerEnter(Collider coll){
-		if (saveOnExit && coll.CompareTag ("Player")) {
+		if (saveOnEnter && coll.CompareTag ("Player")) {
 			SaveProgress ();
 		}
 	}

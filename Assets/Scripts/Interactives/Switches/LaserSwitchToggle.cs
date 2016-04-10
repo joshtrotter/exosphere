@@ -27,7 +27,10 @@ public class LaserSwitchToggle : Switch {
 	}
 
 	public override void TurnOn(){
-		base.TurnOn ();
+		//will not register a state change as its state is wholly dependent on whether it is being hit by a laser
+		foreach (SwitchableObject target in targets) {
+			target.Activate ();
+		}
 		SetEmission (onColor);
 	}
 	

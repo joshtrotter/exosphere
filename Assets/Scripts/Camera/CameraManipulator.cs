@@ -11,8 +11,13 @@ public class CameraManipulator : MonoBehaviour {
 	public float camTiltAngle = 45f;
 	public float camTiltTime = 1f;
 
+	public bool camZoom = false;
+	public float camZoomAmount = -10f;
+	public float camZoomTime = 2f;
+
 	public bool resetOnExit = false;
 	public float resetTiltTime = 0.25f;
+	public float resetZoomTime = 0.25f;
 	
 	private AmazeballCam cameraRig;
 	private float camLockCentreAngle;
@@ -30,6 +35,9 @@ public class CameraManipulator : MonoBehaviour {
 			if (camTilt) {
 				cameraRig.adjustNeutralTilt(camTiltAngle, camTiltTime);
 			}
+			if (camZoom) {
+				cameraRig.zoomCamera(camZoomAmount, camZoomTime);
+			}
 		}
 	}
 	
@@ -40,6 +48,9 @@ public class CameraManipulator : MonoBehaviour {
 			}
 			if (camTilt) {
 				cameraRig.resetNeutralTilt(resetTiltTime);
+			}
+			if (camZoom) {
+				cameraRig.zoomCamera(-camZoomAmount, resetZoomTime);
 			}
 		}
 	}

@@ -68,7 +68,11 @@ public class MoveBetweenTargets : MonoBehaviour {
 	}
 
 	protected virtual Tween LookAtTarget(Vector3 target) {
-		return transform.DOLookAt (target, timeToLook);
+		if (timeToLook < 0) {
+			return null;
+		} else {
+			return transform.DOLookAt (target, timeToLook);
+		}
 	}
 
 	protected virtual Tween MoveToTarget(Vector3 target) {

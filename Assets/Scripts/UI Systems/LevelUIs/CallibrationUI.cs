@@ -61,6 +61,7 @@ public class CallibrationUI : UISystem {
 		ballInputReader.enabled = true;
 		//reset ball velocity
 		rbBall.velocity = ballVelocity;
+		Debug.Log ("Setting ball's velocity to " + ballVelocity);
 		rbBall.angularVelocity = ballAngularVelocity;
 		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).OnComplete (Deregister).Play ();
 	}

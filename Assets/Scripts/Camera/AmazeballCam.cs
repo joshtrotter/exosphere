@@ -148,6 +148,10 @@ public class AmazeballCam : MonoBehaviour
 		DOTween.To (()=> neutralTilt, x=> neutralTilt = x, defaultNeutralTilt, duration).Play();
 	}
 
+	public void zoomCamera(float zoomAmount, float zoomTime = 1f) {
+		Camera.main.transform.DOBlendableLocalMoveBy(new Vector3(0f,0f,zoomAmount), zoomTime).Play ();
+	}
+
 	private float restrictAngleBetween180s(float angle) {
 		if (angle > 180f) {
 			angle = angle - 360f;
