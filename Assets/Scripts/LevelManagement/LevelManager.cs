@@ -85,7 +85,7 @@ public class LevelManager : MonoBehaviour {
 			StartSpawn = GameObject.FindGameObjectWithTag ("Player");
 		}
 		ResetLevelToInitialState ();
-		SetSpawnLocation(StartSpawn.transform);
+		SetSpawnLocation(StartSpawn.transform.position);
 		SetCameraRotation (StartSpawn.transform.localRotation.eulerAngles.y);
 		StartCoroutine(PerformLevelInit ());
 	}
@@ -173,8 +173,8 @@ public class LevelManager : MonoBehaviour {
 		CallibrationUI.controller.SetupCalibration ();
 	}
 
-	public void SetSpawnLocation(Transform transform) {
-		this.spawnPosition = transform.position;
+	public void SetSpawnLocation(Vector3 position) {
+		this.spawnPosition = position;
 	}
 
 	public void SetCameraRotation(float cameraAngle) {

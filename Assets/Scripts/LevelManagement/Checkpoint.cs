@@ -32,7 +32,7 @@ public class Checkpoint : MonoBehaviour {
 	}
 
 	private void ResetSpawnPoint() {
-		LevelManager.manager.SetSpawnLocation(this.transform);
+		LevelManager.manager.SetSpawnLocation(this.transform.position + new Vector3(0,0.5f,0));
 	}
 
 	private void ResetCamera() {
