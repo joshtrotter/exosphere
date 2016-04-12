@@ -46,6 +46,10 @@ public class TutorialMessageController : MonoBehaviour {
 		HideMessage ();
 	}
 
+	void OnLevelWasLoaded(){
+		HideMessage ();
+	}
+
 	public void DisplayMessage(TutorialMessage messageObject){
 		//ensure that any previous message is overriden
 		if (messageObject != currentMessage) { //do not redisplay if already on display

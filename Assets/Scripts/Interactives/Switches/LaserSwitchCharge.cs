@@ -89,4 +89,13 @@ public class LaserSwitchCharge : Switch {
 			ChargeLevel = 0;
 		}
 	}
+
+	public override void ReloadState(int state) {
+		if (state == ON_STATE) {
+			ChargeLevel = MaxChargeLevel;
+			SetEmissionAll (onColor);
+			TurnOn();
+		}
+		currentState = state;
+	}
 }
