@@ -25,6 +25,15 @@ public class BallDestroyer : MonoBehaviour {
 		StartCoroutine (DestroyBall (pop));
 	}
 
+	//destroy ball based on transform
+	public void Crush(){
+		if (GetComponent<TransformController> ().currentTransform.morphName == "Reflector Ball") {
+			Shatter ();
+		} else {
+			Pop ();
+		}
+	}
+
 	private IEnumerator DestroyBall(ParticleSystem destruction){
 		rb.isKinematic = true;
 		mesh.enabled = false;

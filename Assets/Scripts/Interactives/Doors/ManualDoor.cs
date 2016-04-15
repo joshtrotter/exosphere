@@ -13,11 +13,11 @@ public class ManualDoor : Door {
 	private bool IsOpening = false;
 	private bool IsClosing = false;
 
-	private float openY;
-	private float closedY;
+	protected float openY;
+	protected float closedY;
 	private float currentOpenAmount;
 	
-	void Awake()
+	public virtual void Awake()
 	{
 		//set up base positions so door knows where to move between.
 		closedY = transform.position.y;
@@ -47,7 +47,7 @@ public class ManualDoor : Door {
 		IsClosed = false;
 	}
 
-	private IEnumerator MoveUp(){
+	protected IEnumerator MoveUp(){
 		while (IsOpening) {
 			yield return new WaitForEndOfFrame();
 			SetOpenAmount (currentOpenAmount + doorSpeed * Time.deltaTime);
@@ -57,7 +57,7 @@ public class ManualDoor : Door {
 		}
 	}
 
-	private IEnumerator MoveDown(){
+	protected IEnumerator MoveDown(){
 		while (IsClosing) {
 			yield return new WaitForEndOfFrame();
 			SetOpenAmount (currentOpenAmount - doorSpeed * Time.deltaTime);
