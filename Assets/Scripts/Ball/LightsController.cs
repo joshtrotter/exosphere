@@ -64,7 +64,6 @@ public class LightsController : MonoBehaviour {
 
 	private float HeatAdjustedSpeed(float speed) {
 		currentHeat = Mathf.Clamp01(currentHeat + ((speed - 0.75f) * Time.deltaTime));
-		Debug.Log (currentHeat);
 		return ((speed * 0.25f) + (currentHeat * 0.75f));
 	}
 	
