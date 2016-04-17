@@ -13,6 +13,7 @@ public class LaserParticleHit : LaserModule {
 
 	public override void DoHitStart(ArcReactorHitInfo hit){
 		//Update the hit position of the particle effect
+		Debug.Log ("Laser Hit!");
 		hitParticles.transform.position = hit.raycastHit.point;
 		hitParticles.transform.LookAt(hit.raycastHit.point + hit.raycastHit.normal);
 
@@ -28,6 +29,7 @@ public class LaserParticleHit : LaserModule {
 
 	public override void DoHitEnd()
 	{
+		Debug.Log ("Laser Lost!");
 		hitParticles.enableEmission = false;
 	}
 }
