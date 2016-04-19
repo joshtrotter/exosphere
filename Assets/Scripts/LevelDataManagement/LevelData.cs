@@ -101,10 +101,11 @@ public class LevelData {
 		return (saveData.fastestTime > 0 && saveData.fastestTime < permData.targetTime);
 	}
 
-	//returns "Completed", "Unlocked" or "Locked (X stars required to unlock)"
+	//returns "Completed", "Unlocked" or "Locked"
 	public string GetCompletionStatus(){
 		if (!IsUnlocked()) {
-			return "Locked (" + permData.starsRequiredToUnlock + " stars required)";
+			//return "Locked (" + permData.starsRequiredToUnlock + " stars required)";
+			return "Locked";
 		} else if (HasBeenCompleted ()) {
 			return "Completed";
 		} else {

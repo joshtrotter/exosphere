@@ -9,15 +9,15 @@ public class LevelIcon : MonoBehaviour {
 	public Image star3;
 	public Image status;
 	public Image background;
-	public Text numStarsRequired;
-	public Image starSymbol;
+	public Text levelNumber;
+	//public Image starSymbol;
 
 	private LevelData currentLevel;
 	private WorldLevels worldLevels;
 
 	void Awake(){
 		worldLevels = GetComponentInParent<WorldLevels> ();
-		starSymbol.sprite = worldLevels.collectedStar;
+		//starSymbol.sprite = worldLevels.collectedStar;
 	}
 
 	public void DisplayLevelInfo(LevelData level){
@@ -28,6 +28,8 @@ public class LevelIcon : MonoBehaviour {
 	private void SetLatestInfo(){
 
 		status.gameObject.SetActive(true);
+		levelNumber.text = currentLevel.GetLevelID ().ToString();
+		levelNumber.gameObject.SetActive(true);
 
 		if (currentLevel.IsUnlocked ()) {
 			if (currentLevel.HasBeenCompleted()){
@@ -35,9 +37,6 @@ public class LevelIcon : MonoBehaviour {
 			} else {
 				status.gameObject.SetActive(false);
 			}
-
-			numStarsRequired.gameObject.SetActive(false);
-			starSymbol.gameObject.SetActive(false);
 
 			int starsEarned = currentLevel.GetStarsEarned ();
 			star1.sprite = starsEarned >= 1 ? worldLevels.collectedStar : worldLevels.uncollectedStar;
@@ -55,10 +54,6 @@ public class LevelIcon : MonoBehaviour {
 			star1.gameObject.SetActive (false);
 			star2.gameObject.SetActive (false);
 			star3.gameObject.SetActive (false);
-
-			starSymbol.gameObject.SetActive(true);
-			numStarsRequired.text = currentLevel.GetStarsRequiredToUnlock().ToString();
-			numStarsRequired.gameObject.SetActive(true);
 
 			status.sprite = worldLevels.lockedLevel;
 		}
