@@ -14,19 +14,14 @@ public class LevelInfo : MonoBehaviour {
 	public Text levelName;
 	public Text levelCompletion;
 	public Text supplyCratesFound;
-	public Text goldenBallFound;
-	public Text targetTime;
-	public Text fastestTime;
 	public Button playButton;
-	public Button timeTrialButton;
-	public Button previousButton;
-	public Button nextButton;
 
-	public Image supplyCratesStar;
-	public Image goldenBallStar;
-	public Image timeTrialStar;
+	public Image noDeathsCompletion;
+	public Sprite noDeathsComplete;
+	public Sprite noDeathsIncomplete;
 
 	//the star images which are used to show whether or not a star has been collected
+	public Image[] stars;
 	public Sprite collectedStar;
 	public Sprite uncollectedStar;
 
@@ -71,19 +66,21 @@ public class LevelInfo : MonoBehaviour {
 		levelCompletion.text = currentLevel.GetCompletionStatus ();
 		playButton.interactable = currentLevel.IsUnlocked ();
 
-		//time trials
-		timeTrialButton.interactable = currentLevel.HasBeenCompleted ();
-		targetTime.text = currentLevel.GetTargetTimeAsString ();
-		fastestTime.text = currentLevel.GetFastestTimeAsString ();
-		timeTrialStar.sprite = currentLevel.TimeTrialHasBeenCompleted () ? collectedStar : uncollectedStar;
-
 		//supply crates
 		supplyCratesFound.text = currentLevel.GetNumCollectablesFoundOutOfTotal ();
-		supplyCratesStar.sprite = currentLevel.AllCollectablesHaveBeenCollected () ? collectedStar : uncollectedStar;
 
-		//golden ball
-		goldenBallFound.text = currentLevel.GetGoldenBallFoundAsString ();
-		goldenBallStar.sprite = currentLevel.GoldenBallHasBeenCollected () ? collectedStar : uncollectedStar;
+		//no deaths
+		noDeathsCompletion.sprite = currentLevel.NoDeathsChallengeHasBeenCompleted () ? noDeathsComplete : noDeathsIncomplete;
+
+		//set the right number of stars to the collected state
+		int numStars = currentLevel.GetStarsEarned ();
+		for (int i = 0; i < 3; i++) {
+			if (i < numStars){
+				stars[i].sprite = collectedStar;
+			} else {
+				stars[i].sprite = uncollectedStar;
+			}
+		}
 
 	}
 }

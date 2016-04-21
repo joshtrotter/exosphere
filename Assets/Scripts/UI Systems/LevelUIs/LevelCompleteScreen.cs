@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections;
@@ -10,16 +10,26 @@ public class LevelCompleteScreen : UISystem {
 
 	public GameObject dropPanel;
 
+	public Text title;
+	public Text levelCompleteTitleText;
 	public Text supplyCrateTitleText;
 	public Text cratesFoundText;
-	public Text goldenBallFoundText;
-	public Text timeTrialUnlockedText;
+	public Text numberDeathsTitleText;
+	public Text numDeathsText;
 	public Text newLevelUnlockedText;
+	public Text levelCompleteStarEarned;
 	public Text cratesStarEarned;
 	public Text cratesNewBest;
-	public Text goldenBallStarEarned;
+	public Text noDeathsStarEarned;
 
-	private List<Text> displayList = new List<Text> ();
+	//stars
+	public Image levelCompleteStar;
+	public Image supplyCratesStar;
+	public Image noDeathsStar;
+	public Sprite uncollectedStar;
+	public Sprite collectedStar;
+
+	private List<Graphic> displayList = new List<Graphic> ();
 
 	private int buttonPress;
 
@@ -43,39 +53,50 @@ public class LevelCompleteScreen : UISystem {
 
 	private void SetAllInactive ()
 	{
+		levelCompleteTitleText.gameObject.SetActive (false);
 		supplyCrateTitleText.gameObject.SetActive (false);
 		cratesFoundText.gameObject.SetActive (false);
-		goldenBallFoundText.gameObject.SetActive (false);
-		timeTrialUnlockedText.gameObject.SetActive (false);
+		numberDeathsTitleText.gameObject.SetActive (false);
+		numDeathsText.gameObject.SetActive (false);
 		newLevelUnlockedText.gameObject.SetActive (false);
+		levelCompleteStarEarned.gameObject.SetActive (false);
 		cratesStarEarned.gameObject.SetActive (false);
 		cratesNewBest.gameObject.SetActive (false);
-		goldenBallStarEarned.gameObject.SetActive (false);
+		noDeathsStarEarned.gameObject.SetActive (false);
+		levelCompleteStar.gameObject.SetActive (false);
+		supplyCratesStar.gameObject.SetActive (false);
+		noDeathsStar.gameObject.SetActive (false);
 	}
 
 	public void LevelComplete(float time){
 		levelTimer = time;
 		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
-		
+		title.text = levelData.GetLevelName ();
 		displayList.Clear ();
 
 		//set up summary and update save data
+
+		//level complete
+		AddToDisplayList (levelCompleteTitleText);
+
 		//crates
 		AddToDisplayList (supplyCrateTitleText);
 		cratesFoundText.text = LevelManager.manager.GetNumCollectablesFound ();
 		AddToDisplayList (cratesFoundText);
 		
 		//goldenball
-		goldenBallFoundText.text = "Golden Ball " + levelData.GetGoldenBallFoundAsString ();
-		AddToDisplayList(goldenBallFoundText);
-		
-		//unlocks
-		if (!levelData.HasBeenCompleted()) {
-			levelData.Complete ();
-			AddToDisplayList(timeTrialUnlockedText);
-		}
+		AddToDisplayList (numberDeathsTitleText);
+		numDeathsText.text = LevelManager.manager.GetNumDeathsAsString ();
+		AddToDisplayList(numDeathsText);
 
 		//stars and records
+		levelCompleteStar.sprite = collectedStar;
+		if (!levelData.HasBeenCompleted()) {
+			levelData.Complete ();
+			AddToDisplayList(levelCompleteStarEarned);
+		}
+		AddToDisplayList (levelCompleteStar);
+
 		if (levelData.GetNumCollectablesFound() < LevelManager.manager.collected) {
 			levelData.SetNumCollectablesFound (LevelManager.manager.collected);
 			AddToDisplayList(cratesNewBest);
@@ -83,11 +104,15 @@ public class LevelCompleteScreen : UISystem {
 				AddToDisplayList(cratesStarEarned);
 			}
 		}
+		supplyCratesStar.sprite = levelData.AllCollectablesHaveBeenCollected () ? collectedStar : uncollectedStar;
+		AddToDisplayList (supplyCratesStar);
 		
-		if (!levelData.GoldenBallHasBeenCollected() && LevelManager.manager.goldenBallFound){
-			levelData.SetGoldenBallCollected();
-			AddToDisplayList(goldenBallStarEarned);
+		if (!levelData.NoDeathsChallengeHasBeenCompleted() && LevelManager.manager.numDeaths == 0){
+			levelData.SetNoDeathsCompleted();
+			AddToDisplayList(noDeathsStarEarned);
 		}
+		noDeathsStar.sprite = levelData.NoDeathsChallengeHasBeenCompleted () ? collectedStar : uncollectedStar;
+		AddToDisplayList (noDeathsStar);
 
 		//check for new level unlocks
 		//unlock next level if it isn't already
@@ -114,8 +139,9 @@ public class LevelCompleteScreen : UISystem {
 		StartCoroutine (RevealSummary ());
 	}
 
-	private void AddToDisplayList(Text text){
+	private void AddToDisplayList(Graphic text){
 		//set invisible
+		//Graphic graphic = (Graphic)Text;
 		Color color = text.color;
 		color.a = 0f;
 		text.color = color;
@@ -132,7 +158,8 @@ public class LevelCompleteScreen : UISystem {
 
 	private IEnumerator RevealSummary(){
 		yield return new WaitForSeconds(1.5f);
-		foreach (Text text in displayList) {
+		foreach (Graphic text in displayList) {
+			//Debug.Log("Revealing " + text.name);
 			text.color = Color.white;
 			yield return new WaitForSeconds(1f);
 		}

@@ -14,6 +14,5 @@ public class LevelPermanentData : ScriptableObject {
 
 	public string levelName;
 	public int parentWorld, totalCollectables, starsRequiredToUnlock;
-	public float targetTime;
 	public Sprite levelSprite;
 }

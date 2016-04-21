@@ -15,7 +15,7 @@ public class LevelManager : MonoBehaviour {
 	private GameObject cameraRig;
 	
 	public int collected;
-	public bool goldenBallFound;
+	public int numDeaths;
 
 	private Dictionary<string, int> objectStates = new Dictionary<string, int>();
 	private Dictionary<string, int> tempObjectStates = new Dictionary<string, int>();
@@ -45,12 +45,14 @@ public class LevelManager : MonoBehaviour {
 	public void FirstLoadLevel() {
 		Debug.Log ("First loading level");
 		firstLoad = true;
+		numDeaths = 0;
 		Application.LoadLevel (currentLevel);
 	}
 
 	public void ReloadLevel() {
 		Debug.Log ("Reloading level");
 		TearDown ();
+		numDeaths++;
 		Application.LoadLevel (currentLevel);
 	}
 
@@ -137,7 +139,6 @@ public class LevelManager : MonoBehaviour {
 	private void ClearUnsavedProgress ()
 	{
 		collected = 0;
-		goldenBallFound = false;
 		tempObjectStates.Clear ();
 	}
 
@@ -200,6 +201,10 @@ public class LevelManager : MonoBehaviour {
 
 	public string GetNumCollectablesFound(){
 		return collected + "/" + LevelDataManager.manager.GetCurrentLevelData().GetTotalCollectables();
+	}
+
+	public string GetNumDeathsAsString(){
+		return numDeaths.ToString ();
 	}
 
 }

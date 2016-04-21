@@ -7,7 +7,7 @@ using System.Collections;
 public class LevelSaveData {
 	
 	public int levelID;
-	public bool unlocked, completed, goldenBallCollected;
+	public bool unlocked, completed, noDeathsCompleted;
 	public int numCollectablesFound;
 	public float fastestTime;
 
