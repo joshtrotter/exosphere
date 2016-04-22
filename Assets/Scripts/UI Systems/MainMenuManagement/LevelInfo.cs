@@ -25,6 +25,8 @@ public class LevelInfo : MonoBehaviour {
 	public Sprite collectedStar;
 	public Sprite uncollectedStar;
 
+	public Image screenshot;
+
 	//store pointer locations to interpret directions of swipes
 	private Vector3 startPos;
 	private Vector3 endPos;
@@ -61,6 +63,7 @@ public class LevelInfo : MonoBehaviour {
 	private void SetLatestInfo(){
 		//Debug.Log ("Displaying data for " + currentLevel.GetLevelName ());
 		levelName.text = currentLevel.GetLevelName();
+		screenshot.sprite = currentLevel.GetLevelScreenshot ();
 
 		//completion
 		levelCompletion.text = currentLevel.GetCompletionStatus ();

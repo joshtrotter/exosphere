@@ -159,7 +159,6 @@ public class LevelCompleteScreen : UISystem {
 	private IEnumerator RevealSummary(){
 		yield return new WaitForSeconds(1.5f);
 		foreach (Graphic text in displayList) {
-			//Debug.Log("Revealing " + text.name);
 			text.color = Color.white;
 			yield return new WaitForSeconds(1f);
 		}
