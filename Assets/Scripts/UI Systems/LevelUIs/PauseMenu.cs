@@ -70,6 +70,15 @@ public class PauseMenu : UISystem {
 		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (ContinueToLevelSelect).Play ();
 	}
 
+	public void RestartLevel(){
+		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (ContinueToRestartLevel).Play ();
+	}
+
+	private void ContinueToRestartLevel(){
+		Deregister ();
+		LevelManager.manager.FirstLoadLevel ();
+	}
+
 	private void ContinueToLevelSelect(){
 		Deregister ();
 		Debug.Log ("Loading level loader from PauseMenu");

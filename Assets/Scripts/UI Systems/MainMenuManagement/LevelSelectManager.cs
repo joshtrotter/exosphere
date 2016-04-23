@@ -134,7 +134,8 @@ public class LevelSelectManager : MonoBehaviour {
 	public void PlayLevel(int levelID){	
 		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
 		DOTween.CompleteAll ();
-		menuCameraController.transform.DOLocalRotate(currentScreen.transform.localEulerAngles + new Vector3 (36, 0, 0), 1).Play ().OnComplete(LevelManager.manager.FirstLoadLevel);  
+		GameObject.FindObjectOfType<LevelLaunchSequence> ().PlayLevel ();
+		menuCameraController.transform.DOLocalRotate(currentScreen.transform.localEulerAngles + new Vector3 (36, 0, 0), 1).Play ();  
 	
 	}
 	
