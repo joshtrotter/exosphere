@@ -13,17 +13,27 @@ public class GlobalTutorialMonitor : MonoBehaviour {
 	}
 	
 	public void CollectableFound(){
-		OpenTutorial (collectableTutorial);
+		StartCoroutine(OpenTutorial (collectableTutorial));
 	}
 	
 	public void CheckpointReached(){
-		OpenTutorial (checkpointTutorial);
+		StartCoroutine (OpenTutorial(checkpointTutorial));
 	}
 
-	private void OpenTutorial(TutorialMessage tutorial){
-		tutorial.ExternalTriggerCall (TutorialMessage.TriggerBehaviour.Open);
+	private IEnumerator OpenTutorial(TutorialMessage tutorial){
+		if (PlayerPrefs.GetString (tutorial.uniqueId) != "closed"){
+			tutorial.ExternalTriggerCall (TutorialMessage.TriggerBehaviour.Open);
+			yield return new WaitForSeconds (tutorial.timeOut);
+			PlayerPrefs.SetString (tutorial.uniqueId, "closed");
+			PlayerPrefs.Save();
+		}
+	} 
+
+	public void ClearGlobalTutorialData(){
+		foreach (TutorialMessage tut in GetComponentsInChildren<TutorialMessage>()){
+			PlayerPrefs.DeleteKey(tut.uniqueId);
+		}
+		PlayerPrefs.Save ();
 	}
-
-
 
 }
