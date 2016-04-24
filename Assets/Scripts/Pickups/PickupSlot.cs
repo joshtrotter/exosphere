@@ -28,6 +28,11 @@ public class PickupSlot : MonoBehaviour
 		homeCoords = slotImage.rectTransform.position;
 	}
 
+	void OnLevelWasLoaded()
+	{
+		UpdateVisibility ();
+	}
+
 	public bool IsEquipped ()
 	{
 		return pickup != null;

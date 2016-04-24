@@ -153,6 +153,7 @@ public class LevelDataManager : MonoBehaviour {
 			File.Delete (Application.persistentDataPath + "/exosphereData.dat");
 		}
 		allLevelData.Clear();
+		HUD.controller.GetComponent<GlobalTutorialMonitor>().ClearGlobalTutorialData ();
 		SetupLevelData();
 	}
 }
