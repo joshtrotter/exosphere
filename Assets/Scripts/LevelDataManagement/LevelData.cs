@@ -56,6 +56,10 @@ public class LevelData {
 		return saveData.numCollectablesFound;
 	}
 
+	public Sprite GetLevelScreenshot(){
+		return permData.levelScreenshot;
+	}
+
 
 	public bool NoDeathsChallengeHasBeenCompleted(){
 		return saveData.noDeathsCompleted;

@@ -15,4 +15,5 @@ public class LevelPermanentData : ScriptableObject {
 	public string levelName;
 	public int parentWorld, totalCollectables, starsRequiredToUnlock;
 	public Sprite levelSprite;
+	public Sprite levelScreenshot;
 }
