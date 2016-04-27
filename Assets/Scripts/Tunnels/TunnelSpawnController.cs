@@ -9,7 +9,6 @@ public class TunnelSpawnController : MonoBehaviour {
 	public float minTunnelLength = 160;
 	public Transform deadZone;
 	public float distanceFactorToIncreaseBucketLevel = 100f;
-	public float distanceFactorToIncreaseDifficultyLevel = 1000f;
 
 	private LinkedList<TunnelPiece> tunnel = new LinkedList<TunnelPiece>();
 
@@ -45,9 +44,15 @@ public class TunnelSpawnController : MonoBehaviour {
 	}
 
 	private void trimTunnelStart() {
-		TunnelPiece toTrim = tunnel.First.Value;		 
+		TunnelPiece toTrim = tunnel.First.Value;
+		if (!isStarterPiece(toTrim)) {
+			TunnelPiecePool.INSTANCE.returnToPool (toTrim);		 
+		}
 		tunnel.RemoveFirst ();
-		DestroyObject (toTrim.gameObject);
+	}
+
+	private bool isStarterPiece(TunnelPiece piece) {
+		return piece.CompareTag ("FirstPipe") || piece.CompareTag ("SecondPipe");
 	}
 
 	private void extendTunnelEnd() {
@@ -90,14 +95,12 @@ public class TunnelSpawnController : MonoBehaviour {
 
 			distanceToEndOfTunnel += currentNode.Value.length();
 			currentTunnelDifficulty += currentNode.Value.difficultyLevel;
-			currentTunnelRarity += currentNode.Value.rarity;
 			currentNode = currentNode.Previous;
 		}
 
 		int bucketLevel = calculateBucketLevel ();
 		prefs.maxBucketLevel = bucketLevel;
 		prefs.maxDifficulty = bucketLevel - currentTunnelDifficulty;
-		prefs.maxRarity = 1 - currentTunnelRarity;
 
 		return prefs;
 	}
@@ -110,9 +113,5 @@ public class TunnelSpawnController : MonoBehaviour {
 			dist -= ++bucketLevel;
 		}
 		return bucketLevel;
-	}
-
-	private float calculateDifficultyLevel() {
-		return distanceTravelled / distanceFactorToIncreaseDifficultyLevel;
 	}
 }

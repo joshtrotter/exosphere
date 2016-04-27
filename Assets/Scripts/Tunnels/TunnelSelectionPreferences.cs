@@ -9,6 +9,5 @@ public class TunnelSelectionPreferences {
 
 	public float maxDifficulty = 1f;
 
-	public float maxRarity = 1f;
 }
 

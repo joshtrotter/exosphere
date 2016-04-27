@@ -21,7 +21,7 @@ public class TunnelPiece : MonoBehaviour {
 	//Indicates the complexity of the piece
 	public float difficultyLevel;
 	//Indicates how common this piece should be (rarer pieces will be selected less often)
-	public float rarity;
+	public int frequency;
 
 	public TunnelPieceSelector selector;
 
@@ -32,6 +32,7 @@ public class TunnelPiece : MonoBehaviour {
 	public TunnelPiece spawnChildPiece(TunnelSelectionPreferences prefs) {
 		TunnelPiece child = selector.spawnChildTunnelPiece (this, prefs);
 		child.transform.position = transform.position + endOffset;
+		child.gameObject.SetActive(true);
 		child.setup (this);
 		return child;
 	}

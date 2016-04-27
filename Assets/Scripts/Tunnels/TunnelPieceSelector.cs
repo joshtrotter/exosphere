@@ -4,15 +4,19 @@ using System.Collections;
 public class TunnelPieceSelector : MonoBehaviour {
 
 	public TunnelPiece spawnChildTunnelPiece(TunnelPiece parent, TunnelSelectionPreferences prefs) {
-		return TunnelPiecePool.INSTANCE.spawnNewInstance(selectFromPool(parent, prefs));
+		return selectFromPool(parent, prefs);
 	}
 
 	protected virtual TunnelPiece selectFromPool(TunnelPiece parent, TunnelSelectionPreferences prefs) {
 		bool validPieceFound = false;
 		TunnelPiece candidate = null;
 		while (!validPieceFound) {
-			candidate = TunnelPiecePool.INSTANCE.tunnelPieces [Random.Range (0, (TunnelPiecePool.INSTANCE.tunnelPieces.Length))];
+			candidate = TunnelPiecePool.INSTANCE.takeRandomPieceFromPool();
 			validPieceFound = validatePiece(candidate, prefs);
+			if (!validPieceFound) {
+				Debug.Log ("Rejecting " + candidate.name);
+				TunnelPiecePool.INSTANCE.returnToPool(candidate);
+			}
 		}
 
 		return candidate;
@@ -21,7 +25,6 @@ public class TunnelPieceSelector : MonoBehaviour {
 	protected virtual bool validatePiece(TunnelPiece candidate, TunnelSelectionPreferences prefs) {
 		bool isValid = candidate.bucketLevel <= prefs.maxBucketLevel;
 		isValid = isValid && candidate.difficultyLevel <= prefs.maxDifficulty;
-		isValid = isValid && candidate.rarity <= prefs.maxRarity;
 		isValid = isValid && validateClearRuns (candidate, prefs);
 		return isValid;
 	}
