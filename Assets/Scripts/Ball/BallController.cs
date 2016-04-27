@@ -13,6 +13,7 @@ public class BallController : MonoBehaviour
 		public float movePowerScaler = 1f;
 		public float brakePowerScaler = 1f;
 		public float constantMovePower = 0f;
+		public bool isControlledFlight = false;
 	}
 
 	// The force added to the ball to move it
@@ -64,7 +65,7 @@ public class BallController : MonoBehaviour
 			brakes.ReleaseBrakes ();
 
 			//Accelerate away from the camera if we are on the ground - TODO do we want to allow mid-air acceleration?
-			if (IsOnGround () || inControlledFlight) {
+			if (IsOnGround () || inControlledFlight || movementModifiers.isControlledFlight) {
 				rb.AddForce (moveDirection * movePower * movementModifiers.movePowerScaler);
 
 				//If the player attempts to turn sharply at a high velocity then they will skid out
