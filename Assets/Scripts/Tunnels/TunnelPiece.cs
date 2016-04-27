@@ -25,15 +25,19 @@ public class TunnelPiece : MonoBehaviour {
 
 	public TunnelPieceSelector selector;
 
-	public virtual void setup(TunnelPiece parent) {
+	public virtual void setup(TunnelSelectionPreferences prefs, TunnelPiece parent) {
 		//Standard tunnel pieces don't require any special setup
+	}
+
+	public virtual void tearDown() {
+		//Standard tunnel pieces don't require any special clean up
 	}
 
 	public TunnelPiece spawnChildPiece(TunnelSelectionPreferences prefs) {
 		TunnelPiece child = selector.spawnChildTunnelPiece (this, prefs);
 		child.transform.position = transform.position + endOffset;
 		child.gameObject.SetActive(true);
-		child.setup (this);
+		child.setup (prefs, this);
 		return child;
 	}
 

@@ -19,10 +19,8 @@ public class LaserMultiParticleHit : MonoBehaviour {
 	{
 		SingleLaserHit hit;
 		if (allLaserHits.TryGetValue (hitInfo.launcher, out hit)) {
-			Debug.Log ("Laser Continue For Launcher " + hitInfo.launcher.GetInstanceID());
 			DoHitContinue (hit, hitInfo);
 		} else {
-			Debug.Log ("Laser Hit For Launcher " + hitInfo.launcher.GetInstanceID());
 			DoHitStart(hitInfo);
 		}
 	}
@@ -46,7 +44,6 @@ public class LaserMultiParticleHit : MonoBehaviour {
 	
 	public void DoHitEnd(SingleLaserHit hit, ArcReactor_Launcher launcher)
 	{
-		Debug.Log ("Laser Lost For Launcher " + launcher.GetInstanceID());
 		hit.particles.enableEmission = false;
 		hit.particles.gameObject.SetActive (false);
 		allLaserHits.Remove (launcher);
@@ -58,7 +55,6 @@ public class LaserMultiParticleHit : MonoBehaviour {
 			yield return new WaitForEndOfFrame();
 			hit.hitLastFrame = hit.hitThisFrame;
 			hit.hitThisFrame = false;
-			Debug.Log (hit.hitLastFrame);
 		}
 		DoHitEnd (hit, launcher);
 	}

@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 public class TunnelSpawnController : MonoBehaviour {
 
 	public static TunnelSpawnController INSTANCE;
-	
+
+	public Text score; 
 	public float minTunnelLength = 160;
 	public Transform deadZone;
 	public float distanceFactorToIncreaseBucketLevel = 100f;
@@ -37,6 +39,7 @@ public class TunnelSpawnController : MonoBehaviour {
 		trimTunnelStart ();
 		extendTunnelEnd ();
 		distanceTravelled += tunnel.First.Value.length ();
+		score.text = "" + (int) (distanceTravelled / 10);
 	}
 
 	public float getCurrentClearRun() {
@@ -45,8 +48,11 @@ public class TunnelSpawnController : MonoBehaviour {
 
 	private void trimTunnelStart() {
 		TunnelPiece toTrim = tunnel.First.Value;
-		if (!isStarterPiece(toTrim)) {
+		toTrim.tearDown ();
+		if (!isStarterPiece (toTrim)) {
 			TunnelPiecePool.INSTANCE.returnToPool (toTrim);		 
+		} else {
+			toTrim.gameObject.SetActive(false);
 		}
 		tunnel.RemoveFirst ();
 	}
