@@ -10,7 +10,11 @@ public class PauseMenu : UISystem {
 	public GameObject unpauseButton;
 	public GameObject pauseMenu;
 	public CallibrationUI callibrator;
+	public GameObject confirmationPanel;
+	public Text confirmationText;
 	//private CanvasGroup canvasGroup;
+	private delegate void confirmationContinue();
+	private confirmationContinue cont;
 
 	public override void Awake(){
 		//set up singleton instance
@@ -32,6 +36,7 @@ public class PauseMenu : UISystem {
 	{
 		Time.timeScale = 1f;
 		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (Deregister).Play ();
+		confirmationPanel.SetActive (false);
 	}
 
 	public override void Show ()
@@ -56,7 +61,19 @@ public class PauseMenu : UISystem {
 	}
 
 	public void MainMenu(){
-		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (ContinueToMainMenu).Play ();
+		cont = ContinueToMainMenu;
+		DisplayConfirmWindow ("Return to main menu? Your progress will be lost");
+	}
+
+
+	public void LevelSelect(){
+		cont = ContinueToLevelSelect;
+		DisplayConfirmWindow ("Return to level select? Your progress will be lost");
+	}
+
+	public void RestartLevel(){
+		cont = ContinueToRestartLevel;
+		DisplayConfirmWindow ("Are you sure you want to restart the level?");
 	}
 
 	private void ContinueToMainMenu(){
@@ -66,25 +83,39 @@ public class PauseMenu : UISystem {
 		MainMenuController.controller.ReturnFocusToMainMenu ();
 	}
 
-	public void LevelSelect(){
-		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (ContinueToLevelSelect).Play ();
-	}
-
-	public void RestartLevel(){
-		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (ContinueToRestartLevel).Play ();
-	}
-
-	private void ContinueToRestartLevel(){
-		Deregister ();
-		LevelManager.manager.FirstLoadLevel ();
-	}
-
 	private void ContinueToLevelSelect(){
 		Deregister ();
 		Debug.Log ("Loading level loader from PauseMenu");
 		Application.LoadLevel (0);
 		MainMenuController.controller.ReturnFocusToWorldLevels ();
 	}
+	
+	private void ContinueToRestartLevel(){
+		Deregister ();
+		LevelManager.manager.FirstLoadLevel ();
+	}
+
+	private void DisplayConfirmWindow(string text){
+		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).Play ();
+		confirmationPanel.transform.DOLocalMoveY (-(Screen.height * 1.2f), 0).SetUpdate (true).Play ();
+		confirmationPanel.SetActive (true);
+		confirmationPanel.transform.DOLocalMoveY (0, 0.5f).SetUpdate (true).Play ();
+		confirmationText.text = text;
+	}
+
+	public void Confirm(){
+		confirmationPanel.transform.DOLocalMoveY(-(Screen.height * 1.2f), 0.5f).SetUpdate (true).Play ().OnComplete(Continue);
+	}
+
+	public void Continue(){
+		cont();
+	}
+
+	public void Cancel(){
+		confirmationPanel.transform.DOLocalMoveY (-(Screen.height * 1.2f), 0.5f).SetUpdate (true).Play ();
+		pauseMenu.transform.DOLocalMoveY (0, 0.5f).SetUpdate (true).Play ();
+	}
+
 
 	public override void BackKey(){
 		Unpause ();
