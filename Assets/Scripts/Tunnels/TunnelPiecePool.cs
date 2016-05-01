@@ -48,5 +48,14 @@ public class TunnelPiecePool : MonoBehaviour {
 		TunnelPiece instance = Instantiate<TunnelPiece> (template);
 		returnToPool (instance);
 	}
+
+	
+	//called after a selector rejects too many pieces to avoid infinite loops. Returns first in pool and hopes for the best
+	public TunnelPiece takeSafePiece(){
+		TunnelPiece piece = availablePool [0];
+		availablePool.RemoveAt (0);
+		Debug.Log ("Selecting " + piece.name);
+		return piece;
+	}
 	
 }

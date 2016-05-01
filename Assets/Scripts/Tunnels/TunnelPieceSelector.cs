@@ -10,12 +10,19 @@ public class TunnelPieceSelector : MonoBehaviour {
 	protected virtual TunnelPiece selectFromPool(TunnelPiece parent, TunnelSelectionPreferences prefs) {
 		bool validPieceFound = false;
 		TunnelPiece candidate = null;
+		int loopCatch = 0;	
 		while (!validPieceFound) {
 			candidate = TunnelPiecePool.INSTANCE.takeRandomPieceFromPool();
 			validPieceFound = validatePiece(candidate, prefs);
 			if (!validPieceFound) {
 				Debug.Log ("Rejecting " + candidate.name);
 				TunnelPiecePool.INSTANCE.returnToPool(candidate);
+				loopCatch++;
+			}
+			if (loopCatch > 10){
+				Debug.Log ("Preventing infinite loop, taking first piece from pool");
+				validPieceFound = true;
+				candidate = TunnelPiecePool.INSTANCE.takeSafePiece();
 			}
 		}
 
