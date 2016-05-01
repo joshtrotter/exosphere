@@ -14,6 +14,7 @@ public class BallController : MonoBehaviour
 		public float brakePowerScaler = 1f;
 		public float constantMovePower = 0f;
 		public bool isControlledFlight = false;
+		public bool isGrinding = false;
 	}
 
 	// The force added to the ball to move it
@@ -60,7 +61,7 @@ public class BallController : MonoBehaviour
 	public void Accelerate (Vector3 moveDirection)
 	{
 		//Disable acceleration while brake locked
-		if (!brakes.IsBrakeLocked()) {
+		if (!brakes.IsBrakeLocked() && !movementModifiers.isGrinding) {
 			//If we are accelerating then we definitely aren't braking so return the drag values to neutral
 			brakes.ReleaseBrakes ();
 
@@ -92,7 +93,7 @@ public class BallController : MonoBehaviour
 	//Invoked when braking is being applied
 	public void Brake (float brakePower)
 	{
-		if (!brakes.IsBrakeLocked()) {
+		if (!brakes.IsBrakeLocked() && !movementModifiers.isGrinding) {
 			if (IsReallyOnGround ()) {
 				//Lock the brakes if the player is applying a hard brake and the ball is travelling above the brakeLockVelocity...
 				if (allowBrakeLocks && brakes.CheckForBrakeLockOnBrake(brakePower)) {
@@ -115,6 +116,12 @@ public class BallController : MonoBehaviour
 
 	public void ModifyMovement(MovementModifiers modifiers) {
 		this.movementModifiers = modifiers;
+		updateGrind ();
+	}
+
+	public void SetGrind(bool grind) {
+		movementModifiers.isGrinding = grind;
+		updateGrind ();
 	}
 
 	public void ResetMovementModifiersToDefaults() {
@@ -142,6 +149,13 @@ public class BallController : MonoBehaviour
 	{
 		//TODO This is a candidate for future optimization - this method is called a lot and Physics.Raycast is relatively expensive
 		return Physics.Raycast (transform.position, Vector3.down, 0.6f);
+	}
+
+	private void updateGrind() {
+		rb.freezeRotation = movementModifiers.isGrinding;
+		if (movementModifiers.isGrinding) {
+			rb.velocity = Vector3.Scale(rb.velocity, new Vector3(1, 0, 1));
+		}
 	}
 	
 }

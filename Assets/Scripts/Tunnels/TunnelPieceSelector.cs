@@ -14,7 +14,6 @@ public class TunnelPieceSelector : MonoBehaviour {
 			candidate = TunnelPiecePool.INSTANCE.takeRandomPieceFromPool();
 			validPieceFound = validatePiece(candidate, prefs);
 			if (!validPieceFound) {
-				Debug.Log ("Rejecting " + candidate.name);
 				TunnelPiecePool.INSTANCE.returnToPool(candidate);
 			}
 		}

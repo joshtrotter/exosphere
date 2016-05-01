@@ -34,7 +34,6 @@ public class TunnelPiecePool : MonoBehaviour {
 		int index = Random.Range (0, (availablePool.Count));
 		TunnelPiece piece = availablePool [index];
 		availablePool.RemoveAt (index);
-		Debug.Log ("Selecting " + piece.name);
 		return piece;
 	}
 
