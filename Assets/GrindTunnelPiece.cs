@@ -73,7 +73,7 @@ public class GrindTunnelPiece : TunnelPiece {
 
 	private void extendBody(int minExtension) {
 		minExtension = Mathf.Clamp (minExtension, 0, 2);
-		bodyConfiguration = Random.Range (minExtension, 24);
+		bodyConfiguration = Random.Range (minExtension, 9);
 
 		Debug.Log (bodyConfiguration);
 
@@ -99,7 +99,7 @@ public class GrindTunnelPiece : TunnelPiece {
 		} else if (bodyConfiguration == 7) {
 			extendSwerveLeft();
 			extendSwerveLeftStraight();
-		} else if (bodyConfiguration >= 8) {
+		} else if (bodyConfiguration == 8) {
 			extendSwerveLeft();
 			extendSwerveLeftStraight();
 			swerveRightExtensionLeft.transform.position = swerveRightExtensionLeft.transform.position + (Vector3.forward * STRAIGHT_EXTENSION_DIST);
@@ -149,7 +149,7 @@ public class GrindTunnelPiece : TunnelPiece {
 		} else if (bodyConfiguration == 7) {
 			extendSwerveLeft(true);
 			extendSwerveLeftStraight(true);
-		} else if (bodyConfiguration >= 8) {
+		} else if (bodyConfiguration == 8) {
 			extendSwerveLeft(true);
 			extendSwerveLeftStraight(true);
 			swerveRightExtensionLeft.transform.position = swerveRightExtensionLeft.transform.position + (Vector3.back * STRAIGHT_EXTENSION_DIST);

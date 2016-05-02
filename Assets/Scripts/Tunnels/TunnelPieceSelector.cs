@@ -18,7 +18,7 @@ public class TunnelPieceSelector : MonoBehaviour {
 				TunnelPiecePool.INSTANCE.returnToPool(candidate);
 				loopCatch++;
 			}
-			if (loopCatch > 10){
+			if (loopCatch > 40){
 				Debug.Log ("Preventing infinite loop, taking first piece from pool");
 				validPieceFound = true;
 				candidate = TunnelPiecePool.INSTANCE.takeSafePiece();
