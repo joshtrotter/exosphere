@@ -8,8 +8,7 @@ public class GrindTunnelPiece : TunnelPiece {
 	private static Vector3 SWERVE_RIGHT_EXTENSION_DIST = new Vector3 (-1.4f, 0, 22.1f);
 	private static Vector3 SWERVE_LEFT_EXTENSION_DIST = new Vector3 (1.4f, 0, 22.1f);
 
-	//Size of extra clean run sequence before required to guarantee a grind extension 
-	public float autoExtendClearRunDistance = 20f;
+	public int swerveBucketLevel = 4;
 
 	public GameObject dropExtension1;
 	public GameObject dropExtension2;
@@ -39,9 +38,8 @@ public class GrindTunnelPiece : TunnelPiece {
 	public override void setup (TunnelSelectionPreferences prefs, TunnelPiece parent)
 	{
 		base.setup (prefs, parent);
-		int minExtension = (int)((TunnelSpawnController.INSTANCE.getCurrentClearRun () - this.minClearSequenceBefore) / autoExtendClearRunDistance);
-		extendDrop (minExtension);
-		extendBody (minExtension);
+		extendDrop (prefs);
+		extendBody (prefs);
 	}
 
 	public override void tearDown ()
@@ -51,17 +49,17 @@ public class GrindTunnelPiece : TunnelPiece {
 		resetBody ();
 	}
 
-	private void extendDrop(int minExtension) {
-		minExtension = Mathf.Clamp (minExtension - 1, 0, 4);
-		int randExtension = Random.Range (minExtension, 4);
+	private void extendDrop(TunnelSelectionPreferences prefs) {
+		int randExtension = Random.Range (0, 20);
+		randExtension = (int) (randExtension * Mathf.Clamp01 (prefs.maxDifficulty));
 
-		if (randExtension > 0) {
+		if (randExtension > 8) {
 			dropExtension1.SetActive(true);
 			dropPipes ();
-			if (randExtension > 1) {
+			if (randExtension > 15) {
 				dropExtension2.SetActive(true);
 				dropPipes ();
-				if (randExtension > 2) {
+				if (randExtension > 18) {
 					dropExtension3.SetActive(true);
 					dropPipes ();
 				}
@@ -71,35 +69,40 @@ public class GrindTunnelPiece : TunnelPiece {
 
 	}
 
-	private void extendBody(int minExtension) {
-		minExtension = Mathf.Clamp (minExtension, 0, 2);
-		bodyConfiguration = Random.Range (minExtension, 9);
+	private void extendBody(TunnelSelectionPreferences prefs) {
+		bodyConfiguration = Random.Range (0, 23);
 
-		Debug.Log (bodyConfiguration);
+		if (TunnelSpawnController.INSTANCE.getCurrentClearRun () > this.minClearSequenceBefore * 2) {
+			bodyConfiguration = Mathf.Clamp(bodyConfiguration, 5, bodyConfiguration);
+		}
 
-		if (bodyConfiguration == 1) {
+		if (prefs.maxBucketLevel <= swerveBucketLevel) {
+			bodyConfiguration = Mathf.Clamp(bodyConfiguration, 0, 10);
+		}
+
+		if (bodyConfiguration >= 5 && bodyConfiguration <= 10) {
 			extendStraight ();						
-		} else if (bodyConfiguration == 2) {
+		} else if (bodyConfiguration == 11) {
 			extendSwerveRight();
-		} else if (bodyConfiguration == 3) {
+		} else if (bodyConfiguration <= 13) {
 			extendStraight ();
 			swerveRightExtensionLeft.transform.position = swerveRightExtensionLeft.transform.position + (Vector3.forward * STRAIGHT_EXTENSION_DIST);
 			swerveRightExtensionRight.transform.position = swerveRightExtensionRight.transform.position + (Vector3.forward * STRAIGHT_EXTENSION_DIST);
 			extendSwerveRight();
-		} else if (bodyConfiguration == 4) {
+		} else if (bodyConfiguration <= 15) {
 			extendSwerveRight();
 			extendSwerveRightStraight();
-		} else if (bodyConfiguration == 5) {
+		} else if (bodyConfiguration == 16) {
 			extendSwerveLeft();
-		} else if (bodyConfiguration == 6) {
+		} else if (bodyConfiguration <= 18) {
 			extendStraight ();
 			swerveLeftExtensionLeft.transform.position = swerveLeftExtensionLeft.transform.position + (Vector3.forward * STRAIGHT_EXTENSION_DIST);
 			swerveLeftExtensionRight.transform.position = swerveLeftExtensionRight.transform.position + (Vector3.forward * STRAIGHT_EXTENSION_DIST);
 			extendSwerveLeft();
-		} else if (bodyConfiguration == 7) {
+		} else if (bodyConfiguration <= 20) {
 			extendSwerveLeft();
 			extendSwerveLeftStraight();
-		} else if (bodyConfiguration == 8) {
+		} else if (bodyConfiguration == 21) {
 			extendSwerveLeft();
 			extendSwerveLeftStraight();
 			swerveRightExtensionLeft.transform.position = swerveRightExtensionLeft.transform.position + (Vector3.forward * STRAIGHT_EXTENSION_DIST);
@@ -108,6 +111,15 @@ public class GrindTunnelPiece : TunnelPiece {
 			swerveRightExtensionRight.transform.position = swerveRightExtensionRight.transform.position + SWERVE_LEFT_EXTENSION_DIST;
 			extendSwerveRight();
 			extendSwerveRightStraight();
+		} else if (bodyConfiguration == 22) {
+			extendSwerveRight();
+			extendSwerveRightStraight();
+			swerveLeftExtensionLeft.transform.position = swerveLeftExtensionLeft.transform.position + (Vector3.forward * STRAIGHT_EXTENSION_DIST);
+			swerveLeftExtensionRight.transform.position = swerveLeftExtensionRight.transform.position + (Vector3.forward * STRAIGHT_EXTENSION_DIST);
+			swerveLeftExtensionLeft.transform.position = swerveLeftExtensionLeft.transform.position + SWERVE_RIGHT_EXTENSION_DIST;
+			swerveLeftExtensionRight.transform.position = swerveLeftExtensionRight.transform.position + SWERVE_RIGHT_EXTENSION_DIST;
+			extendSwerveLeft();
+			extendSwerveLeftStraight();
 		}
 	}
 
@@ -127,29 +139,29 @@ public class GrindTunnelPiece : TunnelPiece {
 	}
 
 	private void resetBody() {
-		if (bodyConfiguration == 1) {
+		if (bodyConfiguration >= 5 && bodyConfiguration <= 10) {
 			extendStraight(true);
-		} else if (bodyConfiguration == 2) {
+		} else if (bodyConfiguration == 11) {
 			extendSwerveRight(true);
-		} else if (bodyConfiguration == 3) {
+		} else if (bodyConfiguration <= 13) {
 			extendStraight (true);
 			swerveRightExtensionLeft.transform.position = swerveRightExtensionLeft.transform.position + (Vector3.back * STRAIGHT_EXTENSION_DIST);
 			swerveRightExtensionRight.transform.position = swerveRightExtensionRight.transform.position + (Vector3.back * STRAIGHT_EXTENSION_DIST);
 			extendSwerveRight(true);
-		} else if (bodyConfiguration == 4) {
+		} else if (bodyConfiguration <= 15) {
 			extendSwerveRight(true);
 			extendSwerveRightStraight(true);
-		} else if (bodyConfiguration == 5) {
+		} else if (bodyConfiguration == 16) {
 			extendSwerveLeft(true);
-		} else if (bodyConfiguration == 6) {
+		} else if (bodyConfiguration <= 18) {
 			extendStraight (true);
 			swerveLeftExtensionLeft.transform.position = swerveLeftExtensionLeft.transform.position + (Vector3.back * STRAIGHT_EXTENSION_DIST);
 			swerveLeftExtensionRight.transform.position = swerveLeftExtensionRight.transform.position + (Vector3.back * STRAIGHT_EXTENSION_DIST);
 			extendSwerveLeft(true);
-		} else if (bodyConfiguration == 7) {
+		} else if (bodyConfiguration <= 20) {
 			extendSwerveLeft(true);
 			extendSwerveLeftStraight(true);
-		} else if (bodyConfiguration == 8) {
+		} else if (bodyConfiguration == 21) {
 			extendSwerveLeft(true);
 			extendSwerveLeftStraight(true);
 			swerveRightExtensionLeft.transform.position = swerveRightExtensionLeft.transform.position + (Vector3.back * STRAIGHT_EXTENSION_DIST);
@@ -158,6 +170,15 @@ public class GrindTunnelPiece : TunnelPiece {
 			swerveRightExtensionRight.transform.position = swerveRightExtensionRight.transform.position - SWERVE_LEFT_EXTENSION_DIST;
 			extendSwerveRight(true);
 			extendSwerveRightStraight(true);
+		} else if (bodyConfiguration == 22) {
+			extendSwerveRight(true);
+			extendSwerveRightStraight(true);
+			swerveLeftExtensionLeft.transform.position = swerveLeftExtensionLeft.transform.position + (Vector3.back * STRAIGHT_EXTENSION_DIST);
+			swerveLeftExtensionRight.transform.position = swerveLeftExtensionRight.transform.position + (Vector3.back * STRAIGHT_EXTENSION_DIST);
+			swerveLeftExtensionLeft.transform.position = swerveLeftExtensionLeft.transform.position - SWERVE_RIGHT_EXTENSION_DIST;
+			swerveLeftExtensionRight.transform.position = swerveLeftExtensionRight.transform.position - SWERVE_RIGHT_EXTENSION_DIST;
+			extendSwerveLeft(true);
+			extendSwerveLeftStraight(true);
 		}
 	}
 

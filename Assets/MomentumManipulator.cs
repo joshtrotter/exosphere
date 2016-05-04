@@ -29,7 +29,6 @@ public class MomentumManipulator : MonoBehaviour {
 	private IEnumerator reduceVelocityToThreshold(Rigidbody rb) {
 		while (rb.velocity.magnitude > momentumThreshold) {
 			Vector3 targetVelocity = rb.velocity.normalized * momentumThreshold;
-			Debug.Log ("Reducing from velocity " + rb.velocity.magnitude + " to target velocity " + targetVelocity.magnitude);
 			rb.velocity = Vector3.Lerp (rb.velocity, targetVelocity, Time.deltaTime * reductionSpeed);
 			yield return new WaitForFixedUpdate();
 		}

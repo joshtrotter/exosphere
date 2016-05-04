@@ -18,7 +18,7 @@ public class HoleTunnelPiece : TunnelPiece {
 	public override void setup (TunnelSelectionPreferences prefs, TunnelPiece parent)
 	{
 		base.setup (prefs, parent);
-		configInUse = holeConfigs [Random.Range (0, holeConfigs.Length)];
+		configInUse = getRandomConfig (prefs);
 		applyConfig (configInUse);
 	}
 
@@ -29,9 +29,10 @@ public class HoleTunnelPiece : TunnelPiece {
 	}
 
 	private HoleConfig getRandomConfig(TunnelSelectionPreferences prefs) {
+		int loopBreaker = 0;
 		while (true) {
 			HoleConfig candidate = holeConfigs [Random.Range (0, holeConfigs.Length)];
-			if (candidate.difficulty <= prefs.maxDifficulty) {
+			if (++loopBreaker > 30 || candidate.difficulty <= prefs.maxDifficulty) {
 				return candidate;
 			}
 		}

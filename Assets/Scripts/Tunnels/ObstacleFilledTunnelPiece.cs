@@ -38,9 +38,10 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 	}
 
 	private ObstacleConfig getRandomConfig(TunnelSelectionPreferences prefs) {
+		int loopBreaker = 0;
 		while (true) {
 			ObstacleConfig candidate = obstacleConfigs [Random.Range (0, obstacleConfigs.Length)];
-			if (candidate.difficulty <= prefs.maxDifficulty) {
+			if (++loopBreaker > 10 || candidate.difficulty <= prefs.maxDifficulty) {
 				return candidate;
 			}
 		}
