@@ -7,10 +7,14 @@ public class TunnelSpawnController : MonoBehaviour {
 
 	public static TunnelSpawnController INSTANCE;
 
-	public Text score; 
+	public Text score;
+	public Text debug;
 	public float minTunnelLength = 160;
 	public Transform deadZone;
 	public float distanceFactorToIncreaseBucketLevel = 100f;
+
+	//How far back to check tunnel pieces when building tunnel selection preferences
+	public float maxDistanceToCheckPreferenceModifiers = 60f;
 
 	private LinkedList<TunnelPiece> tunnel = new LinkedList<TunnelPiece>();
 
@@ -94,13 +98,16 @@ public class TunnelSpawnController : MonoBehaviour {
 		float currentTunnelDifficulty = 0f;
 		float currentTunnelRarity = 0f;
 
-		while (currentNode != null) {
-			if (currentNode.Value.minClearSequenceAfter > distanceToEndOfTunnel) {
-				prefs.requireCleanRun = true;
-			}
+		while (distanceToEndOfTunnel < maxDistanceToCheckPreferenceModifiers && currentNode != null) {
+			TunnelPiece piece = currentNode.Value;
+			prefs = piece.updatePreferences(prefs, distanceToEndOfTunnel);
 
-			distanceToEndOfTunnel += currentNode.Value.length();
-			currentTunnelDifficulty += currentNode.Value.difficultyLevel;
+//			if (currentNode.Value.minClearSequenceAfter > distanceToEndOfTunnel) {
+//				prefs.requireCleanRun = true;
+//			}
+
+			distanceToEndOfTunnel += piece.length();
+			currentTunnelDifficulty += piece.difficultyLevel;
 			currentNode = currentNode.Previous;
 		}
 
