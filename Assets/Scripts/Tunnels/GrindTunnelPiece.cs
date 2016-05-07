@@ -72,7 +72,7 @@ public class GrindTunnelPiece : TunnelPiece {
 	private void extendBody(TunnelSelectionPreferences prefs) {
 		bodyConfiguration = Random.Range (0, 23);
 
-		if (TunnelSpawnController.INSTANCE.getCurrentClearRun () > this.minClearSequenceBefore * 2) {
+		if (TunnelSpawnController.INSTANCE.getCurrentClearRun () > 60f) {
 			bodyConfiguration = Mathf.Clamp(bodyConfiguration, 5, bodyConfiguration);
 		}
 

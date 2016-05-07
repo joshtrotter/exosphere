@@ -96,16 +96,10 @@ public class TunnelSpawnController : MonoBehaviour {
 
 		float distanceToEndOfTunnel = 0f;
 		float currentTunnelDifficulty = 0f;
-		float currentTunnelRarity = 0f;
 
 		while (distanceToEndOfTunnel < maxDistanceToCheckPreferenceModifiers && currentNode != null) {
 			TunnelPiece piece = currentNode.Value;
 			prefs = piece.updatePreferences(prefs, distanceToEndOfTunnel);
-
-//			if (currentNode.Value.minClearSequenceAfter > distanceToEndOfTunnel) {
-//				prefs.requireCleanRun = true;
-//			}
-
 			distanceToEndOfTunnel += piece.length();
 			currentTunnelDifficulty += piece.difficultyLevel;
 			currentNode = currentNode.Previous;

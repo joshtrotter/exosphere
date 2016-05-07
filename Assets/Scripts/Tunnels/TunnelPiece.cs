@@ -9,13 +9,6 @@ public class TunnelPiece : MonoBehaviour {
 	//Whether this tunnel can contribute to a clear run sequence
 	public bool clearRun = false;
 
-	//Used to enforce a minimum distance of clear tunnels before this piece can be placed
-	public float minClearSequenceBefore = 0f;
-	//Used to enforce a maximum distance of clear tunnels before this piece can be placed
-	public float maxClearSequenceBefore = 0f;
-	//Used to enforce a minimum distance of clear tunnels that must be placed after this piece
-	public float minClearSequenceAfter = 0f;
-
 	//Bucket levels are added to the spawn pool as the player progresses
 	public int bucketLevel;
 	//Indicates the complexity of the piece
@@ -77,28 +70,9 @@ public class TunnelPiece : MonoBehaviour {
 		return basePreferences;
 	}
 
-	protected virtual bool validatePiece(TunnelSelectionPreferences prefs) {
+	private bool validatePiece(TunnelSelectionPreferences prefs) {
 		bool isValid = this.bucketLevel <= prefs.maxBucketLevel;
 		isValid = isValid && this.difficultyLevel <= prefs.maxDifficulty;
-		//isValid = isValid && validateClearRuns (prefs);
-		return isValid;
-	}
-	
-	private bool validateClearRuns(TunnelSelectionPreferences prefs) {
-		bool isValid = true;
-		
-		if (prefs.requireCleanRun) {
-			isValid = this.clearRun;
-		}
-		
-		if (isValid && this.minClearSequenceBefore > 0f) {
-			isValid = TunnelSpawnController.INSTANCE.getCurrentClearRun() >= this.minClearSequenceBefore;
-		}
-		
-		if (isValid && this.maxClearSequenceBefore > 0f) {
-			isValid = TunnelSpawnController.INSTANCE.getCurrentClearRun() <= this.maxClearSequenceBefore;
-		}
-		
 		return isValid;
 	}
 
