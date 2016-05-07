@@ -32,7 +32,7 @@ public class HoleTunnelPiece : TunnelPiece {
 		int loopBreaker = 0;
 		while (true) {
 			HoleConfig candidate = holeConfigs [Random.Range (0, holeConfigs.Length)];
-			if (++loopBreaker > 30 || candidate.difficulty <= prefs.maxDifficulty) {
+			if (++loopBreaker > 30 || candidate.difficulty <= prefs.preferredDifficulty) {
 				return candidate;
 			}
 		}

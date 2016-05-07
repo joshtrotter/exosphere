@@ -27,7 +27,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 	public override void setup (TunnelSelectionPreferences prefs, TunnelPiece parent)
 	{
 		base.setup (prefs, parent);
-		configInUse = obstacleConfigs [Random.Range (0, obstacleConfigs.Length)];
+		configInUse = getRandomConfig (prefs);
 		applyConfig (configInUse);
 	}
 
@@ -41,7 +41,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		int loopBreaker = 0;
 		while (true) {
 			ObstacleConfig candidate = obstacleConfigs [Random.Range (0, obstacleConfigs.Length)];
-			if (++loopBreaker > 10 || candidate.difficulty <= prefs.maxDifficulty) {
+			if (++loopBreaker > 20 || candidate.difficulty <= prefs.preferredDifficulty) {
 				return candidate;
 			}
 		}

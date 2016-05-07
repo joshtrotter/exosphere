@@ -6,7 +6,7 @@ public class LaserTunnelPiece : TunnelPiece {
 	[System.Serializable]
 	public class LaserConfig {
 		public string name;
-		public int bucketLevel;
+		public float difficultyLevel;
 		public GameObject[] lasers;
 	}
 	
@@ -17,7 +17,7 @@ public class LaserTunnelPiece : TunnelPiece {
 	public override void setup (TunnelSelectionPreferences prefs, TunnelPiece parent)
 	{
 		base.setup (prefs, parent);
-		configInUse = laserConfigs [Random.Range (0, laserConfigs.Length)];
+		configInUse = getRandomConfig (prefs);
 		applyConfig (configInUse);
 	}
 	
@@ -31,7 +31,9 @@ public class LaserTunnelPiece : TunnelPiece {
 		int loopBreaker = 0;
 		while (true) {
 			LaserConfig candidate = laserConfigs [Random.Range (0, laserConfigs.Length)];
-			if (++loopBreaker > 10 || candidate.bucketLevel <= prefs.maxBucketLevel) {
+			Debug.Log ("Testing laser candidate " + candidate.name);
+			if (++loopBreaker > 20 || candidate.difficultyLevel <= prefs.preferredDifficulty) {
+				Debug.Log ("Selecting laser candidate " + candidate.name);
 				return candidate;
 			}
 		}
