@@ -53,7 +53,7 @@ public class TunnelPiece : MonoBehaviour {
 
 	public float calculateWeight(TunnelSelectionPreferences prefs) {
 		if (validatePiece (prefs)) {
-			return baseWeight * categoryWeigthModifier(prefs, category);
+			return (baseWeight + difficultyWeightModifier(prefs)) * categoryWeigthModifier(prefs, category);
 		} else {
 			return 0f;
 		}
@@ -82,5 +82,10 @@ public class TunnelPiece : MonoBehaviour {
 			weight = 1f;
 		}
 		return weight;
+	}
+
+	private float difficultyWeightModifier(TunnelSelectionPreferences prefs) {
+		float difficultyGap = Mathf.Clamp01 (Mathf.Abs (this.difficultyLevel - prefs.preferredDifficulty));
+		return 1 - difficultyGap;
 	}
 }

@@ -11,16 +11,25 @@ public class TunnelSpawnController : MonoBehaviour {
 	public Text debug;
 	public float minTunnelLength = 160;
 	public Transform deadZone;
+
 	public float distanceFactorToIncreaseBucketLevel = 100f;
+
+
 
 	//How far back to check tunnel pieces when building tunnel selection preferences
 	public float maxDistanceToCheckPreferenceModifiers = 60f;
+
+	//Maximum settings for the tunnel selection preferences
+	public float distanceToMaxSettings = 3000f;
+	public float maxBucketLevel = 10f;
+	public float maxDifficultyPerPiece = 1f;
 
 	private LinkedList<TunnelPiece> tunnel = new LinkedList<TunnelPiece>();
 
 	//A clear run is a sequence of tunnel pieces with no obstacles or speed reducing drops/twists
 	private float currentClearRun;
 
+	private float maxDifficulty;
 	private float distanceTravelled = 0f;
 	
 	void Awake() {
@@ -30,6 +39,7 @@ public class TunnelSpawnController : MonoBehaviour {
 			INSTANCE = this;
 		}
 
+		maxDifficulty = ((maxDistanceToCheckPreferenceModifiers / 20f) + 1) * maxDifficultyPerPiece;
 		tunnel.AddFirst(GameObject.FindGameObjectWithTag("FirstPipe").GetComponent<TunnelPiece>());
 		tunnel.AddLast(GameObject.FindGameObjectWithTag("SecondPipe").GetComponent<TunnelPiece>());
 	}
@@ -106,9 +116,9 @@ public class TunnelSpawnController : MonoBehaviour {
 		}
 
 		int bucketLevel = calculateBucketLevel ();
-		prefs.maxBucketLevel = bucketLevel;
-		prefs.maxDifficulty = bucketLevel - currentTunnelDifficulty;
-
+		prefs.maxBucketLevel = (int) Mathf.Lerp(0, maxBucketLevel, distanceTravelled / distanceToMaxSettings);
+		prefs.maxDifficulty = Mathf.Lerp(0, maxDifficulty, distanceTravelled / distanceToMaxSettings) - currentTunnelDifficulty;
+		prefs.preferredDifficulty = prefs.maxDifficulty / 2f;
 		return prefs;
 	}
 

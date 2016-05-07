@@ -52,7 +52,10 @@ public class TunnelPiecePool : MonoBehaviour {
 			if (cumulativeSumOfWeights[i] >= rand) {
 				TunnelPiece chosen = takeFromPool(i);
 				if (Debug.isDebugBuild) {
-					TunnelSpawnController.INSTANCE.debug.text = weightedPool + "Chosen Piece: " + chosen.name;
+					TunnelSpawnController.INSTANCE.debug.text = weightedPool 
+						+ "Chosen Piece: " + chosen.name + "\n" 
+						+ "Bucket Level: " + prefs.maxBucketLevel + "\n" 
+						+ "Max Difficulty: " + prefs.maxDifficulty;
 				}
 				return chosen;
 			}
