@@ -21,8 +21,8 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 	public ObstacleConfig[] obstacleConfigs;
 	public int[] allowableRotations;
 
-	private ObstacleConfig configInUse;
-	private int rotationInUse;
+	protected ObstacleConfig configInUse;
+	protected int rotationInUse;
 	
 	public override void setup (TunnelSelectionPreferences prefs, TunnelPiece parent)
 	{
@@ -47,7 +47,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		}
 	}
 
-	private void applyConfig(ObstacleConfig config) {
+	protected virtual void applyConfig(ObstacleConfig config) {
 		Debug.Log ("Setting up " + config.name);
 		foreach (LayerOfObstacles layer in config.configLayers) {
 			layer.chosenLevel = layer.allowableLevels[Random.Range(0, layer.allowableLevels.Length)];
@@ -60,7 +60,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		transform.GetChild(0).transform.Rotate (Vector3.up * rotationInUse);
 	}
 
-	private void removeConfig(ObstacleConfig config) {
+	protected virtual void removeConfig(ObstacleConfig config) {
 		foreach (LayerOfObstacles layer in config.configLayers) {
 			foreach (GameObject obstacle in layer.obstacles){
 				obstacle.gameObject.SetActive(false);
