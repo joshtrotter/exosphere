@@ -8,6 +8,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		public string name = "Config";
 		public float difficulty;
 		public LayerOfObstacles[] configLayers;
+		public bool shouldSpin = false;
 	}
 
 	[System.Serializable]
@@ -23,6 +24,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 
 	protected ObstacleConfig configInUse;
 	protected int rotationInUse;
+	protected Vector3 startRotation;
 	
 	public override void setup (TunnelSelectionPreferences prefs, TunnelPiece parent)
 	{
@@ -58,6 +60,10 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		}
 		rotationInUse = allowableRotations [Random.Range (0, allowableRotations.Length)];
 		transform.GetChild(0).transform.Rotate (Vector3.up * rotationInUse);
+		if (config.shouldSpin) {
+			startRotation = transform.GetChild (0).transform.localEulerAngles;
+			GetComponentInChildren<AxisRotator>().rotateVector = Vector3.up;
+		}
 	}
 
 	protected virtual void removeConfig(ObstacleConfig config) {
@@ -66,6 +72,10 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 				obstacle.gameObject.SetActive(false);
 				obstacle.transform.Translate(0,0,-layer.chosenLevel, Space.World);
 			}
+		}
+		if (config.shouldSpin) {
+			GetComponentInChildren<AxisRotator>().rotateVector = Vector3.zero;
+			transform.GetChild (0).transform.localEulerAngles = startRotation;
 		}
 		transform.GetChild(0).transform.Rotate (Vector3.up * -rotationInUse);
 	}
