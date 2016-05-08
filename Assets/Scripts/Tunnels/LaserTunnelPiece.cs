@@ -31,9 +31,7 @@ public class LaserTunnelPiece : TunnelPiece {
 		int loopBreaker = 0;
 		while (true) {
 			LaserConfig candidate = laserConfigs [Random.Range (0, laserConfigs.Length)];
-			Debug.Log ("Testing laser candidate " + candidate.name);
 			if (++loopBreaker > 20 || candidate.difficultyLevel <= prefs.preferredDifficulty) {
-				Debug.Log ("Selecting laser candidate " + candidate.name);
 				return candidate;
 			}
 		}

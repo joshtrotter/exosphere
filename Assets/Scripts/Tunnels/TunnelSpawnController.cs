@@ -23,6 +23,7 @@ public class TunnelSpawnController : MonoBehaviour {
 	public float distanceToMaxSettings = 3000f;
 	public float maxBucketLevel = 10f;
 	public float maxDifficultyPerPiece = 1f;
+	public float baseDifficulty = 0.5f;
 
 	private LinkedList<TunnelPiece> tunnel = new LinkedList<TunnelPiece>();
 
@@ -117,7 +118,7 @@ public class TunnelSpawnController : MonoBehaviour {
 
 		int bucketLevel = calculateBucketLevel ();
 		prefs.maxBucketLevel = (int) Mathf.Lerp(0, maxBucketLevel, distanceTravelled / distanceToMaxSettings);
-		prefs.maxDifficulty = Mathf.Lerp(0, maxDifficulty, distanceTravelled / distanceToMaxSettings) - currentTunnelDifficulty;
+		prefs.maxDifficulty = Mathf.Lerp(baseDifficulty, maxDifficulty, distanceTravelled / distanceToMaxSettings) - currentTunnelDifficulty;
 		prefs.preferredDifficulty = prefs.maxDifficulty / 2f;
 		return prefs;
 	}
