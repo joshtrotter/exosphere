@@ -19,6 +19,8 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		public float chosenLevel;
 	}
 
+	public float minRotsPerSecond = 0.1f;
+	public float maxRotsPerSecond = 0.2f;
 	public ObstacleConfig[] obstacleConfigs;
 	public int[] allowableRotations;
 
@@ -62,7 +64,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		transform.GetChild(0).transform.Rotate (Vector3.up * rotationInUse);
 		if (config.shouldSpin) {
 			startRotation = transform.GetChild (0).transform.localEulerAngles;
-			GetComponentInChildren<AxisRotator>().rotateVector = Vector3.up;
+			GetComponentInChildren<AxisRotator>().rotationsPerSecond = (Random.Range(0,2) * 2 - 1) * Random.Range(minRotsPerSecond, maxRotsPerSecond);
 		}
 	}
 
@@ -74,7 +76,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 			}
 		}
 		if (config.shouldSpin) {
-			GetComponentInChildren<AxisRotator>().rotateVector = Vector3.zero;
+			GetComponentInChildren<AxisRotator>().rotationsPerSecond = 0f;
 			transform.GetChild (0).transform.localEulerAngles = startRotation;
 		}
 		transform.GetChild(0).transform.Rotate (Vector3.up * -rotationInUse);
