@@ -54,7 +54,7 @@ public class TunnelSpawnController : MonoBehaviour {
 		trimTunnelStart ();
 		extendTunnelEnd ();
 		distanceTravelled += tunnel.First.Value.length ();
-		score.text = "" + (int) (distanceTravelled / 10);
+		//score.text = "" + (int) (distanceTravelled / 10);
 	}
 
 	public float getCurrentClearRun() {

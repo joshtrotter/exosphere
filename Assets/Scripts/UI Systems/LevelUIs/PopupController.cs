@@ -51,6 +51,10 @@ public class PopupController : MonoBehaviour {
 		}
 	}
 
+	public void Message(string message){
+		StartCoroutine (WaitToBeShown (message));
+	}
+
 	private IEnumerator WaitToBeShown(string popup){
 		while (HUD.controller.hidden) {
 			yield return new WaitForEndOfFrame();
