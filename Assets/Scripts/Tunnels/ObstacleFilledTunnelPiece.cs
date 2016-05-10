@@ -8,6 +8,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		public string name = "Config";
 		public float difficulty;
 		public LayerOfObstacles[] configLayers;
+		public bool shouldSpin = false;
 	}
 
 	[System.Serializable]
@@ -18,11 +19,14 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		public float chosenLevel;
 	}
 
+	public float minRotsPerSecond = 0.1f;
+	public float maxRotsPerSecond = 0.2f;
 	public ObstacleConfig[] obstacleConfigs;
 	public int[] allowableRotations;
 
-	private ObstacleConfig configInUse;
-	private int rotationInUse;
+	protected ObstacleConfig configInUse;
+	protected int rotationInUse;
+	protected Vector3 startRotation;
 	
 	public override void setup (TunnelSelectionPreferences prefs, TunnelPiece parent)
 	{
@@ -47,7 +51,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		}
 	}
 
-	private void applyConfig(ObstacleConfig config) {
+	protected virtual void applyConfig(ObstacleConfig config) {
 		Debug.Log ("Setting up " + config.name);
 		foreach (LayerOfObstacles layer in config.configLayers) {
 			layer.chosenLevel = layer.allowableLevels[Random.Range(0, layer.allowableLevels.Length)];
@@ -58,14 +62,22 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		}
 		rotationInUse = allowableRotations [Random.Range (0, allowableRotations.Length)];
 		transform.GetChild(0).transform.Rotate (Vector3.up * rotationInUse);
+		if (config.shouldSpin) {
+			startRotation = transform.GetChild (0).transform.localEulerAngles;
+			GetComponentInChildren<AxisRotator>().rotationsPerSecond = (Random.Range(0,2) * 2 - 1) * Random.Range(minRotsPerSecond, maxRotsPerSecond);
+		}
 	}
 
-	private void removeConfig(ObstacleConfig config) {
+	protected virtual void removeConfig(ObstacleConfig config) {
 		foreach (LayerOfObstacles layer in config.configLayers) {
 			foreach (GameObject obstacle in layer.obstacles){
 				obstacle.gameObject.SetActive(false);
 				obstacle.transform.Translate(0,0,-layer.chosenLevel, Space.World);
 			}
+		}
+		if (config.shouldSpin) {
+			GetComponentInChildren<AxisRotator>().rotationsPerSecond = 0f;
+			transform.GetChild (0).transform.localEulerAngles = startRotation;
 		}
 		transform.GetChild(0).transform.Rotate (Vector3.up * -rotationInUse);
 	}

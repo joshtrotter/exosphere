@@ -53,7 +53,7 @@ public class TunnelPiece : MonoBehaviour {
 
 	public float calculateWeight(TunnelSelectionPreferences prefs) {
 		if (validatePiece (prefs)) {
-			return (baseWeight + difficultyWeightModifier(prefs)) * categoryWeigthModifier(prefs, category);
+			return (baseWeight + difficultyWeightModifier(prefs)) * categoryWeightModifier(prefs, category);
 		} else {
 			return 0f;
 		}
@@ -63,7 +63,7 @@ public class TunnelPiece : MonoBehaviour {
 	public TunnelSelectionPreferences updatePreferences(TunnelSelectionPreferences basePreferences, float distanceToEndOfTunnel) {
 		foreach (ChildCategoryWeight ccw in childCategoryWeights) {
 			if (ccw.distance >= distanceToEndOfTunnel) {
-				float currentWeight = categoryWeigthModifier(basePreferences, ccw.category);
+				float currentWeight = categoryWeightModifier(basePreferences, ccw.category);
 				basePreferences.categoryWeights[ccw.category] = currentWeight * ccw.weightScale;
 			}
 		}
@@ -76,7 +76,7 @@ public class TunnelPiece : MonoBehaviour {
 		return isValid;
 	}
 
-	private float categoryWeigthModifier(TunnelSelectionPreferences prefs, TunnelPieceCategory category) {
+	private float categoryWeightModifier(TunnelSelectionPreferences prefs, TunnelPieceCategory category) {
 		float weight;
 		if (!prefs.categoryWeights.TryGetValue(category, out weight)) {
 			weight = 1f;

@@ -17,6 +17,10 @@ public class ZoomPad : SwitchableObject {
 		SwapState ();
 	}
 
+	void OnEnable(){
+		Awake ();
+	}
+
 	public override void Activate(){
 		SwapState ();
 	}
