@@ -10,10 +10,10 @@ public class TunnelScoreController : MonoBehaviour {
 	//how often the score should update
 	public float updateTime = 0.2f;
 	//the number of updates should be waited until the multiplier is checked;
-	public float multiplierCheckTime = 3;
-	public float scorePerDistance = 12.5f;
+	public float multiplierCheckTime = 2.5f;
+	public float scorePerDistance = 1.1f;
 	//an array of velocity values that are required to maintain/increase speed multiplier
-	public float[] multiplierThresholds;
+	public float[] multiplierThresholds = new float[10]{0,16,16,24,24,36,36,48,48,60};
 
 	//minimum air time
 	public float minAirTime = 2f;
