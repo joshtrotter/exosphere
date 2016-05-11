@@ -83,7 +83,7 @@ public class TunnelScoreController : MonoBehaviour {
 	}
 
 	//Collisions used to determine ball airtime and award additional points
-	void OnCollisionEnter(Collision coll){
+	/*void OnCollisionEnter(Collision coll){
 		if (runTime - groundLeftTime >= minAirTime) {
 			int airScore = (int)((runTime - groundLeftTime) * (airTimePointsPerSecond / 10)) * 10;
 			if (runTime - groundLeftTime >= 2 * minAirTime) { //good luck
@@ -98,6 +98,20 @@ public class TunnelScoreController : MonoBehaviour {
 	}
 
 	void OnCollisionExit(Collision coll){
+		groundLeftTime = runTime;
+	}*/
+	void OnCollisionStay(){
+		if (runTime - groundLeftTime >= minAirTime) {
+			int airScore = (int)((runTime - groundLeftTime) * (airTimePointsPerSecond / 10)) * 10;
+			if (runTime - groundLeftTime >= 2 * minAirTime) { //good luck
+				airScore *= 2;
+				PopupController.controller.Message ("Massive Airtime! +" + airScore);
+			} else {
+				PopupController.controller.Message ("Airtime! +" + airScore);
+			}
+			updateScore(airScore, false);
+			groundLeftTime = runTime; //prevent double-dipping
+		}
 		groundLeftTime = runTime;
 	}
 }

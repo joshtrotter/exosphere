@@ -24,6 +24,8 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 	public float maxRotsPerSecond = 0.2f;
 	public ObstacleConfig[] obstacleConfigs;
 
+
+
 	protected ObstacleConfig configInUse;
 	protected int rotationInUse;
 	protected Vector3 startRotation;
