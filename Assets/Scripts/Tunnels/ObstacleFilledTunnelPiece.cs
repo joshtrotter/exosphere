@@ -9,6 +9,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 		public float difficulty;
 		public LayerOfObstacles[] configLayers;
 		public bool shouldSpin = false;
+		public int[] allowableRotations = new int[1]{0};
 	}
 
 	[System.Serializable]
@@ -22,7 +23,6 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 	public float minRotsPerSecond = 0.1f;
 	public float maxRotsPerSecond = 0.2f;
 	public ObstacleConfig[] obstacleConfigs;
-	public int[] allowableRotations;
 
 	protected ObstacleConfig configInUse;
 	protected int rotationInUse;
@@ -60,7 +60,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 				obstacle.transform.Translate(0,0,layer.chosenLevel, Space.World);
 			}
 		}
-		rotationInUse = allowableRotations [Random.Range (0, allowableRotations.Length)];
+		rotationInUse = config.allowableRotations [Random.Range (0, config.allowableRotations.Length)];
 		transform.GetChild(0).transform.Rotate (Vector3.up * rotationInUse);
 		if (config.shouldSpin) {
 			startRotation = transform.GetChild (0).transform.localEulerAngles;
