@@ -9,7 +9,10 @@ public class TunnelSpawnController : MonoBehaviour {
 
 	public Text score;
 	public Text debug;
-	public float minTunnelLength = 160;
+	public float tunnelLengthCheckTime = 2f;
+	public float minTunnelLength = 160f;
+	public float minTunnelLengthBehind = 40f;
+	public Transform ball;
 	public Transform deadZone;
 
 	public float distanceFactorToIncreaseBucketLevel = 100f;
@@ -31,7 +34,6 @@ public class TunnelSpawnController : MonoBehaviour {
 	private float currentClearRun;
 
 	private float maxDifficulty;
-	private float distanceTravelled = 0f;
 	
 	void Awake() {
 		if (INSTANCE != null) {
@@ -48,13 +50,16 @@ public class TunnelSpawnController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		extendTunnelEnd();
+		StartCoroutine (CheckTunnelSize ());
 	}
 
 	public void OnTunnelPieceEntry() {
+		checkForTunnelExtension ();
+	}
+
+	private void checkForTunnelExtension() {
 		trimTunnelStart ();
 		extendTunnelEnd ();
-		distanceTravelled += tunnel.First.Value.length ();
-		//score.text = "" + (int) (distanceTravelled / 10);
 	}
 
 	public float getCurrentClearRun() {
@@ -63,13 +68,16 @@ public class TunnelSpawnController : MonoBehaviour {
 
 	private void trimTunnelStart() {
 		TunnelPiece toTrim = tunnel.First.Value;
-		toTrim.tearDown ();
-		if (!isStarterPiece (toTrim)) {
-			TunnelPiecePool.INSTANCE.returnToPool (toTrim);		 
-		} else {
-			toTrim.gameObject.SetActive(false);
+		while (ball.position.z - (toTrim.transform.position.z + toTrim.endOffset.z) > minTunnelLengthBehind) { 
+			toTrim.tearDown ();
+			if (!isStarterPiece (toTrim)) {
+				TunnelPiecePool.INSTANCE.returnToPool (toTrim);		 
+			} else {
+				toTrim.gameObject.SetActive (false);
+			}
+			tunnel.RemoveFirst ();
+			toTrim = tunnel.First.Value;
 		}
-		tunnel.RemoveFirst ();
 	}
 
 	private bool isStarterPiece(TunnelPiece piece) {
@@ -117,19 +125,26 @@ public class TunnelSpawnController : MonoBehaviour {
 		}
 
 		int bucketLevel = calculateBucketLevel ();
-		prefs.maxBucketLevel = (int) Mathf.Lerp(0, maxBucketLevel, distanceTravelled / distanceToMaxSettings);
-		prefs.maxDifficulty = Mathf.Lerp(baseDifficulty, maxDifficulty, distanceTravelled / distanceToMaxSettings) - currentTunnelDifficulty;
+		prefs.maxBucketLevel = (int) Mathf.Lerp(0, maxBucketLevel, ball.position.z / distanceToMaxSettings);
+		prefs.maxDifficulty = Mathf.Lerp(baseDifficulty, maxDifficulty, ball.position.z / distanceToMaxSettings) - currentTunnelDifficulty;
 		prefs.preferredDifficulty = prefs.maxDifficulty / 2f;
 		return prefs;
 	}
 
 	//Calculate the bucket level as the nth triangle number that would resolve to the distance travelled
 	private int calculateBucketLevel() {
-		float dist = distanceTravelled / distanceFactorToIncreaseBucketLevel;
+		float dist = ball.position.z / distanceFactorToIncreaseBucketLevel;
 		int bucketLevel = 0;
 		while (dist > bucketLevel + 1) {
 			dist -= ++bucketLevel;
 		}
 		return bucketLevel;
+	}
+
+	private IEnumerator CheckTunnelSize() {
+		while (true) {
+			yield return new WaitForSeconds (tunnelLengthCheckTime);
+			checkForTunnelExtension ();
+		}
 	}
 }

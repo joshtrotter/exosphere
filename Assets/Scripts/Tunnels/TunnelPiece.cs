@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class TunnelPiece : MonoBehaviour {
 	
@@ -31,8 +32,15 @@ public class TunnelPiece : MonoBehaviour {
 	}
 	public ChildCategoryWeight[] childCategoryWeights;
 
+	public float flyInDistance = 20f;
+	public float flyInTime = 1f;
+
+	private Vector3 position;
+
 	public virtual void setup(TunnelSelectionPreferences prefs, TunnelPiece parent) {
-		//Standard tunnel pieces don't require any special setup
+		position = transform.position;
+		transform.position = transform.position + (((Vector3.down * Random.Range(-1, 2)) + (Vector3.left * Random.Range(-1, 2))) * flyInDistance);
+		transform.DOMove (position, flyInTime).Play();
 	}
 
 	public virtual void tearDown() {
@@ -41,7 +49,7 @@ public class TunnelPiece : MonoBehaviour {
 
 	public TunnelPiece spawnChildPiece(TunnelSelectionPreferences prefs) {
 		TunnelPiece child = TunnelPiecePool.INSTANCE.takeWeightedRandomPieceFromPool (prefs);
-		child.transform.position = transform.position + endOffset;
+		child.transform.position = position + endOffset;
 		child.gameObject.SetActive(true);
 		child.setup (prefs, this);
 		child.choosePotentialCollectableSlot ();
