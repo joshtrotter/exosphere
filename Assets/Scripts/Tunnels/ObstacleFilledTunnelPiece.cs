@@ -95,7 +95,8 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 	private int getMaxDifficultyIndex (TunnelSelectionPreferences prefs)
 	{
 		//return the index one higher than the last allowed obstacleConfig based on difficulty
-		for (int i = 0; i < difficultyMap.Length; i++) {
+		//the first element should always be easy enough, otherwise the difficulty for the whole piece is easier than any config, therefore start at index 1
+		for (int i = 1; i < difficultyMap.Length; i++) {
 			if (difficultyMap [i] > prefs.preferredDifficulty) {
 				return i - 1;
 			}
