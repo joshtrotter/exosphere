@@ -52,6 +52,7 @@ public class TunnelPiece : MonoBehaviour {
 		child.transform.position = position + endOffset;
 		child.gameObject.SetActive(true);
 		child.setup (prefs, this);
+		child.choosePotentialCollectableSlot ();
 		return child;
 	}
 
@@ -95,5 +96,13 @@ public class TunnelPiece : MonoBehaviour {
 	private float difficultyWeightModifier(TunnelSelectionPreferences prefs) {
 		float difficultyGap = Mathf.Clamp01 (Mathf.Abs (this.difficultyLevel - prefs.preferredDifficulty));
 		return 1 - difficultyGap;
+	}
+
+	//chooses one out of all active collectable slots in children to have a chance at spawning a collectable
+	public virtual void choosePotentialCollectableSlot(){
+		TunnelCollectableSlot[] slots = GetComponentsInChildren<TunnelCollectableSlot> ();
+		if (slots.Length > 0) {
+			slots [Random.Range (0, slots.Length)].ConsiderSpawning ();
+		}
 	}
 }
