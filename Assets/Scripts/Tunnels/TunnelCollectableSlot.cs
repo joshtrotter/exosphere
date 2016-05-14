@@ -22,7 +22,7 @@ public class TunnelCollectableSlot : MonoBehaviour {
 			currentCollectable.transform.parent = this.transform;
 			currentCollectable.transform.localPosition = Vector3.zero;
 		} else {
-			currentCollectable.transform.localPosition = this.transform.position;
+			currentCollectable.transform.position = this.transform.position;
 		}
 	}
 
