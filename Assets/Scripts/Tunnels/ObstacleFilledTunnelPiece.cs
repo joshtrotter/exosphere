@@ -68,17 +68,8 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 	}
 
 	private ObstacleConfig getRandomConfig(TunnelSelectionPreferences prefs) {
-		/*
-		int loopBreaker = 0;
-		while (true) {
-			ObstacleConfig candidate = obstacleConfigs [Random.Range (0, obstacleConfigs.Length)];
-			if (++loopBreaker > 20 || candidate.difficulty <= prefs.preferredDifficulty) {
-				return candidate;
-			}
-		}
-		*/
 		int max = getMaxDifficultyIndex (prefs); 
-		Debug.Log (cumulativeSumOfWeights.Length + ", " + max);
+		//Debug.Log (cumulativeSumOfWeights.Length + ", " + max);
 		float rand = Random.Range (0, cumulativeSumOfWeights [max]);
 		for (int i = 0; i < obstacleConfigs.Length; i++) {
 			if (cumulativeSumOfWeights[i] >= rand) {
@@ -105,7 +96,7 @@ public class ObstacleFilledTunnelPiece : TunnelPiece {
 	}
 
 	protected virtual void applyConfig(ObstacleConfig config) {
-		Debug.Log ("Setting up " + config.name);
+		//Debug.Log ("Setting up " + config.name);
 		foreach (LayerOfObstacles layer in config.configLayers) {
 			layer.chosenLevel = layer.allowableLevels[Random.Range(0, layer.allowableLevels.Length)];
 			foreach (GameObject obstacle in layer.obstacles){
