@@ -16,6 +16,7 @@ public class TunnelPointBoosterCollectable : TunnelCollectable {
 	private ParticleSystem collectEffect;
 	private Collider coll;
 	private Transform item;
+	private Tween flight;
 	
 	void Awake() {
 		this.coll = GetComponent<Collider> ();
@@ -28,23 +29,27 @@ public class TunnelPointBoosterCollectable : TunnelCollectable {
 	void Update() {
 		if (isActiveAndEnabled){
 			item.RotateAround (coll.bounds.center, rotationVector, rotationsPerSecond * 360f * Time.deltaTime);
+			//item.Rotate (rotationVector * 360f * rotationsPerSecond * Time.deltaTime);
 		}
 	}
 
 	protected override void ApplyCollectableEffect(){
-		PopupController.controller.Message ("Bonus Collected! +" + scoreBoost);
+		PopupController.controller.Message ("Smash Bonus! +" + scoreBoost);
 		scorer.updateScore (scoreBoost, false);
 	}
 	
 	protected override void PlayCollectVisuals(){
 		collectEffect.Play();
 		hoverEffect.Stop();
-		item.DOMoveY (transform.position.y + flyingSpeed * collectEffect.duration, collectEffect.duration).Play();
+		flight = item.DOMoveY (transform.position.y + flyingSpeed * collectEffect.duration, collectEffect.duration);
+		flight.Play ();
 	}
 
 	public override void Reset(){
 		base.Reset ();
+		flight.Kill ();
 		item.localPosition = Vector3.zero;
+		item.localEulerAngles = Vector3.zero;
 		hoverEffect.Play ();
 	}
 }
