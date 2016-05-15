@@ -68,6 +68,7 @@ public class TunnelCollectableSpawner : MonoBehaviour {
 	}
 	
 	public void returnToPool(TunnelCollectable collectable) {
+		//collectable.Reset ();
 		collectable.gameObject.SetActive(false);
 		availablePool.Add (collectable);
 	}

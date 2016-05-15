@@ -16,7 +16,7 @@ public class UpdateTunnelRunnerMultiplier : MonoBehaviour {
 		if(coll.CompareTag("Player") && !updateOnEnter){
 			for (int i = 0; i < maxIncrease; i++){
 				scorer.checkMultiplier();
-				Debug.Log("Initiating additional multiplier check");
+				//Debug.Log("Initiating additional multiplier check");
 			}
 		}
 	}
@@ -25,7 +25,7 @@ public class UpdateTunnelRunnerMultiplier : MonoBehaviour {
 		if(coll.CompareTag("Player") && updateOnEnter){
 			for (int i = 0; i < maxIncrease; i++){
 				scorer.checkMultiplier();
-				Debug.Log("Initiating additional multiplier check");
+				//Debug.Log("Initiating additional multiplier check");
 			}
 		}
 	}
@@ -34,7 +34,7 @@ public class UpdateTunnelRunnerMultiplier : MonoBehaviour {
 		if(coll.gameObject.CompareTag("Player") && !updateOnEnter){
 			for (int i = 0; i < maxIncrease; i++){
 				scorer.checkMultiplier();
-				Debug.Log("Initiating additional multiplier check");
+				//Debug.Log("Initiating additional multiplier check");
 			}
 		}
 	}
@@ -43,7 +43,7 @@ public class UpdateTunnelRunnerMultiplier : MonoBehaviour {
 		if(coll.gameObject.CompareTag("Player") && updateOnEnter){
 			for (int i = 0; i < maxIncrease; i++){
 				scorer.checkMultiplier();
-				Debug.Log("Initiating additional multiplier check");
+				//Debug.Log("Initiating additional multiplier check");
 			}
 		}
 	}
