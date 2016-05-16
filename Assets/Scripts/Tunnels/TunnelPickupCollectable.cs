@@ -2,16 +2,14 @@
 using System.Collections;
 using DG.Tweening;
 
-public class TunnelPointBoosterCollectable : TunnelCollectable {
+public class TunnelPickupCollectable : TunnelCollectable {
 
-	public int scoreBoost = 500;
-
-	public Vector3 rotationVector;
-	public float rotationsPerSecond = 1f;
+	public Pickup[] pickups;
+	
 	public float flyingSpeed = 10f;
 	
 	private TunnelScoreController scorer;
-
+	
 	private ParticleSystem hoverEffect;
 	private ParticleSystem collectEffect;
 	private Collider coll;
@@ -26,16 +24,13 @@ public class TunnelPointBoosterCollectable : TunnelCollectable {
 		this.scorer = GameObject.FindObjectOfType<TunnelScoreController>();
 	}
 
-	void Update() {
-		if (isActiveAndEnabled){
-			item.RotateAround (coll.bounds.center, rotationVector, rotationsPerSecond * 360f * Time.deltaTime);
-			//item.Rotate (rotationVector * 360f * rotationsPerSecond * Time.deltaTime);
-		}
-	}
-
+	
 	protected override void ApplyCollectableEffect(GameObject player){
-		PopupController.controller.Message ("Crate Bonus! +" + scoreBoost);
-		scorer.updateScore (scoreBoost, false);
+		PickupController pickupController = player.GetComponent<PickupController>();
+		foreach (Pickup pickup in pickups) {
+			pickup.Reset();
+			pickupController.AddPickup(pickup);
+		}
 	}
 	
 	protected override void PlayCollectVisuals(){
@@ -44,7 +39,7 @@ public class TunnelPointBoosterCollectable : TunnelCollectable {
 		flight = item.DOMoveY (transform.position.y + flyingSpeed * collectEffect.duration, collectEffect.duration);
 		flight.Play ();
 	}
-
+	
 	public override void Reset(){
 		base.Reset ();
 		flight.Kill ();
@@ -53,3 +48,4 @@ public class TunnelPointBoosterCollectable : TunnelCollectable {
 		hoverEffect.Play ();
 	}
 }
+

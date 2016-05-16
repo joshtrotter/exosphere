@@ -15,6 +15,10 @@ public class TunnelScoreController : MonoBehaviour {
 	//an array of velocity values that are required to maintain/increase speed multiplier
 	public float[] multiplierThresholds = new float[10]{0,16,16,24,24,36,36,48,48,60};
 
+	//send a popup message with total distance every time the player travels this many metres
+	public float distanceInformIncrements = 500f;
+	private float currentWaitToInformDistance;
+
 	//minimum air time
 	public float minAirTime = 2f;
 	public float airTimePointsPerSecond = 100f;
@@ -39,6 +43,7 @@ public class TunnelScoreController : MonoBehaviour {
 		runTime = 0f;
 		lastCheckTime = 0f;
 		groundLeftTime = 10000f;
+		currentWaitToInformDistance = distanceInformIncrements;
 		StartCoroutine (controlScore ());
 	}
 
@@ -51,6 +56,11 @@ public class TunnelScoreController : MonoBehaviour {
 			float newDistance = Vector3.Distance (transform.position, oldPos);
 			oldPos = transform.position;
 			distance += newDistance;
+
+			if (distance > currentWaitToInformDistance){
+				PopupController.controller.Message (currentWaitToInformDistance + "m");
+				currentWaitToInformDistance += distanceInformIncrements;
+			}
 
 			if (runTime - lastCheckTime > multiplierCheckTime){
 				lastCheckTime = runTime;

@@ -11,17 +11,17 @@ public abstract class TunnelCollectable : MonoBehaviour {
 	//after it has been used, return the piece to pool
 	public virtual void OnTriggerEnter(Collider other){
 		if (other.CompareTag ("Player")) {
-			Collect();
+			Collect(other.gameObject);
 		}
 	}
 	
-	private void Collect(){
-		ApplyCollectableEffect ();
+	private void Collect(GameObject player){
+		ApplyCollectableEffect (player);
 		PlayCollectVisuals();
 		//the collectable slot will take care of returning the collectable to the pool when it is disabled
 	}
 
-	protected abstract void ApplyCollectableEffect();
+	protected abstract void ApplyCollectableEffect(GameObject player);
 
 	protected abstract void PlayCollectVisuals();
 
