@@ -7,6 +7,15 @@ public abstract class TunnelCollectable : MonoBehaviour {
 	public float weight = 1f;
 	//how many of this collectable it is possible to have spawned at once
 	public int numInstances = 1;
+	private Vector3 startPos;
+
+	protected virtual void Awake(){
+		this.startPos = this.transform.localPosition;
+	}
+
+	public Vector3 GetStartPos(){
+		return startPos;
+	}
 
 	//after it has been used, return the piece to pool
 	public virtual void OnTriggerEnter(Collider other){

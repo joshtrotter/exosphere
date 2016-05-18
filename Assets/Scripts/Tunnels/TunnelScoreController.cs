@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using DG.Tweening;
 
 public class TunnelScoreController : MonoBehaviour {
 
@@ -35,6 +36,10 @@ public class TunnelScoreController : MonoBehaviour {
 	//references to pull/push data from
 	private Vector3 oldPos;
 	public Text scoreText;
+	public Text multiplierText;
+	public Color lowMultiplierColor;
+	public Color highMultiplierColor;
+	//private Outline multiplierOutline;
 	
 	void Start() {
 		oldPos = transform.position;
@@ -44,7 +49,10 @@ public class TunnelScoreController : MonoBehaviour {
 		lastCheckTime = 0f;
 		groundLeftTime = 10000f;
 		currentWaitToInformDistance = distanceInformIncrements;
+		//multiplierOutline = multiplierText.GetComponent<Outline> ();
+
 		StartCoroutine (controlScore ());
+
 	}
 
 	private IEnumerator controlScore() {
@@ -74,53 +82,62 @@ public class TunnelScoreController : MonoBehaviour {
 
 	public void updateScore(int amount, bool shouldUseMultiplier = true) {
 		score += (int)(((shouldUseMultiplier ? 1 : 1 / multiplier) * multiplier) * amount);
-		scoreText.text = "" + score + "\nx" + multiplier;
+		scoreText.text = "" + score;
 	}
 
 	public void checkMultiplier(){
 		float speed = GetComponent<Rigidbody>().velocity.magnitude;
-		//Debug.Log (speed);
-		if (speed > multiplierThresholds [(int)multiplier - 1]) {
-			if ((int)multiplier < multiplierThresholds.Length) {
-				multiplier++;
-				//PopupController.controller.Message ("Muliplier Increased (x" + multiplier + ")");
-			} 
+		if (speed > multiplierThresholds [Mathf.Min (multiplierThresholds.Length - 1, (int)multiplier)]) {
+			multiplier++;
+			multiplierText.rectTransform.DOShakeAnchorPos (2f, 5f, (int)Mathf.Lerp (10,20, multiplier / multiplierThresholds.Length), 45f).Play ();
+			ChangeMultiplierText ();
 		} else {
-			while (speed < multiplierThresholds [(int)multiplier - 1]) {
+			bool changed = false;
+			while (speed < multiplierThresholds [Mathf.Min (multiplierThresholds.Length, (int)multiplier) - 1]) {
 				multiplier--;
+				changed = true;
 			}
+			if (changed) ChangeMultiplierText ();
+		}
+	}
+
+	void ChangeMultiplierText ()
+	{
+		if (multiplier > 1) {
+			//multiplierText.rectTransform.eulerAngles = Vector3.zero;
+			//multiplierText.rectTransform.DORotate (Vector3.Lerp (Vector3.zero, new Vector3 (0f, 0f, 30f), multiplier / multiplierThresholds.Length) * ((int)multiplier % 2 == 0 ? 1 : -1), 1f).Play ();
+			//multiplierText.rectTransform.DORotate (new Vector3(0,0,15f) * ((int)multiplier % 2 == 0 ? 1 : -1), 1f).Play ();
+			multiplierText.rectTransform.eulerAngles = new Vector3(0,0,15f) * ((int)multiplier % 2 == 0 ? 1 : -1);
+			multiplierText.fontSize = (int)Mathf.Lerp (30, 46, multiplier / multiplierThresholds.Length);
+			multiplierText.color = Color.Lerp (lowMultiplierColor, highMultiplierColor, multiplier / multiplierThresholds.Length);
+			multiplierText.text = "x" + multiplier;
+		} else {
+			multiplierText.DOFade (0f, 0.25f).Play();
 		}
 	}
 
 	//Collisions used to determine ball airtime and award additional points
-	/*void OnCollisionEnter(Collision coll){
-		if (runTime - groundLeftTime >= minAirTime) {
-			int airScore = (int)((runTime - groundLeftTime) * (airTimePointsPerSecond / 10)) * 10;
-			if (runTime - groundLeftTime >= 2 * minAirTime) { //good luck
-				airScore *= 2;
-				PopupController.controller.Message ("Massive Airtime! +" + airScore);
-			} else {
-				PopupController.controller.Message ("Airtime! +" + airScore);
-			}
-			updateScore(airScore, false);
-			groundLeftTime = runTime; //prevent double-dipping
-		}
+	void OnCollisionStay(){
+		CheckForAirtime ();
 	}
 
-	void OnCollisionExit(Collision coll){
-		groundLeftTime = runTime;
-	}*/
-	void OnCollisionStay(){
+	private void CheckForAirtime () {
 		if (runTime - groundLeftTime >= minAirTime) {
 			int airScore = (int)((runTime - groundLeftTime) * (airTimePointsPerSecond / 10)) * 10;
-			if (runTime - groundLeftTime >= 2 * minAirTime) { //good luck
+			if (runTime - groundLeftTime >= 2 * minAirTime) {
+				//good luck
 				airScore *= 2;
-				PopupController.controller.Message ("Massive Airtime! +" + airScore);
+				if (runTime - groundLeftTime >= 3 * minAirTime) {
+					//that's a landing and a half, that is
+					airScore += 500;
+					PopupController.controller.Message ("Unbelievable Airtime! +" + airScore);
+				} else {
+					PopupController.controller.Message ("Massive Airtime! +" + airScore);
+				}
 			} else {
 				PopupController.controller.Message ("Airtime! +" + airScore);
 			}
-			updateScore(airScore, false);
-			groundLeftTime = runTime; //prevent double-dipping
+			updateScore (airScore, false);
 		}
 		groundLeftTime = runTime;
 	}
