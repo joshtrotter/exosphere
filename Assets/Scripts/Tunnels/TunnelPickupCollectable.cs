@@ -15,7 +15,6 @@ public class TunnelPickupCollectable : TunnelCollectable {
 	private Collider coll;
 	private Transform item;
 	private Tween flight;
-	private Vector3 startPos;
 	
 	protected override void Awake() {
 		base.Awake();
