@@ -16,7 +16,8 @@ public class TunnelPickupCollectable : TunnelCollectable {
 	private Transform item;
 	private Tween flight;
 	
-	void Awake() {
+	protected override void Awake() {
+		base.Awake();
 		this.coll = GetComponent<Collider> ();
 		this.item = transform.FindChild ("Item");
 		this.hoverEffect = transform.FindChild ("HoverEffect").GetComponent<ParticleSystem>();
