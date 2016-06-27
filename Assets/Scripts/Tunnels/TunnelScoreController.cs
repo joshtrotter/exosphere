@@ -14,7 +14,7 @@ public class TunnelScoreController : MonoBehaviour {
 	public float multiplierCheckTime = 2.5f;
 	public float scorePerDistance = 1.1f;
 	//an array of velocity values that are required to maintain/increase speed multiplier
-	public float[] multiplierThresholds = new float[10]{0,16,16,24,24,36,36,48,48,60};
+	public float[] multiplierThresholds = new float[10]{0,16,24,36,44,52,60,64,72,80};
 
 	//send a popup message with total distance every time the player travels this many metres
 	public float distanceInformIncrements = 500f;
@@ -85,13 +85,13 @@ public class TunnelScoreController : MonoBehaviour {
 		scoreText.text = "" + score;
 	}
 
-	public void checkMultiplier(){
+	public void checkMultiplier(bool canDecrease = true){
 		float speed = GetComponent<Rigidbody>().velocity.magnitude;
 		if (speed > multiplierThresholds [Mathf.Min (multiplierThresholds.Length - 1, (int)multiplier)]) {
 			multiplier++;
 			multiplierText.rectTransform.DOShakeAnchorPos (2f, 5f, (int)Mathf.Lerp (10,20, multiplier / multiplierThresholds.Length), 45f).Play ();
 			ChangeMultiplierText ();
-		} else {
+		} else if (canDecrease){
 			bool changed = false;
 			while (speed < multiplierThresholds [Mathf.Min (multiplierThresholds.Length, (int)multiplier) - 1]) {
 				multiplier--;
