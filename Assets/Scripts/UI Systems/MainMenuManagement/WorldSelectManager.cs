@@ -7,6 +7,10 @@ public class WorldSelectManager : MonoBehaviour {
 
 	public CanvasRenderer movingPanel;
 	public Image background;
+
+	//a panel over the buttons of the main menu which can be enabled to prevent animation/colour glitches
+	public GameObject blockingPanel;
+
 	private CanvasGroup canvas;
 	private LevelSelectManager levelSelectManager;
 	private WorldInfo worldInfo;
@@ -25,6 +29,7 @@ public class WorldSelectManager : MonoBehaviour {
 	private float swipeSpeed = 30f;
 	
 	public float swipeThreshold = 100f;
+
 
 	void Awake(){
 		DontDestroyOnLoad (this);
@@ -71,6 +76,8 @@ public class WorldSelectManager : MonoBehaviour {
 
 	public void EnterWorld(WorldData world){
 		if (!isAVerticalSwipe){
+			//prevent weird animation glitches on buttons by covering them up
+			blockingPanel.SetActive(true);
 			isShown = false;
 			levelSelectManager.StartWorldLevelsDisplay (world);
 			canvas.DOFade (0, 1).Play ().OnComplete(Disable);
@@ -84,6 +91,8 @@ public class WorldSelectManager : MonoBehaviour {
 	}
 
 	public void ReturnToOpeningScreen(){
+		//remove blocking panel so that buttons can be pressed
+		blockingPanel.SetActive(false);
 		Debug.Log (worldNumber * worldGap);
 		movingPanel.transform.DOLocalMoveY (0, 0).Play ();
 		worldNumber = 0;
@@ -92,6 +101,8 @@ public class WorldSelectManager : MonoBehaviour {
 	}
 
 	public void ExitWorld(){
+		//remove blocking panel so that buttons can be pressed
+		blockingPanel.SetActive(false);
 		isShown = true;
 		canvas.gameObject.SetActive (true);
 		canvas.DOFade (1, 1).Play ();
