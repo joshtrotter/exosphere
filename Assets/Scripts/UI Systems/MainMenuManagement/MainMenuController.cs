@@ -40,15 +40,13 @@ public class MainMenuController : UISystem {
 		}
 	}
 
+	public void TunnelRunnerButton(){
+		LevelManager.manager.LoadTunnelRunner ();
+	}
+
 
 	public void Launch(){
 		worldSelectManager.EnterWorld (LevelDataManager.manager.GetWorldData (1));
-	}
-
-	public void LoadTunnelRunner(){
-		//assume tunnel runner is always last scene
-		LevelManager.manager.SetCurrentLevel (Application.levelCount-1);
-		LevelManager.manager.FirstLoadLevel ();
 	}
 
 	public override void Show(){

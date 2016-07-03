@@ -39,7 +39,6 @@ public class TunnelScoreController : MonoBehaviour {
 	public Text multiplierText;
 	public Color lowMultiplierColor;
 	public Color highMultiplierColor;
-	//private Outline multiplierOutline;
 	
 	void Start() {
 		oldPos = transform.position;
@@ -49,7 +48,6 @@ public class TunnelScoreController : MonoBehaviour {
 		lastCheckTime = 0f;
 		groundLeftTime = 10000f;
 		currentWaitToInformDistance = distanceInformIncrements;
-		//multiplierOutline = multiplierText.GetComponent<Outline> ();
 
 		StartCoroutine (controlScore ());
 
@@ -101,12 +99,9 @@ public class TunnelScoreController : MonoBehaviour {
 		}
 	}
 
-	void ChangeMultiplierText ()
+	private void ChangeMultiplierText ()
 	{
 		if (multiplier > 1) {
-			//multiplierText.rectTransform.eulerAngles = Vector3.zero;
-			//multiplierText.rectTransform.DORotate (Vector3.Lerp (Vector3.zero, new Vector3 (0f, 0f, 30f), multiplier / multiplierThresholds.Length) * ((int)multiplier % 2 == 0 ? 1 : -1), 1f).Play ();
-			//multiplierText.rectTransform.DORotate (new Vector3(0,0,15f) * ((int)multiplier % 2 == 0 ? 1 : -1), 1f).Play ();
 			multiplierText.rectTransform.eulerAngles = new Vector3(0,0,15f) * ((int)multiplier % 2 == 0 ? 1 : -1);
 			multiplierText.fontSize = (int)Mathf.Lerp (30, 46, multiplier / multiplierThresholds.Length);
 			multiplierText.color = Color.Lerp (lowMultiplierColor, highMultiplierColor, multiplier / multiplierThresholds.Length);
@@ -140,5 +135,17 @@ public class TunnelScoreController : MonoBehaviour {
 			updateScore (airScore, false);
 		}
 		groundLeftTime = runTime;
+	}
+
+	public int GetScore(){
+		return score;
+	}
+
+	public float GetDistance(){
+		return distance;
+	}
+
+	public float GetRunTime(){
+		return runTime;
 	}
 }

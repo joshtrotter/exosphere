@@ -81,7 +81,7 @@ public class LevelCompleteScreen : UISystem {
 
 		//crates
 		AddToDisplayList (supplyCrateTitleText);
-		cratesFoundText.text = LevelManager.manager.GetNumCollectablesFound ();
+		cratesFoundText.text = LevelManager.manager.GetNumCollectablesFoundAsString ();
 		AddToDisplayList (cratesFoundText);
 		
 		//goldenball
