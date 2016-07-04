@@ -25,8 +25,6 @@ public class MainMenuController : UISystem {
 		} else if (controller != this) {
 			Destroy(gameObject);
 		}
-
-
 	}
 	
 	private void OnLevelWasLoaded(){
@@ -41,7 +39,7 @@ public class MainMenuController : UISystem {
 	}
 
 	public void TunnelRunnerButton(){
-		LevelManager.manager.LoadTunnelRunner ();
+		worldSelectManager.InitiateTunnelRunnerLaunch ();
 	}
 
 

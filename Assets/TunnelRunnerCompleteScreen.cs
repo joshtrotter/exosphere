@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using DG.Tweening;
 
 public class TunnelRunnerCompleteScreen : UISystem {
 
 	public static TunnelRunnerCompleteScreen controller;
 
 	public Canvas canvas;
+	public GameObject dropPanel;
+
 	public GameObject highScorePanel;
 	public GameObject lastRunPanel;
 
-	public Button switchScoreButton;
+	public Text switchScoreButtonText;
 	private bool isShowingLastRun;
 
 	public Text lastScoreText;
@@ -34,6 +37,9 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	private int bestCrateCount;
 	private float bestSpeed;
 
+	//allows us to freeze ball while screen is showing
+	private BallInputReader ballInputReader;
+	private Rigidbody rbBall;
 
 	public override void Awake(){
 		//set up singleton instance
@@ -44,17 +50,27 @@ public class TunnelRunnerCompleteScreen : UISystem {
 			Destroy(gameObject);
 		}
 		base.Awake ();
+		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0).Play ();
 	}
 	
 	public override void Show (){
 		canvas.gameObject.SetActive (true);
 		if (lastScore > 0) {
-			switchScoreButton.interactable = true;
+			switchScoreButtonText.transform.parent.gameObject.SetActive(true);
 			ShowLastRun ();
 		} else {
-			switchScoreButton.interactable = false;
+			switchScoreButtonText.transform.parent.gameObject.SetActive(false);
 			ShowHighScores();
 		}
+
+		//freeze ball
+		GameObject ball = GameObject.FindGameObjectWithTag ("Player");
+		rbBall = ball.GetComponent<Rigidbody> ();
+		ballInputReader = ball.GetComponent<BallInputReader> ();
+		rbBall.isKinematic = true;
+		ballInputReader.enabled = false;
+
+		dropPanel.transform.DOLocalMoveY (0, 0.5f).Play ();
 	}
 
 	private void ShowLastRun(){
@@ -66,7 +82,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		lastSpeedText.text = lastSpeed.ToString ("F1") + "m/s";
 		newHighScoreText.text = lastScore >= bestScore ? "New High Score!" : (bestScore - lastScore) + " points below Highscore";
 
-		switchScoreButton.GetComponentInChildren<Text>().text = "Best Run";
+		switchScoreButtonText.text = "Best Run";
 		highScorePanel.gameObject.SetActive (false);
 		lastRunPanel.gameObject.SetActive (true);
 	}
@@ -79,7 +95,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		bestCrateCountText.text = bestCrateCount.ToString();
 		bestSpeedText.text = bestSpeed.ToString ("F1") + "m/s";
 
-		switchScoreButton.GetComponentInChildren<Text>().text = "Last Run";
+		switchScoreButtonText.text = "Last Run";
 		lastRunPanel.gameObject.SetActive (false);
 		highScorePanel.gameObject.SetActive (true);
 	}
@@ -93,9 +109,14 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	}
 
 	public void StartRun(){
-		Deregister ();
+		//unfreeze ball if not using mobile input, else leave it for the calibration screen
+#if !MOBILE_INPUT	
+		rbBall.isKinematic = false;
+		ballInputReader.enabled = true;
+#endif
+		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).OnComplete (Deregister).Play ();
 	}
-	
+
 	public override void Hide (){
 		canvas.gameObject.SetActive (false);
 	}
@@ -134,6 +155,17 @@ public class TunnelRunnerCompleteScreen : UISystem {
 
 	
 	public override void BackKey(){
-		
+		MenuButton ();
 	}
+
+	public void MenuButton(){
+		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).OnComplete (BackToMenu).Play ();
+	}
+
+	private void BackToMenu(){
+		Debug.Log ("Loading level loader from tunnel runner complete screen");
+		Application.LoadLevel (0);
+		MainMenuController.controller.ReturnFocusToMainMenu ();
+	}
+	
 }

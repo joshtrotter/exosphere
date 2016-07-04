@@ -38,7 +38,6 @@ public class CallibrationUI : UISystem {
 	//does a first time set up each time a new level is loaded/reloaded- called by level manager
 	public void SetupCalibration()
 	{
-		tiltInput = GameObject.FindGameObjectWithTag ("TiltInput").GetComponent<AmazeballTiltInput> ();
 
 		GameObject ball = GameObject.FindGameObjectWithTag ("Player");
 		rbBall = ball.GetComponent<Rigidbody> ();
@@ -54,6 +53,7 @@ public class CallibrationUI : UISystem {
 
 	public void FinishCalibration()
 	{
+		tiltInput = GameObject.FindGameObjectWithTag ("TiltInput").GetComponent<AmazeballTiltInput> ();
 		tiltInput.ConfigureVerticalOrientationOffset ();
 		
 		//unfreeze ball
