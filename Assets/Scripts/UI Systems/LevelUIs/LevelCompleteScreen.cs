@@ -35,9 +35,6 @@ public class LevelCompleteScreen : UISystem {
 
 	public Canvas levelCompleteCanvas;
 
-	private float levelTimer;
-	//private LevelManager levelManager;
-
 	public override void Awake(){
 		//set up singleton instance
 		if (controller == null) {
@@ -69,7 +66,6 @@ public class LevelCompleteScreen : UISystem {
 	}
 
 	public void LevelComplete(float time){
-		levelTimer = time;
 		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
 		title.text = levelData.GetLevelName ();
 		displayList.Clear ();

@@ -8,21 +8,16 @@ public class TunnelPickupCollectable : TunnelCollectable {
 	
 	public float flyingSpeed = 10f;
 	
-	private TunnelScoreController scorer;
-	
 	private ParticleSystem hoverEffect;
 	private ParticleSystem collectEffect;
-	private Collider coll;
 	private Transform item;
 	private Tween flight;
 	
 	protected override void Awake() {
 		base.Awake();
-		this.coll = GetComponent<Collider> ();
 		this.item = transform.FindChild ("Item");
 		this.hoverEffect = transform.FindChild ("HoverEffect").GetComponent<ParticleSystem>();
 		this.collectEffect = transform.FindChild ("CollectEffect").GetComponent<ParticleSystem>();
-		this.scorer = GameObject.FindObjectOfType<TunnelScoreController>();
 	}
 
 	

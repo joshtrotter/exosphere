@@ -58,7 +58,7 @@ public class LevelManager : MonoBehaviour {
 
 	private void TearDown()
 	{
-		if (currentLevel == TUNNEL_RUNNER_LEVEL) {
+		if (IsTunnelRunner()) {
 			TunnelRunnerCompleteScreen.controller.UpdateLastRunData();
 		}
 
@@ -154,7 +154,7 @@ public class LevelManager : MonoBehaviour {
 #else
 		CallibrationUI.controller.Hide ();
 #endif
-		if (currentLevel == TUNNEL_RUNNER_LEVEL) TunnelRunnerCompleteScreen.controller.RequestToBeShown ();
+		if (IsTunnelRunner()) TunnelRunnerCompleteScreen.controller.RequestToBeShown ();
 	}
 
 	private void SendPlayerToSpawnPoint() 
@@ -215,6 +215,10 @@ public class LevelManager : MonoBehaviour {
 	public void LoadTunnelRunner(){
 		currentLevel = TUNNEL_RUNNER_LEVEL;
 		FirstLoadLevel ();
+	}
+
+	public bool IsTunnelRunner(){
+		return currentLevel == TUNNEL_RUNNER_LEVEL;
 	}
 
 }

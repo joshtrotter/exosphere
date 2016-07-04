@@ -39,6 +39,9 @@ public class TunnelScoreController : MonoBehaviour {
 	public Text multiplierText;
 	public Color lowMultiplierColor;
 	public Color highMultiplierColor;
+
+	//can be used to stop scoring, e.g. when recalibrating
+	private bool keepScoring = true;
 	
 	void Start() {
 		oldPos = transform.position;
@@ -49,12 +52,12 @@ public class TunnelScoreController : MonoBehaviour {
 		groundLeftTime = 10000f;
 		currentWaitToInformDistance = distanceInformIncrements;
 
-		StartCoroutine (controlScore ());
+		ResumeScoring ();
 
 	}
 
 	private IEnumerator controlScore() {
-		while (true) {
+		while (keepScoring) {
 			yield return new WaitForSeconds(updateTime);
 
 			runTime += updateTime;
@@ -147,5 +150,14 @@ public class TunnelScoreController : MonoBehaviour {
 
 	public float GetRunTime(){
 		return runTime;
+	}
+
+	public void HaltScoring(){
+		keepScoring = false;
+	}
+
+	public void ResumeScoring(){
+		keepScoring = true;
+		StartCoroutine (controlScore ());
 	}
 }

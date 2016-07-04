@@ -14,7 +14,7 @@ public class LightsController : MonoBehaviour {
 	private TransformController transformController;
 	private Light ballLight;
 	private Rigidbody rb;
-	private Renderer renderer;
+	private Renderer rend;
 	private float neutralDrag;
 	private float brakeDragFactor;
 	private float currentHeat;
@@ -25,7 +25,7 @@ public class LightsController : MonoBehaviour {
 		transformController = transform.GetComponent<TransformController> ();
 		ballLight = transform.GetComponentInChildren<Light> ();
 		rb = transform.GetComponent<Rigidbody> ();
-		renderer = transform.GetComponent<Renderer> ();
+		rend = transform.GetComponent<Renderer> ();
 		neutralDrag = rb.drag;
 		brakeDragFactor = transform.GetComponent<BrakeController> ().brakeDragFactor;
 		trailRenderer = transform.GetComponentInChildren<ArcReactor_Trail> ();
@@ -40,9 +40,9 @@ public class LightsController : MonoBehaviour {
 
 	private void UpdateEmission() {
 		if (rb.drag > neutralDrag) {
-			renderer.material.SetColor ("_EmissionColor", Color.white * Mathf.Lerp (transformController.currentTransform.minEmission, transformController.currentTransform.brakeEmission, CalculateBrakeModifier()));
+			rend.material.SetColor ("_EmissionColor", Color.white * Mathf.Lerp (transformController.currentTransform.minEmission, transformController.currentTransform.brakeEmission, CalculateBrakeModifier()));
 		} else {
-			renderer.material.SetColor ("_EmissionColor", Color.white * Mathf.Lerp (transformController.currentTransform.minEmission, transformController.currentTransform.maxEmission, CalculateSpeedModifier()));
+			rend.material.SetColor ("_EmissionColor", Color.white * Mathf.Lerp (transformController.currentTransform.minEmission, transformController.currentTransform.maxEmission, CalculateSpeedModifier()));
 		}  
 	}
 
