@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 using DG.Tweening;
 
 public class TunnelRunnerCompleteScreen : UISystem {
@@ -55,6 +57,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	
 	public override void Show (){
 		canvas.gameObject.SetActive (true);
+		LoadBestRunData ();
 		if (lastScore > 0) {
 			switchScoreButtonText.transform.parent.gameObject.SetActive(true);
 			ShowLastRun ();
@@ -133,9 +136,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	}
 
 	private void UpdateBestRunData(){
-		if (!(bestScore > 0)) {
-			LoadBestRunData();
-		}
+		LoadBestRunData();
 
 		bestScore = Mathf.Max (bestScore, lastScore);
 		bestDistance = Mathf.Max (bestDistance, lastDistance);
@@ -145,12 +146,52 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		SaveBestRunData ();
 	}
 
+	[System.Serializable]
+	private class TunnelRunnerSaveData
+	{
+		public int saveScore;
+		public float saveDistance;
+		public int saveCrateCount;
+		public float saveSpeed;
+
+		public TunnelRunnerSaveData(int score, float dist, int crates, float speed){
+			this.saveScore = score;
+			this.saveDistance = dist;
+			this.saveCrateCount = crates;
+			this.saveSpeed = speed;
+		}
+	}
+
 	private void LoadBestRunData(){
-		//TODO implement tunnel runner score persistance
+		if (File.Exists(Application.persistentDataPath + "/exosphereTRData.dat"))
+		{	
+			Debug.Log ("Loading tunnel runner data");
+
+			BinaryFormatter bf = new BinaryFormatter();
+			FileStream file = File.Open(Application.persistentDataPath + "/exosphereTRData.dat", FileMode.Open);
+			//pull data from file
+		 	TunnelRunnerSaveData savedData = (TunnelRunnerSaveData)bf.Deserialize(file);
+			file.Close ();
+			
+			//read contents into local variables
+			bestScore = savedData.saveScore;
+			bestDistance = savedData.saveDistance;
+			bestCrateCount = savedData.saveCrateCount;
+			bestSpeed = savedData.saveSpeed;
+		}
 	}
 
 	private void SaveBestRunData(){
-		//TODO implement tunnel runner score pesistance
+		Debug.Log ("Saving tunnel runner data");
+
+		BinaryFormatter bf = new BinaryFormatter ();
+		FileStream file = File.Create (Application.persistentDataPath + "/exosphereTRData.dat");
+		
+		TunnelRunnerSaveData dataToBeSaved = new TunnelRunnerSaveData (bestScore, bestDistance, bestCrateCount, bestSpeed);
+
+		//save data to file
+		bf.Serialize (file, dataToBeSaved);
+		file.Close();
 	}
 
 	
