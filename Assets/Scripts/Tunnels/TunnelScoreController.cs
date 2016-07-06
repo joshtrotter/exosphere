@@ -8,6 +8,10 @@ public class TunnelScoreController : MonoBehaviour {
 	private int score;
 	private float multiplier = 1f;
 
+	//used by external sources to manipulate the multiplier outside the normal speed-based calculation
+	private float specialMultiplier = 0f;
+	private float specialMultiplierEndTime = 0f;
+
 	//how often the score should update
 	public float updateTime = 0.2f;
 	//the number of updates should be waited until the multiplier is checked;
@@ -82,11 +86,18 @@ public class TunnelScoreController : MonoBehaviour {
 	}
 
 	public void updateScore(int amount, bool shouldUseMultiplier = true) {
-		score += (int)(((shouldUseMultiplier ? 1 : 1 / multiplier) * multiplier) * amount);
+		float effectiveMultiplier = shouldUseMultiplier ? multiplier + specialMultiplier : 1;
+
+		score += (int)(effectiveMultiplier * amount);
 		scoreText.text = "" + score;
 	}
 
 	public void checkMultiplier(bool canDecrease = true){
+
+		if (runTime > specialMultiplierEndTime) {
+			specialMultiplier = 0;
+		}
+
 		float speed = GetComponent<Rigidbody>().velocity.magnitude;
 		if (speed > multiplierThresholds [Mathf.Min (multiplierThresholds.Length - 1, (int)multiplier)]) {
 			multiplier++;
@@ -104,11 +115,13 @@ public class TunnelScoreController : MonoBehaviour {
 
 	private void ChangeMultiplierText ()
 	{
-		if (multiplier > 1) {
-			multiplierText.rectTransform.eulerAngles = new Vector3(0,0,15f) * ((int)multiplier % 2 == 0 ? 1 : -1);
-			multiplierText.fontSize = (int)Mathf.Lerp (30, 46, multiplier / multiplierThresholds.Length);
-			multiplierText.color = Color.Lerp (lowMultiplierColor, highMultiplierColor, multiplier / multiplierThresholds.Length);
-			multiplierText.text = "x" + multiplier;
+		float combinedMultiplier = multiplier + specialMultiplier;
+
+		if (combinedMultiplier > 1) {
+			multiplierText.rectTransform.eulerAngles = new Vector3(0,0,15f) * ((int)combinedMultiplier % 2 == 0 ? 1 : -1);
+			multiplierText.fontSize = (int)Mathf.Lerp (30, 46, combinedMultiplier / multiplierThresholds.Length);
+			multiplierText.color = Color.Lerp (lowMultiplierColor, highMultiplierColor, combinedMultiplier / multiplierThresholds.Length);
+			multiplierText.text = "x" + combinedMultiplier;
 		} else {
 			multiplierText.DOFade (0f, 0.25f).Play();
 		}
@@ -138,6 +151,12 @@ public class TunnelScoreController : MonoBehaviour {
 			updateScore (airScore, false);
 		}
 		groundLeftTime = runTime;
+	}
+
+	public void AddSpecialMultiplier (float amount, float duration) {
+		specialMultiplier += amount;
+		specialMultiplierEndTime = Mathf.Max (specialMultiplierEndTime, runTime + duration);
+		ChangeMultiplierText ();
 	}
 
 	public int GetScore(){
