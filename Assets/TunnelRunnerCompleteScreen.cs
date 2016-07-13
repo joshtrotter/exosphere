@@ -116,8 +116,9 @@ public class TunnelRunnerCompleteScreen : UISystem {
 #if !MOBILE_INPUT	
 		rbBall.isKinematic = false;
 		ballInputReader.enabled = true;
-#endif
+#else
 		CallibrationUI.controller.FinishCalibration ();
+#endif
 		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).OnComplete (Deregister).Play ();
 	}
 

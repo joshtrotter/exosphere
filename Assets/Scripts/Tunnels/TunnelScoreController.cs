@@ -45,7 +45,7 @@ public class TunnelScoreController : MonoBehaviour {
 	public Color highMultiplierColor;
 
 	//can be used to stop scoring, e.g. when recalibrating
-	private bool keepScoring = true;
+	private bool shouldKeepScore = true;
 	
 	void Start() {
 		oldPos = transform.position;
@@ -56,31 +56,32 @@ public class TunnelScoreController : MonoBehaviour {
 		groundLeftTime = 10000f;
 		currentWaitToInformDistance = distanceInformIncrements;
 
-		ResumeScoring ();
+		StartCoroutine (controlScore ());
 
 	}
 
 	private IEnumerator controlScore() {
-		while (keepScoring) {
+		while (true) {
 			yield return new WaitForSeconds(updateTime);
 
-			runTime += updateTime;
-		
-			float newDistance = Vector3.Distance (transform.position, oldPos);
-			oldPos = transform.position;
-			distance += newDistance;
+			if (shouldKeepScore){
+				runTime += updateTime;
+			
+				float newDistance = Vector3.Distance (transform.position, oldPos);
+				oldPos = transform.position;
+				distance += newDistance;
 
-			if (distance > currentWaitToInformDistance){
-				PopupController.controller.Message (currentWaitToInformDistance + "m");
-				currentWaitToInformDistance += distanceInformIncrements;
+				if (distance > currentWaitToInformDistance){
+					PopupController.controller.Message (currentWaitToInformDistance + "m");
+					currentWaitToInformDistance += distanceInformIncrements;
+				}
+
+				if (runTime - lastCheckTime > multiplierCheckTime){
+					lastCheckTime = runTime;
+					checkMultiplier ();
+				}
+				updateScore((int)(newDistance * scorePerDistance));
 			}
-
-			if (runTime - lastCheckTime > multiplierCheckTime){
-				lastCheckTime = runTime;
-				checkMultiplier ();
-			}
-			updateScore((int)(newDistance * scorePerDistance));
-
 
 		}
 	}
@@ -172,11 +173,10 @@ public class TunnelScoreController : MonoBehaviour {
 	}
 
 	public void HaltScoring(){
-		keepScoring = false;
+		shouldKeepScore = false;
 	}
 
 	public void ResumeScoring(){
-		keepScoring = true;
-		StartCoroutine (controlScore ());
+		shouldKeepScore = true;
 	}
 }
