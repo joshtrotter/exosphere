@@ -7,6 +7,10 @@ public class WorldSelectManager : MonoBehaviour {
 
 	public CanvasRenderer movingPanel;
 	public Image background;
+
+	//a panel over the buttons of the main menu which can be enabled to prevent animation/colour glitches
+	public GameObject blockingPanel;
+
 	private CanvasGroup canvas;
 	private LevelSelectManager levelSelectManager;
 	private WorldInfo worldInfo;
@@ -26,6 +30,7 @@ public class WorldSelectManager : MonoBehaviour {
 	
 	public float swipeThreshold = 100f;
 
+
 	void Awake(){
 		DontDestroyOnLoad (this);
 		isShown = true;
@@ -41,16 +46,12 @@ public class WorldSelectManager : MonoBehaviour {
 		rectTransform.offsetMin = new Vector2 (rectTransform.offsetMin.x, worldGap);
 	}
 
+	/* TODO This comment prevents swiping on the main menu (which would allow player to move into the world select screens)
 	void Update(){
-		/*int newWorldNumber = (int)(-0.5 * Mathf.Floor (background.transform.localPosition.y / (worldGap / 2)));
-		if (worldNumber != newWorldNumber) {
-			//Debug.Log (newWorldNumber + ", " + worldNumber);
-			worldNumber = newWorldNumber;
-			UpdateWorldInfo ();
-		}*/	
 		UpdateWorldInfo ();
 		MonitorSwiping ();
 	}
+	*/
 
 	//changes position and display of the world info screen to display correct data
 	private void UpdateWorldInfo ()
@@ -71,6 +72,8 @@ public class WorldSelectManager : MonoBehaviour {
 
 	public void EnterWorld(WorldData world){
 		if (!isAVerticalSwipe){
+			//prevent weird animation glitches on buttons by covering them up
+			blockingPanel.SetActive(true);
 			isShown = false;
 			levelSelectManager.StartWorldLevelsDisplay (world);
 			canvas.DOFade (0, 1).Play ().OnComplete(Disable);
@@ -84,6 +87,8 @@ public class WorldSelectManager : MonoBehaviour {
 	}
 
 	public void ReturnToOpeningScreen(){
+		//remove blocking panel so that buttons can be pressed
+		blockingPanel.SetActive(false);
 		Debug.Log (worldNumber * worldGap);
 		movingPanel.transform.DOLocalMoveY (0, 0).Play ();
 		worldNumber = 0;
@@ -92,6 +97,8 @@ public class WorldSelectManager : MonoBehaviour {
 	}
 
 	public void ExitWorld(){
+		//remove blocking panel so that buttons can be pressed
+		blockingPanel.SetActive(false);
 		isShown = true;
 		canvas.gameObject.SetActive (true);
 		canvas.DOFade (1, 1).Play ();
@@ -170,6 +177,15 @@ public class WorldSelectManager : MonoBehaviour {
 	//the main menu controller will call this function when the back button is pressed
 	public void BackButton(){
 		if (isShown) ReturnToOpeningScreen ();
+	}
+
+	public void InitiateTunnelRunnerLaunch(){
+		blockingPanel.SetActive (true);
+		movingPanel.transform.DOLocalMoveY ((-0.5f * worldGap), 1f).Play ().OnComplete (LaunchTunnelRunner);
+	}
+
+	private void LaunchTunnelRunner(){
+		LevelManager.manager.LoadTunnelRunner ();	
 	}
 
 }

@@ -35,9 +35,6 @@ public class LevelCompleteScreen : UISystem {
 
 	public Canvas levelCompleteCanvas;
 
-	private float levelTimer;
-	//private LevelManager levelManager;
-
 	public override void Awake(){
 		//set up singleton instance
 		if (controller == null) {
@@ -69,7 +66,6 @@ public class LevelCompleteScreen : UISystem {
 	}
 
 	public void LevelComplete(float time){
-		levelTimer = time;
 		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
 		title.text = levelData.GetLevelName ();
 		displayList.Clear ();
@@ -81,7 +77,7 @@ public class LevelCompleteScreen : UISystem {
 
 		//crates
 		AddToDisplayList (supplyCrateTitleText);
-		cratesFoundText.text = LevelManager.manager.GetNumCollectablesFound ();
+		cratesFoundText.text = LevelManager.manager.GetNumCollectablesFoundAsString ();
 		AddToDisplayList (cratesFoundText);
 		
 		//goldenball

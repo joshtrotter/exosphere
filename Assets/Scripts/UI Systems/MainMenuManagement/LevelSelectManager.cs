@@ -36,6 +36,8 @@ public class LevelSelectManager : MonoBehaviour {
 		currentScreen = screens [0];
 		previousScreen = screens [1];
 		nextScreen = screens [2];
+
+		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles - new Vector3 (36, 0, 0), 0);
 	}
 
 	public LevelInfo GetCurrentScreen(){

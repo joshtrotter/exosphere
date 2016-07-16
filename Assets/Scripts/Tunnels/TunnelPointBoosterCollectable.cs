@@ -36,6 +36,7 @@ public class TunnelPointBoosterCollectable : TunnelCollectable {
 
 	protected override void ApplyCollectableEffect(GameObject player){
 		PopupController.controller.Message ("Crate Bonus! +" + scoreBoost);
+		LevelManager.manager.CollectSupplyCrate ();
 		scorer.updateScore (scoreBoost, false);
 	}
 	

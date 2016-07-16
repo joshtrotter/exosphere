@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using DG.Tweening;
@@ -32,7 +32,7 @@ public class PopupController : MonoBehaviour {
 	}
 
 	public void CollectableFound(){
-		StartCoroutine(WaitToBeShown("Supply Crate Found (" + LevelManager.manager.GetNumCollectablesFound() + ")"));
+		StartCoroutine(WaitToBeShown("Supply Crate Found (" + LevelManager.manager.GetNumCollectablesFoundAsString() + ")"));
 	}
 	
 	public void CheckpointReached(){

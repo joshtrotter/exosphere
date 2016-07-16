@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class MainMenuController : UISystem {
 
@@ -18,13 +19,12 @@ public class MainMenuController : UISystem {
 
 			levelSelectManager = mainMenuSystem.GetComponent<LevelSelectManager>();
 			worldSelectManager = mainMenuSystem.GetComponent<WorldSelectManager>();
+
 			OnLevelWasLoaded ();
 
 		} else if (controller != this) {
 			Destroy(gameObject);
 		}
-
-
 	}
 	
 	private void OnLevelWasLoaded(){
@@ -38,11 +38,13 @@ public class MainMenuController : UISystem {
 		}
 	}
 
-	//TODO remove. Causes the game to skip to the troposphere level select menu when started
-	void Start(){
-		if (Application.loadedLevel == 0 && controller == this) {
-			worldSelectManager.EnterWorld (LevelDataManager.manager.GetWorldData (1));
-		}
+	public void TunnelRunnerButton(){
+		worldSelectManager.InitiateTunnelRunnerLaunch ();
+	}
+
+
+	public void Launch(){
+		worldSelectManager.EnterWorld (LevelDataManager.manager.GetWorldData (1));
 	}
 
 	public override void Show(){

@@ -21,20 +21,20 @@ public class LevelManager : MonoBehaviour {
 	private Dictionary<string, int> tempObjectStates = new Dictionary<string, int>();
 
 	private bool firstLoad = true;
+
+	//for now just assume it's the last level
+	private int TUNNEL_RUNNER_LEVEL;
 	
 	void Awake () {
 		//set up singleton instance, destroy if a LevelManager already exists.
 		if (manager == null) {
 			manager = this;
 			DontDestroyOnLoad (this);
+			TUNNEL_RUNNER_LEVEL = Application.levelCount - 1;
 		} else if (manager != this) {
 			Destroy(gameObject);
 		}
 
-		//ReloadLevel ();
-		//TODO remove
-		//goldenBallFound = true;
-		//collected = 5;
 	}
 
 	public void SetCurrentLevel(int level) 
@@ -58,9 +58,9 @@ public class LevelManager : MonoBehaviour {
 
 	private void TearDown()
 	{
-		/*if (calCanvas != null) {
-			calCanvas.gameObject.SetActive (true);
-		}*/
+		if (IsTunnelRunner()) {
+			TunnelRunnerCompleteScreen.controller.UpdateLastRunData();
+		}
 
 	}
 
@@ -154,6 +154,7 @@ public class LevelManager : MonoBehaviour {
 #else
 		CallibrationUI.controller.Hide ();
 #endif
+		if (IsTunnelRunner()) TunnelRunnerCompleteScreen.controller.RequestToBeShown ();
 	}
 
 	private void SendPlayerToSpawnPoint() 
@@ -199,12 +200,25 @@ public class LevelManager : MonoBehaviour {
 		Debug.Log ("Collected supply crate, new total " + collected);
 	}
 
-	public string GetNumCollectablesFound(){
+	public string GetNumCollectablesFoundAsString(){
 		return collected + "/" + LevelDataManager.manager.GetCurrentLevelData().GetTotalCollectables();
+	}
+
+	public int GetNumCollectablesFound(){
+		return collected;
 	}
 
 	public string GetNumDeathsAsString(){
 		return numDeaths.ToString ();
+	}
+
+	public void LoadTunnelRunner(){
+		currentLevel = TUNNEL_RUNNER_LEVEL;
+		FirstLoadLevel ();
+	}
+
+	public bool IsTunnelRunner(){
+		return currentLevel == TUNNEL_RUNNER_LEVEL;
 	}
 
 }

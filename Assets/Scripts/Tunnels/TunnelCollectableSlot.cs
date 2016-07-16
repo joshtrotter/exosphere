@@ -23,6 +23,7 @@ public class TunnelCollectableSlot : MonoBehaviour {
 		//if (moveCollectableWithSelf) {
 		currentCollectable.transform.parent = this.transform;
 		currentCollectable.transform.localPosition = currentCollectable.GetStartPos ();
+		currentCollectable.transform.localRotation = currentCollectable.GetStartRot ();
 		/*} else {
 			currentCollectable.transform.position = this.transform.position;
 		}*/

@@ -8,13 +8,19 @@ public abstract class TunnelCollectable : MonoBehaviour {
 	//how many of this collectable it is possible to have spawned at once
 	public int numInstances = 1;
 	private Vector3 startPos;
+	private Quaternion startRot;
 
 	protected virtual void Awake(){
 		this.startPos = this.transform.localPosition;
+		this.startRot = this.transform.localRotation;
 	}
 
 	public Vector3 GetStartPos(){
 		return startPos;
+	}
+
+	public Quaternion GetStartRot(){
+		return startRot;
 	}
 
 	//after it has been used, return the piece to pool

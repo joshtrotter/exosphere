@@ -14,7 +14,7 @@ public class TunnelScoreController : MonoBehaviour {
 	public float multiplierCheckTime = 2.5f;
 	public float scorePerDistance = 1.1f;
 	//an array of velocity values that are required to maintain/increase speed multiplier
-	public float[] multiplierThresholds = new float[10]{0,16,16,24,24,36,36,48,48,60};
+	public float[] multiplierThresholds = new float[10]{0,16,24,36,44,52,60,64,72,80};
 
 	//send a popup message with total distance every time the player travels this many metres
 	public float distanceInformIncrements = 500f;
@@ -39,7 +39,9 @@ public class TunnelScoreController : MonoBehaviour {
 	public Text multiplierText;
 	public Color lowMultiplierColor;
 	public Color highMultiplierColor;
-	//private Outline multiplierOutline;
+
+	//can be used to stop scoring, e.g. when recalibrating
+	private bool keepScoring = true;
 	
 	void Start() {
 		oldPos = transform.position;
@@ -49,14 +51,13 @@ public class TunnelScoreController : MonoBehaviour {
 		lastCheckTime = 0f;
 		groundLeftTime = 10000f;
 		currentWaitToInformDistance = distanceInformIncrements;
-		//multiplierOutline = multiplierText.GetComponent<Outline> ();
 
-		StartCoroutine (controlScore ());
+		ResumeScoring ();
 
 	}
 
 	private IEnumerator controlScore() {
-		while (true) {
+		while (keepScoring) {
 			yield return new WaitForSeconds(updateTime);
 
 			runTime += updateTime;
@@ -85,13 +86,13 @@ public class TunnelScoreController : MonoBehaviour {
 		scoreText.text = "" + score;
 	}
 
-	public void checkMultiplier(){
+	public void checkMultiplier(bool canDecrease = true){
 		float speed = GetComponent<Rigidbody>().velocity.magnitude;
 		if (speed > multiplierThresholds [Mathf.Min (multiplierThresholds.Length - 1, (int)multiplier)]) {
 			multiplier++;
 			multiplierText.rectTransform.DOShakeAnchorPos (2f, 5f, (int)Mathf.Lerp (10,20, multiplier / multiplierThresholds.Length), 45f).Play ();
 			ChangeMultiplierText ();
-		} else {
+		} else if (canDecrease){
 			bool changed = false;
 			while (speed < multiplierThresholds [Mathf.Min (multiplierThresholds.Length, (int)multiplier) - 1]) {
 				multiplier--;
@@ -101,12 +102,9 @@ public class TunnelScoreController : MonoBehaviour {
 		}
 	}
 
-	void ChangeMultiplierText ()
+	private void ChangeMultiplierText ()
 	{
 		if (multiplier > 1) {
-			//multiplierText.rectTransform.eulerAngles = Vector3.zero;
-			//multiplierText.rectTransform.DORotate (Vector3.Lerp (Vector3.zero, new Vector3 (0f, 0f, 30f), multiplier / multiplierThresholds.Length) * ((int)multiplier % 2 == 0 ? 1 : -1), 1f).Play ();
-			//multiplierText.rectTransform.DORotate (new Vector3(0,0,15f) * ((int)multiplier % 2 == 0 ? 1 : -1), 1f).Play ();
 			multiplierText.rectTransform.eulerAngles = new Vector3(0,0,15f) * ((int)multiplier % 2 == 0 ? 1 : -1);
 			multiplierText.fontSize = (int)Mathf.Lerp (30, 46, multiplier / multiplierThresholds.Length);
 			multiplierText.color = Color.Lerp (lowMultiplierColor, highMultiplierColor, multiplier / multiplierThresholds.Length);
@@ -140,5 +138,26 @@ public class TunnelScoreController : MonoBehaviour {
 			updateScore (airScore, false);
 		}
 		groundLeftTime = runTime;
+	}
+
+	public int GetScore(){
+		return score;
+	}
+
+	public float GetDistance(){
+		return distance;
+	}
+
+	public float GetRunTime(){
+		return runTime;
+	}
+
+	public void HaltScoring(){
+		keepScoring = false;
+	}
+
+	public void ResumeScoring(){
+		keepScoring = true;
+		StartCoroutine (controlScore ());
 	}
 }

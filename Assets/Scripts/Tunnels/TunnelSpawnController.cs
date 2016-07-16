@@ -124,13 +124,14 @@ public class TunnelSpawnController : MonoBehaviour {
 			currentNode = currentNode.Previous;
 		}
 
-		int bucketLevel = calculateBucketLevel ();
+		//int bucketLevel = calculateBucketLevel ();
 		prefs.maxBucketLevel = (int) Mathf.Lerp(0, maxBucketLevel, ball.position.z / distanceToMaxSettings);
 		prefs.maxDifficulty = Mathf.Lerp(baseDifficulty, maxDifficulty, ball.position.z / distanceToMaxSettings) - currentTunnelDifficulty;
 		prefs.preferredDifficulty = prefs.maxDifficulty / 2f;
 		return prefs;
 	}
 
+	//UNUSED
 	//Calculate the bucket level as the nth triangle number that would resolve to the distance travelled
 	private int calculateBucketLevel() {
 		float dist = ball.position.z / distanceFactorToIncreaseBucketLevel;
@@ -140,6 +141,7 @@ public class TunnelSpawnController : MonoBehaviour {
 		}
 		return bucketLevel;
 	}
+
 
 	private IEnumerator CheckTunnelSize() {
 		while (true) {

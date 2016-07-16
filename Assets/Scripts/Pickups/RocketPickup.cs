@@ -24,7 +24,7 @@ public class RocketPickup : Pickup
 		ball.GetComponent<LightsController>().TurnLightTrailOn();
 		TunnelScoreController scorer = ball.GetComponent<TunnelScoreController> ();
 		for (int i = 0; i < maxMultiplierIncrease; i++) {
-			scorer.checkMultiplier ();
+			scorer.checkMultiplier (canDecrease:false);
 		}
 	}
 }

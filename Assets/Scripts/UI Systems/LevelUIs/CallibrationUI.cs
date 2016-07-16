@@ -38,7 +38,6 @@ public class CallibrationUI : UISystem {
 	//does a first time set up each time a new level is loaded/reloaded- called by level manager
 	public void SetupCalibration()
 	{
-		tiltInput = GameObject.FindGameObjectWithTag ("TiltInput").GetComponent<AmazeballTiltInput> ();
 
 		GameObject ball = GameObject.FindGameObjectWithTag ("Player");
 		rbBall = ball.GetComponent<Rigidbody> ();
@@ -54,8 +53,15 @@ public class CallibrationUI : UISystem {
 
 	public void FinishCalibration()
 	{
+		tiltInput = GameObject.FindGameObjectWithTag ("TiltInput").GetComponent<AmazeballTiltInput> ();
 		tiltInput.ConfigureVerticalOrientationOffset ();
-		
+
+		//if in tunnel, resume scoring
+		if (LevelManager.manager.IsTunnelRunner ()) {
+			TunnelScoreController scorer = rbBall.GetComponent<TunnelScoreController>();
+			scorer.ResumeScoring();
+		}
+
 		//unfreeze ball
 		rbBall.isKinematic = false;
 		ballInputReader.enabled = true;
@@ -74,6 +80,11 @@ public class CallibrationUI : UISystem {
 
 	public void StartCalibration()
 	{
+		//if in tunnel, halt scoring
+		if (LevelManager.manager.IsTunnelRunner ()) {
+			TunnelScoreController scorer = rbBall.GetComponent<TunnelScoreController>();
+			scorer.HaltScoring();
+		}
 		//remember ball's current velocity
 		ballVelocity = rbBall.velocity;
 		ballAngularVelocity = rbBall.angularVelocity;
