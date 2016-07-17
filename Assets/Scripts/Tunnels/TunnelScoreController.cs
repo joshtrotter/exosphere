@@ -36,6 +36,8 @@ public class TunnelScoreController : MonoBehaviour {
 
 	//we will eventually store/load a highscore value (potentially longest distance/time as well)
 	private int highScore;
+	private float startTimeForCurrentKm = 0f;
+	private float fastestKm;
 
 	//references to pull/push data from
 	private Vector3 oldPos;
@@ -72,7 +74,10 @@ public class TunnelScoreController : MonoBehaviour {
 				distance += newDistance;
 
 				if (distance > currentWaitToInformDistance){
+					float kmTime = runTime - startTimeForCurrentKm;
 					PopupController.controller.Message (currentWaitToInformDistance + "m");
+					fastestKm = Mathf.Max (fastestKm, kmTime);
+					startTimeForCurrentKm = runTime;
 					currentWaitToInformDistance += distanceInformIncrements;
 				}
 
@@ -170,6 +175,10 @@ public class TunnelScoreController : MonoBehaviour {
 
 	public float GetRunTime(){
 		return runTime;
+	}
+
+	public float GetFastestKmTime(){
+		return fastestKm;
 	}
 
 	public void HaltScoring(){

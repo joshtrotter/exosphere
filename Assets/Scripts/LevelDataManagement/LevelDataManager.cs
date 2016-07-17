@@ -153,7 +153,11 @@ public class LevelDataManager : MonoBehaviour {
 			File.Delete (Application.persistentDataPath + "/exosphereData.dat");
 		}
 		allLevelData.Clear();
+
+		//TODO once seperate clear data settings exist, these two shouldn't be here
 		HUD.controller.GetComponent<GlobalTutorialMonitor>().ClearGlobalTutorialData ();
+		TunnelRunnerCompleteScreen.controller.ClearTunnelRunnerSaveData ();
+
 		SetupLevelData();
 	}
 }

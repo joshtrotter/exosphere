@@ -32,12 +32,12 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	private int lastScore = 0;
 	private float lastDistance;
 	private int lastCrateCount;
-	private float lastSpeed;
+	private float lastKmTime;
 
 	private int bestScore = 0;
 	private float bestDistance;
 	private int bestCrateCount;
-	private float bestSpeed;
+	private float bestKmTime;
 
 	//allows us to freeze ball while screen is showing
 	private BallInputReader ballInputReader;
@@ -82,7 +82,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		lastScoreText.text = lastScore.ToString();
 		lastDistanceText.text = lastDistance.ToString ("F0") + "m";
 		lastCrateCountText.text = lastCrateCount.ToString();
-		lastSpeedText.text = lastSpeed.ToString ("F1") + "m/s";
+		lastSpeedText.text = lastKmTime.ToString ("F1") + "s";
 		newHighScoreText.text = lastScore >= bestScore ? "New High Score!" : (bestScore - lastScore) + " points below Highscore";
 
 		switchScoreButtonText.text = "Best Run";
@@ -96,7 +96,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		bestScoreText.text = bestScore.ToString();
 		bestDistanceText.text = bestDistance.ToString ("F0") + "m";
 		bestCrateCountText.text = bestCrateCount.ToString();
-		bestSpeedText.text = bestSpeed.ToString ("F1") + "m/s";
+		bestSpeedText.text = bestKmTime.ToString ("F1") + "s";
 
 		switchScoreButtonText.text = "Last Run";
 		lastRunPanel.gameObject.SetActive (false);
@@ -130,7 +130,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		TunnelScoreController scoreController = GameObject.FindObjectOfType<TunnelScoreController> ();
 		lastScore = scoreController.GetScore ();
 		lastDistance = scoreController.GetDistance ();
-		lastSpeed = lastDistance / scoreController.GetRunTime ();
+		lastKmTime = scoreController.GetFastestKmTime ();
 
 		lastCrateCount = LevelManager.manager.GetNumCollectablesFound ();
 
@@ -143,7 +143,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		bestScore = Mathf.Max (bestScore, lastScore);
 		bestDistance = Mathf.Max (bestDistance, lastDistance);
 		bestCrateCount = Mathf.Max (bestCrateCount, lastCrateCount);
-		bestSpeed = Mathf.Max (bestSpeed, lastSpeed);
+		bestKmTime = Mathf.Max (bestKmTime, lastKmTime);
 
 		SaveBestRunData ();
 	}
@@ -154,13 +154,13 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		public int saveScore;
 		public float saveDistance;
 		public int saveCrateCount;
-		public float saveSpeed;
+		public float saveKmTime;
 
-		public TunnelRunnerSaveData(int score, float dist, int crates, float speed){
+		public TunnelRunnerSaveData(int score, float dist, int crates, float kmTime){
 			this.saveScore = score;
 			this.saveDistance = dist;
 			this.saveCrateCount = crates;
-			this.saveSpeed = speed;
+			this.saveKmTime = kmTime;
 		}
 	}
 
@@ -179,7 +179,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 			bestScore = savedData.saveScore;
 			bestDistance = savedData.saveDistance;
 			bestCrateCount = savedData.saveCrateCount;
-			bestSpeed = savedData.saveSpeed;
+			bestKmTime = savedData.saveKmTime;
 		}
 	}
 
@@ -189,7 +189,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		BinaryFormatter bf = new BinaryFormatter ();
 		FileStream file = File.Create (Application.persistentDataPath + "/exosphereTRData.dat");
 		
-		TunnelRunnerSaveData dataToBeSaved = new TunnelRunnerSaveData (bestScore, bestDistance, bestCrateCount, bestSpeed);
+		TunnelRunnerSaveData dataToBeSaved = new TunnelRunnerSaveData (bestScore, bestDistance, bestCrateCount, bestKmTime);
 
 		//save data to file
 		bf.Serialize (file, dataToBeSaved);
@@ -209,6 +209,22 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		Debug.Log ("Loading level loader from tunnel runner complete screen");
 		Application.LoadLevel (0);
 		MainMenuController.controller.ReturnFocusToMainMenu ();
+	}
+
+	private float GetBestKmTime(){
+		if (bestKmTime != null) {
+			return bestKmTime;
+		} else {
+			return float.MaxValue;
+		}
+	}
+
+	public void ClearTunnelRunnerSaveData()
+	{
+		Debug.Log ("Clearing tunnel runner save data");
+		if (File.Exists (Application.persistentDataPath + "/exosphereTRData.dat")) {
+			File.Delete (Application.persistentDataPath + "/exosphereTRData.dat");
+		}
 	}
 	
 }
