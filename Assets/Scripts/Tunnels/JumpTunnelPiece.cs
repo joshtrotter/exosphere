@@ -28,4 +28,10 @@ public class JumpTunnelPiece : TunnelPiece {
 		this.endOffset = this.endOffset + (Vector3.back * jumpExtension);
 		this.endOffset = this.endOffset + (Vector3.down * jumpRise);
 	}
+
+	public override float length(){
+		//tricks the tunnelSpawnController into extending the tunnel afterwards to ensure
+		//that there is always something waiting at the end of the jump
+		return 0f;
+	}
 }

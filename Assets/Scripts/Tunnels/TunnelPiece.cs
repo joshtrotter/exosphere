@@ -41,7 +41,7 @@ public class TunnelPiece : MonoBehaviour {
 	public virtual void setup(TunnelSelectionPreferences prefs, TunnelPiece parent) {
 		position = transform.position;
 		float flyInTime = Mathf.Lerp (0, maxFlyInTime, 1 / (ball.GetTargetVelocity ().magnitude / 30f));
-		Debug.Log ("Fly in time: " + flyInTime + " for ball speed of: " + ball.GetTargetVelocity ().magnitude);
+		//Debug.Log ("Fly in time: " + flyInTime + " for ball speed of: " + ball.GetTargetVelocity ().magnitude);
 		transform.position = transform.position + (((Vector3.down * Random.Range(-1, 2)) + (Vector3.left * Random.Range(-1, 2))) * maxFlyInDistance);
 		transform.DOMove (position, flyInTime).Play();
 	}
@@ -59,7 +59,7 @@ public class TunnelPiece : MonoBehaviour {
 		return child;
 	}
 
-	public float length() {
+	public virtual float length() {
 		return endOffset.z;
 	}
 

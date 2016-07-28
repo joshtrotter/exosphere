@@ -21,13 +21,13 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	public Text lastScoreText;
 	public Text lastDistanceText;
 	public Text lastCrateCountText;
-	public Text lastSpeedText;
+	public Text lastFastestKmText;
 	public Text newHighScoreText;
 
 	public Text bestScoreText;
 	public Text bestDistanceText;
 	public Text bestCrateCountText;
-	public Text bestSpeedText;
+	public Text bestFastestKmText;
 	
 	private int lastScore = 0;
 	private float lastDistance;
@@ -51,6 +51,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		} else if (controller != this) {
 			Destroy(gameObject);
 		}
+		bestKmTime = float.MaxValue;
 		base.Awake ();
 		dropPanel.transform.DOLocalMoveY ((Screen.height * 1.2f), 0).Play ();
 	}
@@ -82,7 +83,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		lastScoreText.text = lastScore.ToString();
 		lastDistanceText.text = lastDistance.ToString ("F0") + "m";
 		lastCrateCountText.text = lastCrateCount.ToString();
-		lastSpeedText.text = lastKmTime.ToString ("F1") + "s";
+		lastFastestKmText.text = GetFastestKmString (lastKmTime);
 		newHighScoreText.text = lastScore >= bestScore ? "New High Score!" : (bestScore - lastScore) + " points below Highscore";
 
 		switchScoreButtonText.text = "Best Run";
@@ -96,11 +97,22 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		bestScoreText.text = bestScore.ToString();
 		bestDistanceText.text = bestDistance.ToString ("F0") + "m";
 		bestCrateCountText.text = bestCrateCount.ToString();
-		bestSpeedText.text = bestKmTime.ToString ("F1") + "s";
+		bestFastestKmText.text = GetFastestKmString (bestKmTime);
 
 		switchScoreButtonText.text = "Last Run";
 		lastRunPanel.gameObject.SetActive (false);
 		highScorePanel.gameObject.SetActive (true);
+	}
+
+	/* utility function to correctly represent fastest km times as strings,
+	 * taking into account they may have yet to be initialized below MaxValue		
+	 */
+	private string GetFastestKmString(float kmTime){
+		if (kmTime == float.MaxValue) {
+			return "N/A";
+		} else {
+			return (kmTime.ToString ("F1") + "s");
+		}
 	}
 
 	public void SwitchScoreView(){
@@ -143,7 +155,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		bestScore = Mathf.Max (bestScore, lastScore);
 		bestDistance = Mathf.Max (bestDistance, lastDistance);
 		bestCrateCount = Mathf.Max (bestCrateCount, lastCrateCount);
-		bestKmTime = Mathf.Max (bestKmTime, lastKmTime);
+		bestKmTime = Mathf.Min (bestKmTime, lastKmTime);
 
 		SaveBestRunData ();
 	}

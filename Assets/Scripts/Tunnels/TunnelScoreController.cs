@@ -53,6 +53,7 @@ public class TunnelScoreController : MonoBehaviour {
 		oldPos = transform.position;
 		score = 0;
 		distance = 0f;
+		fastestKm = float.MaxValue;
 		runTime = 0f;
 		lastCheckTime = 0f;
 		groundLeftTime = 10000f;
@@ -76,7 +77,7 @@ public class TunnelScoreController : MonoBehaviour {
 				if (distance > currentWaitToInformDistance){
 					float kmTime = runTime - startTimeForCurrentKm;
 					PopupController.controller.Message (currentWaitToInformDistance + "m");
-					fastestKm = Mathf.Max (fastestKm, kmTime);
+					fastestKm = Mathf.Min (fastestKm, kmTime);
 					startTimeForCurrentKm = runTime;
 					currentWaitToInformDistance += distanceInformIncrements;
 				}

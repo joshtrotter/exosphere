@@ -49,6 +49,12 @@ public class GrindTunnelPiece : TunnelPiece {
 		resetBody ();
 	}
 
+	public override float length(){
+		//tricks the tunnelSpawnController into extending the tunnel afterwards to ensure
+		//that there is always something waiting at the end of the grind rails
+		return 0f;
+	}
+
 	//Not used
 	private void extendDrop(TunnelSelectionPreferences prefs) {
 		int randExtension = Random.Range (0, 20);
