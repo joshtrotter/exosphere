@@ -86,6 +86,7 @@ public class TunnelPiecePool : MonoBehaviour {
 
 	private void spawnNewInstance(TunnelPiece template) {
 		TunnelPiece instance = Instantiate<TunnelPiece> (template);
+		instance.findBall ();
 		returnToPool (instance);
 	}
 	

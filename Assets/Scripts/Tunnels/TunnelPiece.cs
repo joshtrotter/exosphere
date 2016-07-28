@@ -32,14 +32,17 @@ public class TunnelPiece : MonoBehaviour {
 	}
 	public ChildCategoryWeight[] childCategoryWeights;
 
-	public float flyInDistance = 20f;
-	public float flyInTime = 1f;
+	public float maxFlyInDistance = 20f;
+	public float maxFlyInTime = 1f;
 
 	private Vector3 position;
+	private BallController ball;
 
 	public virtual void setup(TunnelSelectionPreferences prefs, TunnelPiece parent) {
 		position = transform.position;
-		transform.position = transform.position + (((Vector3.down * Random.Range(-1, 2)) + (Vector3.left * Random.Range(-1, 2))) * flyInDistance);
+		float flyInTime = Mathf.Lerp (0, maxFlyInTime, 1 / (ball.GetTargetVelocity ().magnitude / 30f));
+		Debug.Log ("Fly in time: " + flyInTime + " for ball speed of: " + ball.GetTargetVelocity ().magnitude);
+		transform.position = transform.position + (((Vector3.down * Random.Range(-1, 2)) + (Vector3.left * Random.Range(-1, 2))) * maxFlyInDistance);
 		transform.DOMove (position, flyInTime).Play();
 	}
 
@@ -104,5 +107,10 @@ public class TunnelPiece : MonoBehaviour {
 		if (slots.Length > 0) {
 			slots [Random.Range (0, slots.Length)].ConsiderSpawning ();
 		}
+	}
+
+	//Utility funciotn called when a piece is instantiated to set the ball variable to the player
+	public void findBall(){
+		ball = GameObject.FindGameObjectWithTag ("Player").GetComponent<BallController> ();
 	}
 }

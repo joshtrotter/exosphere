@@ -38,17 +38,18 @@ public class GrindTunnelPiece : TunnelPiece {
 	public override void setup (TunnelSelectionPreferences prefs, TunnelPiece parent)
 	{
 		base.setup (prefs, parent);
-		extendDrop (prefs);
+		//extendDrop (prefs);
 		extendBody (prefs);
 	}
 
 	public override void tearDown ()
 	{
 		base.tearDown ();
-		resetDrop ();
+		//resetDrop ();
 		resetBody ();
 	}
 
+	//Not used
 	private void extendDrop(TunnelSelectionPreferences prefs) {
 		int randExtension = Random.Range (0, 20);
 		randExtension = (int) (randExtension * Mathf.Clamp01 (prefs.maxDifficulty));
@@ -123,6 +124,7 @@ public class GrindTunnelPiece : TunnelPiece {
 		}
 	}
 
+	//Not used
 	private void resetDrop() {
 		if (dropExtension1.activeSelf) {
 			dropExtension1.SetActive(false);
@@ -182,6 +184,7 @@ public class GrindTunnelPiece : TunnelPiece {
 		}
 	}
 
+	//Not used
 	private void dropPipes(bool inverse = false) {
 		leftSide.transform.position = leftSide.transform.position + (inverse ? Vector3.up : Vector3.down) * DROP_EXTENSION_DIST;
 		rightSide.transform.position = rightSide.transform.position + (inverse ? Vector3.up : Vector3.down) * DROP_EXTENSION_DIST;
