@@ -48,6 +48,13 @@ public class TunnelScoreController : MonoBehaviour {
 
 	//can be used to stop scoring, e.g. when recalibrating
 	private bool shouldKeepScore = true;
+
+	//variables for awarding points for grinding
+	private float grindStartTime;
+	public float grindBonusPointsPerPiece = 25f;
+	private int railCount;
+	public float grindTrackDelay = 0.5f;
+
 	
 	void Start() {
 		oldPos = transform.position;
@@ -164,6 +171,30 @@ public class TunnelScoreController : MonoBehaviour {
 		specialMultiplier += amount;
 		specialMultiplierEndTime = Mathf.Max (specialMultiplierEndTime, runTime + duration);
 		ChangeMultiplierText ();
+	}
+
+	public void StartGrind(){
+		if (railCount == 0){
+			StartCoroutine(TrackGrind());
+		}
+		railCount++;
+	}
+
+	private IEnumerator TrackGrind(){
+		bool endGrind = false;
+		int lastCount;
+		while (!endGrind) {
+			lastCount = railCount;
+			yield return new WaitForSeconds (grindTrackDelay);
+			if (railCount <= lastCount){
+				endGrind = true;
+			}
+		}
+		//award grind bonus
+		int grindBonus = (int)(railCount * grindBonusPointsPerPiece);
+		updateScore (grindBonus, false);
+		PopupController.controller.Message ("Grind Bonus! +" + grindBonus);
+		railCount = 0;
 	}
 
 	public int GetScore(){

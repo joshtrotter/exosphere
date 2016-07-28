@@ -4,9 +4,12 @@ using System.Collections;
 public class RailGrinder : MonoBehaviour {
 
 	private ParticleSystem sparks;
+	private TunnelScoreController scoreController;
+	private bool registeredSelfWithScorer;
 
 	void Awake() {
 		sparks = transform.parent.parent.FindChild("Sparks").GetComponentInParent<ParticleSystem> ();
+		scoreController = GameObject.FindGameObjectWithTag ("Player").GetComponent<TunnelScoreController> ();
 	}
 
 	// Use this for initialization
@@ -20,10 +23,15 @@ public class RailGrinder : MonoBehaviour {
 			sparks.Play();
 			sparks.enableEmission = true;
 		}
+		if (!registeredSelfWithScorer) {
+			scoreController.StartGrind ();
+			registeredSelfWithScorer = true;
+		}
 	}
 
 	void OnCollisionExit (Collision collision) {
 		collision.collider.GetComponent<BallController> ().SetGrind (false);
+		registeredSelfWithScorer = false;
 //		sparks.enableEmission = false;
 	}
 }
