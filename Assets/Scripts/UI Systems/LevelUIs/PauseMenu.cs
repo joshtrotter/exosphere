@@ -12,6 +12,7 @@ public class PauseMenu : UISystem {
 	public CallibrationUI callibrator;
 	public GameObject confirmationPanel;
 	public Text confirmationText;
+	public GameObject levelSelectButton; 
 	//private CanvasGroup canvasGroup;
 	private delegate void confirmationContinue();
 	private confirmationContinue cont;
@@ -41,6 +42,11 @@ public class PauseMenu : UISystem {
 
 	public override void Show ()
 	{
+		if (LevelManager.manager.IsTunnelRunner ()) {
+			levelSelectButton.SetActive (false);
+		} else {
+			levelSelectButton.SetActive(true);
+		}
 		Time.timeScale = 0f;
 		unpauseButton.SetActive (true);
 		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0).Play ();

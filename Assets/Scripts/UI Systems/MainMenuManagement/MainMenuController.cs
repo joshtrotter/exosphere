@@ -10,6 +10,9 @@ public class MainMenuController : UISystem {
 	private LevelSelectManager levelSelectManager;
 	private WorldSelectManager worldSelectManager;
 
+	//used to determine whether a press of the back button should be passed to the levelSelectManager
+	private bool hasLaunched = false;
+
 	public override void Awake(){
 		//set up singleton instance
 		if (controller == null) {
@@ -44,6 +47,7 @@ public class MainMenuController : UISystem {
 
 
 	public void Launch(){
+		hasLaunched = true;
 		worldSelectManager.EnterWorld (LevelDataManager.manager.GetWorldData (1));
 	}
 
@@ -56,8 +60,11 @@ public class MainMenuController : UISystem {
 	}
 
 	public override void BackKey(){
-		worldSelectManager.BackButton ();
-		levelSelectManager.BackButton ();
+		//TODO disabled while world select is skipped
+		//worldSelectManager.BackButton ();
+		if (hasLaunched) {
+			levelSelectManager.BackButton ();
+		}
 	}
 
 	private void SetSkybox(){
