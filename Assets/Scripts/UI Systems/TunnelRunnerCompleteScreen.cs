@@ -43,6 +43,9 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	private BallInputReader ballInputReader;
 	private Rigidbody rbBall;
 
+	public Button[] navButtons;
+	private bool isAReload;
+
 	public override void Awake(){
 		//set up singleton instance
 		if (controller == null) {
@@ -67,15 +70,22 @@ public class TunnelRunnerCompleteScreen : UISystem {
 			ShowHighScores();
 		}
 
+		FreezeBall ();
+
+		dropPanel.transform.DOLocalMoveY (0, 0.5f).Play ();
+	}
+
+	private void FreezeBall ()
+	{
 		//freeze ball
 		GameObject ball = GameObject.FindGameObjectWithTag ("Player");
+		Debug.Log ("Ball is " + ball.GetInstanceID());
 		rbBall = ball.GetComponent<Rigidbody> ();
 		ballInputReader = ball.GetComponent<BallInputReader> ();
 		rbBall.isKinematic = true;
 		ballInputReader.enabled = false;
-
-		dropPanel.transform.DOLocalMoveY (0, 0.5f).Play ();
 	}
+
 
 	private void ShowLastRun(){
 		isShowingLastRun = true;
@@ -237,6 +247,30 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		if (File.Exists (Application.persistentDataPath + "/exosphereTRData.dat")) {
 			File.Delete (Application.persistentDataPath + "/exosphereTRData.dat");
 		}
+	}
+
+	void OnLevelWasLoaded(){
+		if (isAReload) {
+			isAReload = false;
+			FreezeBall();
+		}
+		
+		foreach (Button button in navButtons) {
+			button.interactable = true;
+		}
+	}
+
+	public void PopDisplayAndReload(){
+		//TODO this is the place where we could show them an ad
+		UpdateLastRunData ();
+		RequestToBeShown ();
+
+		foreach (Button button in navButtons) {
+			button.interactable = false;
+		}
+		isAReload = true;
+
+		rbBall.GetComponent<BallDestroyer> ().Pop ();	
 	}
 	
 }
