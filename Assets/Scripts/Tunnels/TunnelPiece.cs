@@ -109,7 +109,7 @@ public class TunnelPiece : MonoBehaviour {
 		}
 	}
 
-	//Utility funciotn called when a piece is instantiated to set the ball variable to the player
+	//Utility function called when a piece is instantiated to set the ball variable to the player
 	public void findBall(){
 		ball = GameObject.FindGameObjectWithTag ("Player").GetComponent<BallController> ();
 	}

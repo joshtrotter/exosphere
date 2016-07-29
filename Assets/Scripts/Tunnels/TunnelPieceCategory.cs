@@ -2,5 +2,5 @@
 using System.Collections;
 
 public enum TunnelPieceCategory {
-	Clear, Twist, Drop, Rise, Jump, Hole, Bouncer, Laser, Spin_Hole, Spin_Laser
+	Clear, Twist, Drop, Rise, Jump, Hole, Bouncer, Laser, Spin_Hole, Spin_Laser, Half_Pipe
 }
