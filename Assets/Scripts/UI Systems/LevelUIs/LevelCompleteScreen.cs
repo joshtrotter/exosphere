@@ -153,10 +153,10 @@ public class LevelCompleteScreen : UISystem {
 	}
 
 	private IEnumerator RevealSummary(){
-		yield return new WaitForSeconds(1.5f);
+		yield return new WaitForSeconds(1.2f);
 		foreach (Graphic text in displayList) {
 			text.color = Color.white;
-			yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(0.7f);
 		}
 	}
 
