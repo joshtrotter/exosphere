@@ -150,6 +150,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 
 	public void UpdateLastRunData(){
 		TunnelScoreController scoreController = GameObject.FindObjectOfType<TunnelScoreController> ();
+		scoreController.HaltScoring ();
 		lastScore = scoreController.GetScore ();
 		lastDistance = scoreController.GetDistance ();
 		lastKmTime = scoreController.GetFastestKmTime ();
@@ -268,6 +269,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 
 	public void PopDisplayAndReload(){
 		//TODO this is the place where we could show them an ad
+
 		UpdateLastRunData ();
 		RequestToBeShown ();
 
