@@ -228,6 +228,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	}
 
 	private void BackToMenu(){
+		CallibrationUI.controller.FinishCalibration();
 		Debug.Log ("Loading level loader from tunnel runner complete screen");
 		Application.LoadLevel (0);
 		MainMenuController.controller.ReturnFocusToMainMenu ();
@@ -250,13 +251,18 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	}
 
 	void OnLevelWasLoaded(){
-		if (isAReload) {
-			isAReload = false;
-			FreezeBall();
-		}
-		
-		foreach (Button button in navButtons) {
-			button.interactable = true;
+		if (LevelManager.manager.IsTunnelRunner ()) {
+			RequestToBeShown();
+			if (isAReload) {
+				isAReload = false;
+				FreezeBall ();
+			}
+			
+			foreach (Button button in navButtons) {
+				button.interactable = true;
+			}
+		} else {
+			Deregister ();
 		}
 	}
 

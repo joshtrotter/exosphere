@@ -154,7 +154,11 @@ public class LevelManager : MonoBehaviour {
 #else
 		CallibrationUI.controller.Hide ();
 #endif
-		if (IsTunnelRunner()) TunnelRunnerCompleteScreen.controller.RequestToBeShown ();
+		/*if (IsTunnelRunner ()) {
+			TunnelRunnerCompleteScreen.controller.RequestToBeShown ();
+		} else {
+			TunnelRunnerCompleteScreen.controller.Deregister();
+		}*/
 	}
 
 	private void SendPlayerToSpawnPoint() 
