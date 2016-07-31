@@ -229,14 +229,16 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	}
 
 	private void BackToMenu(){
-		CallibrationUI.controller.FinishCalibration();
+		//CallibrationUI.controller.FinishCalibration();
+		CallibrationUI.controller.Deregister ();
+		Deregister ();
 		Debug.Log ("Loading level loader from tunnel runner complete screen");
 		Application.LoadLevel (0);
 		MainMenuController.controller.ReturnFocusToMainMenu ();
 	}
 
 	private float GetBestKmTime(){
-		if (bestKmTime != null) {
+		if (bestKmTime != float.MaxValue) {
 			return bestKmTime;
 		} else {
 			return float.MaxValue;
@@ -252,18 +254,13 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	}
 
 	void OnLevelWasLoaded(){
-		if (LevelManager.manager.IsTunnelRunner ()) {
-			RequestToBeShown();
-			if (isAReload) {
-				isAReload = false;
-				FreezeBall ();
-			}
-			
-			foreach (Button button in navButtons) {
-				button.interactable = true;
-			}
-		} else {
-			Deregister ();
+		if (isAReload) {
+			isAReload = false;
+			FreezeBall();
+		}
+		
+		foreach (Button button in navButtons) {
+			button.interactable = true;
 		}
 	}
 

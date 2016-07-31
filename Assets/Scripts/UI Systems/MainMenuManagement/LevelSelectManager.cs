@@ -40,6 +40,10 @@ public class LevelSelectManager : MonoBehaviour {
 		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles - new Vector3 (36, 0, 0), 0);
 	}
 
+	void OnLevelWasLoaded(){
+		menuCameraController.FocusCamera (worldDisplay.transform.localEulerAngles - new Vector3 (36, 0, 0), 0);
+	}
+
 	public LevelInfo GetCurrentScreen(){
 		return currentScreen;
 	}

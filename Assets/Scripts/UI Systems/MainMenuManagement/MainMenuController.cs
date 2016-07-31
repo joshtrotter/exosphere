@@ -33,6 +33,7 @@ public class MainMenuController : UISystem {
 	private void OnLevelWasLoaded(){
 		if (controller == this) {
 			if (Application.loadedLevel == 0) {
+				hasLaunched = false;
 				SetSkybox ();
 				RequestToBeShown ();
 			} else {
