@@ -181,7 +181,7 @@ public class WorldSelectManager : MonoBehaviour {
 
 	public void InitiateTunnelRunnerLaunch(){
 		blockingPanel.SetActive (true);
-		movingPanel.transform.DOLocalMoveY ((-0.5f * worldGap), 1f).Play ().OnComplete (LaunchTunnelRunner);
+		movingPanel.transform.DOLocalMoveY ((-2 * Screen.height), 1f).Play ().OnComplete (LaunchTunnelRunner);
 	}
 
 	private void LaunchTunnelRunner(){
