@@ -7,7 +7,7 @@ using DG.Tweening;
 public class AudioManager : MonoBehaviour {
 
 	public enum TrackName {
-		MENU, TUNNEL1, TUNNEL2, OUTDOOR1, INDOOR1 
+		MENU, TUNNEL1, TUNNEL2, OUTDOOR1, OUTDOOR2, INDOOR1 
 	}
 
 	[System.Serializable]
@@ -31,17 +31,21 @@ public class AudioManager : MonoBehaviour {
 
 	public void switchTrack(TrackName name) {
 		currentTrack = forName (name);
-		playCurrentClip ();
+		sequenceCurrentClip ();
+	}
+
+	private void sequenceCurrentClip() {
+		if (audioSource.clip != currentTrack.clip) {
+			Sequence sequence = DOTween.Sequence ()
+				.Append(audioSource.DOFade(0f, currentTrack.fadeTime / 2f))
+				.AppendCallback(playCurrentClip)
+				.Append(audioSource.DOFade(currentTrack.volume, currentTrack.fadeTime / 2f));
+		}
 	}
 
 	private void playCurrentClip() {
-		if (audioSource.clip != currentTrack.clip) {
-			Sequence sequence = DOTween.Sequence ()
-				.Append(audioSource.DOFade(0f, currentTrack.fadeTime / 2))
-				.Append(audioSource.DOFade(currentTrack.volume, currentTrack.fadeTime / 2));
-			audioSource.clip = currentTrack.clip;
-			audioSource.PlayDelayed (currentTrack.fadeTime);
-		}
+		audioSource.clip = currentTrack.clip;
+		audioSource.Play ();
 	}
 	
 	private MusicTrack forName(TrackName name) {
