@@ -78,6 +78,7 @@ public class MainMenuController : UISystem {
 	public void ReturnFocusToMainMenu(){
 		Debug.Log ("returning focus to main menu");
 		worldSelectManager.ReturnToOpeningScreen ();
+		levelSelectManager.ResetCamera ();
 	}
 
 	public void ReturnFocusToWorldLevels(){
