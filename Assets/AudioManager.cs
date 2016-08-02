@@ -7,7 +7,7 @@ using DG.Tweening;
 public class AudioManager : MonoBehaviour {
 
 	public enum TrackName {
-		MENU, TUNNEL1, TUNNEL2, OUTDOOR1, OUTDOOR2, INDOOR1 
+		MENU, TUNNEL1, TUNNEL2, OUTDOOR1, OUTDOOR2, INDOOR1, INDOOR2, RESOLUTION, DARKNESS02 
 	}
 
 	[System.Serializable]
