@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(LaserHitManager))] 
 public class LaserModule : MonoBehaviour {
 
 	public bool IsEnabled = true;
