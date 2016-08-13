@@ -30,7 +30,7 @@ public class FinishLevel : MonoBehaviour {
 		}
 		if (!levelComplete) {
 			levelComplete = true;
-			LevelCompleteScreen.controller.LevelComplete (Time.time);
+			LevelCompleteScreen.controller.LevelComplete ();
 		}
 	}
 }

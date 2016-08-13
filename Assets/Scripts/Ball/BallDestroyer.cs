@@ -27,10 +27,10 @@ public class BallDestroyer : MonoBehaviour {
 
 	//destroy ball based on transform
 	public void Crush(){
-		if (GetComponent<TransformController> ().currentTransform.morphName == "Reflector Ball") {
-			Shatter ();
-		} else {
+		if (GetComponent<TransformController> ().currentTransform.morphName == "Aero Ball") {
 			Pop ();
+		} else {
+			Shatter ();
 		}
 	}
 

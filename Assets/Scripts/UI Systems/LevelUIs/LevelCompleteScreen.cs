@@ -65,7 +65,7 @@ public class LevelCompleteScreen : UISystem {
 		noDeathsStar.gameObject.SetActive (false);
 	}
 
-	public void LevelComplete(float time){
+	public void LevelComplete(){
 		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
 		title.text = levelData.GetLevelName ();
 		displayList.Clear ();
