@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using UnityStandardAssets.Cameras;
 
 public class StartSequence : MonoBehaviour {
 
 	public ParticleSystem spawnEffect;
 	public float cameraWaitTime = 15f;
+
+	public float endFloatDownDist = 8f;
+	public bool disableWallClipPrevention = false;
 	
 	private GameObject startSpawn;
 	private GameObject cameraRig;
@@ -34,6 +38,9 @@ public class StartSequence : MonoBehaviour {
 		CameraFade.StartAlphaFade (Color.black, true, 2f);
 		cameraRig.GetComponent<SplineController> ().enabled = true;
 		cameraRig.GetComponent<SplineInterpolator> ().enabled = true;
+		if (disableWallClipPrevention) {
+			cameraRig.GetComponent<ProtectCameraFromWallClip>().enabled = false;
+		}
 	}
 
 	public bool IsCompleted() {
@@ -43,7 +50,7 @@ public class StartSequence : MonoBehaviour {
 	private void DoSpawn() {
 		SetSkipNotificationActive(false);
 		SetCameraPosition ();
-		cameraRig.transform.DOMoveY (cameraRig.transform.position.y - 8, spawnEffect.duration).Play ().OnComplete (Finalise);		
+		cameraRig.transform.DOMoveY (cameraRig.transform.position.y - endFloatDownDist, spawnEffect.duration).Play ().OnComplete (Finalise);		
 		spawnEffect.Play ();
 	}
 
@@ -88,6 +95,9 @@ public class StartSequence : MonoBehaviour {
 
 	private void Finalise() {
 		completed = true;
+		if (disableWallClipPrevention) {
+			cameraRig.GetComponent<ProtectCameraFromWallClip>().enabled = true;
+		}
 	}
 	
 }
