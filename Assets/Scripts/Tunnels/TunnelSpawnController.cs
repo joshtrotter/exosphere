@@ -34,6 +34,8 @@ public class TunnelSpawnController : MonoBehaviour {
 	private float currentClearRun;
 
 	private float maxDifficulty;
+
+	private float currentAverageDifficulty;
 	
 	void Awake() {
 		if (INSTANCE != null) {
@@ -115,6 +117,7 @@ public class TunnelSpawnController : MonoBehaviour {
 
 		float distanceToEndOfTunnel = 0f;
 		float currentTunnelDifficulty = 0f;
+		int numPieces = 0;
 
 		while (distanceToEndOfTunnel < maxDistanceToCheckPreferenceModifiers && currentNode != null) {
 			TunnelPiece piece = currentNode.Value;
@@ -122,8 +125,11 @@ public class TunnelSpawnController : MonoBehaviour {
 			distanceToEndOfTunnel += piece.length();
 			currentTunnelDifficulty += piece.difficultyLevel;
 			currentNode = currentNode.Previous;
+			numPieces++;
 		}
 
+		//set the average difficulty in case anyone cares
+		currentAverageDifficulty = currentTunnelDifficulty / numPieces;
 		//int bucketLevel = calculateBucketLevel ();
 		prefs.maxBucketLevel = (int) Mathf.Lerp(0, maxBucketLevel, ball.position.z / distanceToMaxSettings);
 		prefs.maxDifficulty = Mathf.Lerp(baseDifficulty, maxDifficulty, ball.position.z / distanceToMaxSettings) - currentTunnelDifficulty;
@@ -148,5 +154,9 @@ public class TunnelSpawnController : MonoBehaviour {
 			yield return new WaitForSeconds (tunnelLengthCheckTime);
 			checkForTunnelExtension ();
 		}
+	}
+
+	public float GetCurrentAverageDifficulty(){
+		return currentAverageDifficulty;
 	}
 }

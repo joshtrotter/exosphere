@@ -14,8 +14,9 @@ public class JumpTunnelPiece : TunnelPiece {
 	{
 		base.setup (prefs, parent);
 		jumpExtension = Mathf.Clamp (((TunnelSpawnController.INSTANCE.getCurrentClearRun())) / 4, 0, maxJumpExtension);
-		jumpRise = Mathf.Lerp (0, maxJumpRise, jumpExtension / maxJumpExtension);
-		Debug.Log ("Jump rise = " + jumpRise + ", Jump extension = " + jumpExtension);
+		float difficultyBasedMaxJumpRise = Mathf.Lerp (0, maxJumpRise, (1 - (2 * TunnelSpawnController.INSTANCE.GetCurrentAverageDifficulty ())));
+		jumpRise = Mathf.Lerp (0, difficultyBasedMaxJumpRise, jumpExtension / maxJumpExtension);
+		Debug.Log ("Jump rise = " + jumpRise + ", Jump extension = " + jumpExtension + ", Ave Difficulty = " + TunnelSpawnController.INSTANCE.GetCurrentAverageDifficulty());
 		velocityBraker.position = velocityBraker.position + (Vector3.forward * jumpExtension) + (Vector3.up * jumpRise); 
 		this.endOffset = this.endOffset + (Vector3.forward * jumpExtension);
 		this.endOffset = this.endOffset + (Vector3.up * jumpRise);
