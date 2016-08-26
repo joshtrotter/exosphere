@@ -97,23 +97,23 @@ public class LevelManager : MonoBehaviour {
 		
 		if (levelStartController != null) {
 			StartSequence startSequence = levelStartController.GetComponent<StartSequence> ();
-			AmazeballCam camController = GameObject.FindGameObjectWithTag ("CameraRig").GetComponent<AmazeballCam>();
-			GameObject ball = GameObject.FindGameObjectWithTag("Player");
+			AmazeballCam camController = GameObject.FindGameObjectWithTag ("CameraRig").GetComponent<AmazeballCam> ();
+			GameObject ball = GameObject.FindGameObjectWithTag ("Player");
 
 			//disable player and controls
 			camController.enabled = false;
-			ball.GetComponent<Renderer>().enabled = false;
-			ball.GetComponent<Rigidbody>().isKinematic = true;
+			ball.GetComponent<Renderer> ().enabled = false;
+			ball.GetComponent<Rigidbody> ().isKinematic = true;
 
 			startSequence.init ();
 			while (!startSequence.IsCompleted()) {
-				yield return new WaitForEndOfFrame();
+				yield return new WaitForEndOfFrame ();
 			}
 
 			//enable player and controls
 			camController.enabled = true;
-			ball.GetComponent<Renderer>().enabled = true;
-			ball.GetComponent<Rigidbody>().isKinematic = false;
+			ball.GetComponent<Renderer> ().enabled = true;
+			ball.GetComponent<Rigidbody> ().isKinematic = false;
 		}
 
 		SetupLevel ();

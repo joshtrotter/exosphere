@@ -10,6 +10,8 @@ public class StartSequence : MonoBehaviour {
 
 	public float endFloatDownDist = 8f;
 	public bool disableWallClipPrevention = false;
+
+	public AudioManager.TrackName trackName;
 	
 	private GameObject startSpawn;
 	private GameObject cameraRig;
@@ -58,6 +60,7 @@ public class StartSequence : MonoBehaviour {
 		if (splineStarted && !splineEnded && !splineSkipped && (Input.touchCount > 0 || Input.GetMouseButtonDown (0))) {
 			splineSkipped = true;
 			SetSkipNotificationActive(false);
+			AudioManager.INSTANCE.switchTrack (trackName);
 			CameraFade.StartAlphaFade (Color.black, false, 4f, 0f, () => EndSpline());
 		}
 	}
@@ -72,6 +75,7 @@ public class StartSequence : MonoBehaviour {
 		}
 		if (!completed) {
 			DoSpawn ();
+			AudioManager.INSTANCE.switchTrack (trackName);
 		}
 	}
 
