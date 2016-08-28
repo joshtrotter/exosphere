@@ -46,6 +46,10 @@ public class MainMenuController : UISystem {
 		worldSelectManager.InitiateTunnelRunnerLaunch ();
 	}
 
+	public void SettingsButton(){
+		worldSelectManager.OpenSettingsMenu ();
+	}
+
 
 	public void Launch(){
 		hasLaunched = true;

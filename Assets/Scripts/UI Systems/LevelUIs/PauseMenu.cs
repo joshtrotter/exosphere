@@ -66,6 +66,10 @@ public class PauseMenu : UISystem {
 		callibrator.RequestToBeShown ();
 	}
 
+	public void Settings(){
+		pauseMenu.transform.DOLocalMoveY ((Screen.height * 1.2f), 0.5f).SetUpdate (true).OnComplete (SettingsMenu.controller.RequestToBeShown).Play ();
+	}
+
 	public void MainMenu(){
 		cont = ContinueToMainMenu;
 		DisplayConfirmWindow ("Return to main menu? Your progress will be lost");

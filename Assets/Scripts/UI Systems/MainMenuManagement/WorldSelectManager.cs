@@ -184,6 +184,11 @@ public class WorldSelectManager : MonoBehaviour {
 		movingPanel.transform.DOLocalMoveY ((-2 * Screen.height), 1f).Play ().OnComplete (LaunchTunnelRunner);
 	}
 
+	public void OpenSettingsMenu(){
+		blockingPanel.SetActive (true);
+		movingPanel.transform.DOLocalMoveY ((2 * Screen.height), 1f).Play ().OnComplete (SettingsMenu.controller.RequestToBeShown);
+	}
+
 	private void LaunchTunnelRunner(){
 		LevelManager.manager.LoadTunnelRunner ();	
 	}
