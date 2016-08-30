@@ -2,13 +2,12 @@
 using System.Collections;
 
 public class AudioSwitcher : MonoBehaviour {
-
-	public AudioManager audioManager;
+	
 	public AudioManager.TrackName[] trackNames;
 
 	void OnTriggerEnter(Collider coll) {
 		if (coll.gameObject.CompareTag ("Player")) {
-			audioManager.switchTrack(randomTrack ());
+			AudioManager.INSTANCE.switchTrack(randomTrack ());
 		}
 	}
 

@@ -18,6 +18,8 @@ public class AudioManager : MonoBehaviour {
 		public float fadeTime = 1f;
 	}
 
+	public static AudioManager INSTANCE;
+
 	public MusicTrack[] tracks;
 	public TrackName defaultTrack = TrackName.MENU;
 
@@ -25,21 +27,32 @@ public class AudioManager : MonoBehaviour {
 	private AudioSource audioSource;
 	
 	void Awake () {
+		if (INSTANCE == null) {
+			INSTANCE = this;
+			DontDestroyOnLoad (this);
+		} else if (INSTANCE != this) {
+			Destroy(gameObject);
+		}
+
 		audioSource = GetComponent<AudioSource> ();
-		switchTrack (defaultTrack);
+		currentTrack = forName (defaultTrack);
+		playCurrentClip ();
 	}
 
 	public void switchTrack(TrackName name) {
+		Debug.Log ("Switching to track " + name);
 		currentTrack = forName (name);
 		sequenceCurrentClip ();
 	}
 
 	private void sequenceCurrentClip() {
 		if (audioSource.clip != currentTrack.clip) {
-			Sequence sequence = DOTween.Sequence ()
+			Debug.Log ("Sequencing track " + currentTrack.name);
+			DOTween.Sequence ()
 				.Append(audioSource.DOFade(0f, currentTrack.fadeTime / 2f))
 				.AppendCallback(playCurrentClip)
-				.Append(audioSource.DOFade(currentTrack.volume, currentTrack.fadeTime / 2f));
+				.Append(audioSource.DOFade(currentTrack.volume, currentTrack.fadeTime / 2f))
+				.Play();
 		}
 	}
 
