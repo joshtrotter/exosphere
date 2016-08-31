@@ -51,13 +51,14 @@ public class TutorialMessageController : MonoBehaviour {
 	}
 
 	public void DisplayMessage(TutorialMessage messageObject){
-		//ensure that any previous message is overriden
-		if (messageObject != currentMessage) { //do not redisplay if already on display
-			HideMessage ();
-			currentMessage = messageObject;
-			StartCoroutine ("SetupMessage");
+		if (PlayerPrefs.GetInt ("TutEnabled") == 1) {
+			//ensure that any previous message is overriden
+			if (messageObject != currentMessage) { //do not redisplay if already on display
+				HideMessage ();
+				currentMessage = messageObject;
+				StartCoroutine ("SetupMessage");
+			}
 		}
-
 	}
 
 	private IEnumerator SetupMessage(){

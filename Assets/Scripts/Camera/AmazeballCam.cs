@@ -20,7 +20,10 @@ public class AmazeballCam : MonoBehaviour
 	// How fast the rig will move to keep up with the target's position
 	public float moveSpeed = 10f;
 	// How fast the rig will rotate from the horiztonal axis input
-	public float turnSpeed = 3f;  
+	//public float turnSpeed = 3f;  
+	public float maxTurnSpeed = 7.5f;
+	public float minTurnSpeed = 1.5f;
+	public float turnSpeedModifier = 1f;
 	// The maximum value of the x axis rotation of the pivot
 	public float maxBrakeTilt = 15f; 
 	// The minimum value of the x axis rotation of the pivot
@@ -71,9 +74,13 @@ public class AmazeballCam : MonoBehaviour
 		//Read the axis values from the accelerometer (between -1 and +1)
 		var x = CrossPlatformInputManager.GetAxis ("Horizontal");
 		var y = CrossPlatformInputManager.GetAxis ("Vertical");
-			
+
+		//take settings into account
+		float turnSpeed = Mathf.Lerp(minTurnSpeed, maxTurnSpeed, PlayerPrefs.GetFloat ("CamSensitivity", 3f)) * turnSpeedModifier;
+		bool inverted = PlayerPrefs.GetInt ("Inverted", 0) == 1;
+
 		// Adjust the look angle by an amount proportional to the turn speed and horizontal input.
-		camAngle += x * turnSpeed * Time.deltaTime * targetFps;
+		camAngle += x * turnSpeed * Time.deltaTime * targetFps * (inverted ? -1 : 1);
 		// Keep the value between -180 and +180
 		camAngle = restrictAngleBetween180s (camAngle);
 

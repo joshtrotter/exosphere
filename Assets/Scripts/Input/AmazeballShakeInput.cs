@@ -8,7 +8,8 @@ using UnityStandardAssets.CrossPlatformInput;
 public class AmazeballShakeInput : MonoBehaviour {
 
 	//The required delta in vertical acceleration between 2 frames that will be considered as one shake - lower values will make shake detection more sensitive
-	public float shakeDetectThreshold = 0.165f;
+	public float minShakeDetectThreshold = 0.165f;
+	public float maxShakeDetectThreshold = 0.385f;
 	
 	//The maximum amount of time (in seconds) that can elapse between two shakes (exceeding the shakeDetectThreshold) in order for them to be treated as a continuous shake 
 	public float shakeDetectInterval = 0.2f;
@@ -56,38 +57,44 @@ public class AmazeballShakeInput : MonoBehaviour {
 			shakeButton.Released ();
 		}
 
-		//Get the change in acceleration this frame
-		float verticalAcceleration = Input.acceleration.y;
-		float verticalAccelerationDelta = verticalAcceleration - prevVerticalAcceleration;
+		//only check if the setting is enabled
+		if (PlayerPrefs.GetInt ("ShakeEnabled") == 1) {
 
-		//Make sure the delta is frame rate independent
-		verticalAccelerationDelta *= (Time.deltaTime * expectedFps);
+			//Get the change in acceleration this frame
+			float verticalAcceleration = Input.acceleration.y;
+			float verticalAccelerationDelta = verticalAcceleration - prevVerticalAcceleration;
 
-		//Check if we have exceeded the acceleration threshold
-		if (Mathf.Abs (verticalAccelerationDelta) >= shakeDetectThreshold) {
-			bool shakingForward = IsShakeForward(verticalAccelerationDelta);
+			//Make sure the delta is frame rate independent
+			verticalAccelerationDelta *= (Time.deltaTime * expectedFps);
+
+			//Use setting to determine shake threshold
+			float shakeDetectThreshold = Mathf.Lerp (minShakeDetectThreshold, maxShakeDetectThreshold, PlayerPrefs.GetFloat ("ShakeSensitivity", 0.5f));
+			//Check if we have exceeded the acceleration threshold
+			if (Mathf.Abs (verticalAccelerationDelta) >= shakeDetectThreshold) {
+				bool shakingForward = IsShakeForward (verticalAccelerationDelta);
 			 
-			//Check if this shake is continuing a previous shake
-			if (Time.time - prevShakeTime <= shakeDetectInterval) {
-				//We are continuing a previous shake so it only adds to the streak counter if the shake direction has been reversed
-				if (prevShakeForward != shakingForward) {
-					if (++currentShakeStreak >= requiredShakes) {
-						shakeButton.Pressed();
-						currentShakeStreak = 0;
+				//Check if this shake is continuing a previous shake
+				if (Time.time - prevShakeTime <= shakeDetectInterval) {
+					//We are continuing a previous shake so it only adds to the streak counter if the shake direction has been reversed
+					if (prevShakeForward != shakingForward) {
+						if (++currentShakeStreak >= requiredShakes) {
+							shakeButton.Pressed ();
+							currentShakeStreak = 0;
+						}
 					}
 				}
-			}
 			//Otherwise start a new shake streak
 			else {
-				currentShakeStreak = 1;
+					currentShakeStreak = 1;
+				}
+				//Record the shake values for future comparison
+				prevShakeTime = Time.time;
+				prevShakeForward = shakingForward;
 			}
-			//Record the shake values for future comparison
-			prevShakeTime = Time.time;
-			prevShakeForward = shakingForward;
-		}
 
-		//Record the acceleration value for future comparison
-		prevVerticalAcceleration = verticalAcceleration;
+			//Record the acceleration value for future comparison
+			prevVerticalAcceleration = verticalAcceleration;
+		}
 	}
 
 	private bool IsShakeForward(float verticalAccelerationDelta) 

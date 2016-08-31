@@ -40,7 +40,7 @@ public class SettingsMenu : UISystem {
 
 	//default settings
 	private readonly int SETTINGS_VER = 1; //increment this on a change of default settings to reset to new defaults, don't use zero
-	private readonly Settings DEFAULT_SETTINGS = new Settings(false, 0.5f, false, 0.5f, false, 0.5f, true);
+	private readonly Settings DEFAULT_SETTINGS = new Settings(false, 0.5f, false, 0.25f, false, 0.5f, true);
 
 	public override void Awake(){
 		//set up singleton instance
@@ -54,7 +54,7 @@ public class SettingsMenu : UISystem {
 				currentSettings.camSensitivity = PlayerPrefs.GetFloat ("CamSensitivity");
 				currentSettings.shakeEnabled = PlayerPrefs.GetInt ("ShakeEnabled") == 1 ? true : false;
 				currentSettings.shakeSensitivity = PlayerPrefs.GetFloat ("ShakeSensitivity");
-				currentSettings.muted = PlayerPrefs.GetInt ("Muted") == 1 ? true : false;
+				currentSettings.tutEnabled = PlayerPrefs.GetInt ("TutEnabled") == 1 ? true : false;
 				ApplySettings(currentSettings);
 			} else {
 				PlayerPrefs.SetInt("SettingsVer", SETTINGS_VER);
@@ -132,6 +132,9 @@ public class SettingsMenu : UISystem {
 		currentSettings.tutEnabled = enabled;
 		tutToggle.isOn = enabled;
 		PlayerPrefs.SetInt("TutEnabled", enabled ? 1 : 0);
+		if (!enabled) {
+			TutorialMessageController.controller.HideMessage();
+		}
 	}
 
 	private void ApplySettings(Settings settings){

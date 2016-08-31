@@ -9,8 +9,7 @@ public class GlassTransform : BallTransform {
 
 	//Track a reference to the camera so that we can slow down the turn speed when the ball is shooting a laser
 	private AmazeballCam cam;
-	private float startTurnSpeed;
-	public float slowTurnSpeed = 1.5f;
+	public float slowTurnSpeedModifier = 0.5f;
 
 	//A reference to the shattering particle effect that should be used when the ball breaks
 	//public ParticleSystem shatterParticles;
@@ -18,7 +17,6 @@ public class GlassTransform : BallTransform {
 	public override void Apply(BallController ball){
 		base.Apply (ball);
 		cam = GameObject.FindWithTag("CameraRig").GetComponent<AmazeballCam>();
-		startTurnSpeed = cam.turnSpeed;
 		//enable laser snapping
 		laserSnapTo = ball.GetComponent<LaserSnapTo> ();
 		laserSnapTo.Enable ();
@@ -31,7 +29,7 @@ public class GlassTransform : BallTransform {
 	public override void Remove(BallController ball)
 	{
 		//ensure camera is at normal speed
-		cam.turnSpeed = startTurnSpeed;
+		cam.turnSpeedModifier = 1f;
 
 		//disable laser snapping
 		laserSnapTo.Disable ();
@@ -51,7 +49,7 @@ public class GlassTransform : BallTransform {
 	public override void OnLaserEnter(LaserDiffuser laserDiffuser, ArcReactorHitInfo hitInfo)
 	{
 		//slow down camera movement for easier aiming
-		cam.turnSpeed = slowTurnSpeed;
+		cam.turnSpeedModifier = slowTurnSpeedModifier;
 
 		laserDiffuser.Diffuse (hitInfo);
 		this.laserDiffuser = laserDiffuser;
@@ -60,7 +58,7 @@ public class GlassTransform : BallTransform {
 	public override void OnLaserExit(LaserDiffuser laserDiffuser)
 	{
 		//ensure camera is at normal speed
-		cam.turnSpeed = startTurnSpeed;
+		cam.turnSpeedModifier = 1f;
 
 		laserDiffuser.Disable ();
 		this.laserDiffuser = null;
