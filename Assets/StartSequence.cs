@@ -33,6 +33,7 @@ public class StartSequence : MonoBehaviour {
 	}
 	
 	public void init() {
+		AudioManager.INSTANCE.switchTrack (trackName);
 		StartCoroutine (WaitForSplineToEnd ());
 		StartCoroutine (CheckSplineState ());
 		splineStarted = true;
@@ -75,7 +76,7 @@ public class StartSequence : MonoBehaviour {
 		}
 		if (!completed) {
 			DoSpawn ();
-			AudioManager.INSTANCE.switchTrack (trackName);
+			//AudioManager.INSTANCE.switchTrack (trackName);
 		}
 	}
 
