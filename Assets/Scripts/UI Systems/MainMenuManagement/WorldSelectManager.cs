@@ -89,7 +89,6 @@ public class WorldSelectManager : MonoBehaviour {
 	public void ReturnToOpeningScreen(){
 		//remove blocking panel so that buttons can be pressed
 		blockingPanel.SetActive(false);
-		Debug.Log (worldNumber * worldGap);
 		movingPanel.transform.DOLocalMoveY (0, 0).Play ();
 		worldNumber = 0;
 		canvas.alpha = 1f;
@@ -187,6 +186,12 @@ public class WorldSelectManager : MonoBehaviour {
 	public void OpenSettingsMenu(){
 		blockingPanel.SetActive (true);
 		movingPanel.transform.DOLocalMoveY ((2 * Screen.height), 1f).Play ().OnComplete (SettingsMenu.controller.RequestToBeShown);
+	}
+
+	public void ReturnFromSettingsMenu(){
+		blockingPanel.SetActive (false);
+		Debug.Log ("moving down");
+		movingPanel.transform.DOLocalMoveY (0, 1f).Play ();
 	}
 
 	private void LaunchTunnelRunner(){

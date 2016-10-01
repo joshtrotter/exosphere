@@ -21,7 +21,7 @@ public class LevelSelectManager : MonoBehaviour {
 	private WorldLevels worldDisplay;
 
 	//track a reference to the menu camera
-	private MenuCameraController menuCameraController;
+	public MenuCameraController menuCameraController;
 
 	private WorldSelectManager worldSelectManager;
 
@@ -29,7 +29,6 @@ public class LevelSelectManager : MonoBehaviour {
 	
 	void Awake(){
 		screens = GetComponentsInChildren<LevelInfo> ();
-		menuCameraController = GetComponentInChildren<MenuCameraController> ();
 		worldDisplay = GetComponentInChildren<WorldLevels> ();
 		worldSelectManager = GetComponent<WorldSelectManager> ();
 		
@@ -141,6 +140,8 @@ public class LevelSelectManager : MonoBehaviour {
 		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
 		DOTween.CompleteAll ();
 		GameObject.FindObjectOfType<LevelLaunchSequence> ().PlayLevel ();
+		menuCameraController.shouldMonitorVerticalSwiping = false;
+		menuCameraController.shouldMonitorHorizontalSwiping = false;
 		menuCameraController.transform.DOLocalRotate(currentScreen.transform.localEulerAngles + new Vector3 (36, 0, 0), 1).Play ();  
 	
 	}

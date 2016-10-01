@@ -69,14 +69,15 @@ public class SettingsMenu : UISystem {
 
 	public override void Show ()
 	{
-		Time.timeScale = 0f;
+		if (!LevelManager.manager.IsLevelLoader ()) {
+			Time.timeScale = 0f;
+		}
 		dropPanel.SetActive (true);
 		dropPanel.transform.DOLocalMoveY (0, 0.5f).SetUpdate(true).Play ();
 	}
 
 	public override void Hide ()
 	{
-		//Time.timeScale = 1f;
 		dropPanel.SetActive (false);
 	}
 

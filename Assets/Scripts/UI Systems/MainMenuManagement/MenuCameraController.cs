@@ -17,10 +17,17 @@ public class MenuCameraController : MonoBehaviour {
 	public bool shouldMonitorVerticalSwiping;
 
 	//keep a reference to the LevelInfoManager
-	private LevelSelectManager screenManager;
+	public LevelSelectManager screenManager;
+
+	void OnLevelWasLoaded(){
+		if (LevelManager.manager.IsLevelLoader ()) {
+			transform.GetChild (0).gameObject.SetActive(true);
+		} else {
+			transform.GetChild (0).gameObject.SetActive(false);
+		}
+	}
 
 	void Start(){
-		screenManager = GetComponentInParent<LevelSelectManager> ();
 		CameraShake ();
 	}
 

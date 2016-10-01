@@ -12,6 +12,7 @@ public class MainMenuController : UISystem {
 
 	//used to determine whether a press of the back button should be passed to the levelSelectManager
 	private bool hasLaunched = false;
+	private bool inSettings = false;
 
 	public override void Awake(){
 		//set up singleton instance
@@ -32,7 +33,7 @@ public class MainMenuController : UISystem {
 	
 	private void OnLevelWasLoaded(){
 		if (controller == this) {
-			if (Application.loadedLevel == 0) {
+			if (LevelManager.manager.IsLevelLoader()) {
 				hasLaunched = false;
 				SetSkybox ();
 				RequestToBeShown ();
@@ -47,6 +48,7 @@ public class MainMenuController : UISystem {
 	}
 
 	public void SettingsButton(){
+		inSettings = true;
 		worldSelectManager.OpenSettingsMenu ();
 	}
 
@@ -58,6 +60,10 @@ public class MainMenuController : UISystem {
 
 	public override void Show(){
 		mainMenuSystem.SetActive (true);
+		if (inSettings) {
+			worldSelectManager.ReturnFromSettingsMenu();
+			inSettings = false;
+		}
 	}
 
 	public override void Hide(){

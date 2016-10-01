@@ -221,4 +221,8 @@ public class LevelManager : MonoBehaviour {
 		return currentLevel == TUNNEL_RUNNER_LEVEL;
 	}
 
+	public bool IsLevelLoader(){
+		return Application.loadedLevel == 0;
+	}
+
 }
