@@ -112,5 +112,12 @@ public class TutorialMessage : HasLevelState {
 		if (currentState == CLOSED_STATE)
 			CloseMessage ();
 	}
+
+	/* Resets the tutorial so that it can be activated again.
+	 * Currently used by the Global Tutorial Manager when user Resets Tutorials
+	 */
+	public void Reset(){
+		currentState = READY_STATE;
+	}
 	
 }

@@ -7,6 +7,7 @@ public class GlobalTutorialMonitor : MonoBehaviour {
 
 	public TutorialMessage collectableTutorial;
 	public TutorialMessage checkpointTutorial;
+	public TutorialMessage wormholeTutorial;
 
 	void Awake(){
 		controller = this;
@@ -20,6 +21,12 @@ public class GlobalTutorialMonitor : MonoBehaviour {
 		StartCoroutine (OpenTutorial(checkpointTutorial));
 	}
 
+	public void PickupAcquired(Pickup pickup){
+		if (pickup.GetDisplayName () == "Portable Wormhole Device") {
+			StartCoroutine (OpenTutorial(wormholeTutorial));
+		}
+	}
+
 	private IEnumerator OpenTutorial(TutorialMessage tutorial){
 		if (PlayerPrefs.GetString (tutorial.uniqueId) != "closed"){
 			tutorial.ExternalTriggerCall (TutorialMessage.TriggerBehaviour.Open);
@@ -30,8 +37,10 @@ public class GlobalTutorialMonitor : MonoBehaviour {
 	} 
 
 	public void ClearGlobalTutorialData(){
-		foreach (TutorialMessage tut in GetComponentsInChildren<TutorialMessage>()){
+		foreach (TutorialMessage tut in GetComponentsInChildren<TutorialMessage>(true)){
 			PlayerPrefs.DeleteKey(tut.uniqueId);
+			tut.gameObject.SetActive(true);
+			tut.Reset ();
 		}
 		PlayerPrefs.Save ();
 	}
