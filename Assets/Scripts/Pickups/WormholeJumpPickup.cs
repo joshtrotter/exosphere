@@ -47,7 +47,7 @@ public class WormholeJumpPickup : Pickup
 
 	protected override void Apply (BallController ball)
 	{
-		if (jumpLocation != null) {
+		if (jumpLocation != null && !ball.GetComponent<BallDestroyer>().BallIsDead()) {
 			wormholeExplosion.transform.position = ball.transform.position;
 			wormholeExplosion.Play();
 			Vector3 currentVelocity = ball.GetComponent<Rigidbody>().velocity;
@@ -73,17 +73,21 @@ public class WormholeJumpPickup : Pickup
 
 	private void CompleteJump (BallController ball, Vector3 currentVelocity)
 	{
-		GetCameraRig ().GetComponent<AmazeballCam> ().camAngle = GetCameraRig ().transform.rotation.eulerAngles.y;
-		GetCameraRig ().GetComponent<AmazeballCam> ().enabled = true;
-		ball.gameObject.transform.position = this.jumpLocation.transform.position;
+		if (!ball.GetComponent<BallDestroyer> ().BallIsDead ()) {
+			GetCameraRig ().GetComponent<AmazeballCam> ().camAngle = GetCameraRig ().transform.rotation.eulerAngles.y;
+			GetCameraRig ().GetComponent<AmazeballCam> ().enabled = true;
+			ball.gameObject.transform.position = this.jumpLocation.transform.position;
 
-		Vector3 newTargetVelocity = jumpLocation.transform.forward * currentVelocity.magnitude;
-		ball.GetComponent<Rigidbody>().velocity = newTargetVelocity;
+			Vector3 newTargetVelocity = jumpLocation.transform.forward * currentVelocity.magnitude;
+			ball.GetComponent<Rigidbody> ().velocity = newTargetVelocity;
 
-		wormholeExplosion.transform.position = wormhole.transform.position;
-		wormholeExplosion.Play ();
-		ball.gameObject.GetComponent<Renderer>().enabled = true;
-		StartCoroutine (UnlockBrakesIfRequired(ball.gameObject.GetComponent<BrakeController> ()));
+			wormholeExplosion.transform.position = wormhole.transform.position;
+			wormholeExplosion.Play ();
+			ball.gameObject.GetComponent<Renderer> ().enabled = true;
+			StartCoroutine (UnlockBrakesIfRequired (ball.gameObject.GetComponent<BrakeController> ()));
+		} else {
+			RemoveWormhole();
+		}
 	}
 
 	public void SetJumpLocation (Transform jumpLocation)

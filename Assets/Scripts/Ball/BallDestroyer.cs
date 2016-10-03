@@ -11,7 +11,10 @@ public class BallDestroyer : MonoBehaviour {
 	private Rigidbody rb;
 	private Collider coll;
 
+	private bool isDead = false;
+
 	void Awake(){
+		isDead = false;
 		rb = GetComponent<Rigidbody> ();
 		mesh = GetComponent<MeshRenderer> ();
 		coll = GetComponent<Collider> ();
@@ -35,12 +38,17 @@ public class BallDestroyer : MonoBehaviour {
 	}
 
 	private IEnumerator DestroyBall(ParticleSystem destruction){
+		isDead = true;
 		rb.isKinematic = true;
 		mesh.enabled = false;
 		coll.enabled = false;
 		destruction.Play ();
 		yield return new WaitForSeconds (reloadDelay);
 		LevelManager.manager.ReloadLevel ();
-		//Application.LoadLevel (2);
 	}
+
+	public bool BallIsDead(){
+		return isDead;
+	}
+
 }

@@ -20,7 +20,7 @@ public abstract class BallTransform : MonoBehaviour
 	public float brakeEmission = 5f;
 
 	public string morphEffectName;
-
+	
 	public virtual void Apply(BallController ball) 
 	{
 		ball.GetComponent<Renderer> ().material = transformMaterial;
@@ -36,7 +36,7 @@ public abstract class BallTransform : MonoBehaviour
 
 	public virtual void OnLaserEnter(LaserDiffuser laserDiffuser, ArcReactorHitInfo hitInfo)
 	{
-		GameObject.FindGameObjectWithTag("Player").GetComponent<BallDestroyer>().Pop();
+		laserDiffuser.GetComponentInParent<BallDestroyer>().Pop();
 	}
 
 	public virtual void OnLaserExit(LaserDiffuser laserDiffuser)
