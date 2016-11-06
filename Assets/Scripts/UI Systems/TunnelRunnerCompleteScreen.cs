@@ -84,6 +84,8 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		ballInputReader = ball.GetComponent<BallInputReader> ();
 		rbBall.isKinematic = true;
 		ballInputReader.enabled = false;
+		//ensure scoring is stopped
+		ball.GetComponent<TunnelScoreController> ().HaltScoring ();
 	}
 
 
