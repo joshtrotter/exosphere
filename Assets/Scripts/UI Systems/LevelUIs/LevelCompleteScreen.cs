@@ -29,6 +29,9 @@ public class LevelCompleteScreen : UISystem {
 	public Sprite uncollectedStar;
 	public Sprite collectedStar;
 
+	//next button, so that we can disable it on the last level
+	public Button nextButton;
+
 	private List<Graphic> displayList = new List<Graphic> ();
 
 	private int buttonPress;
@@ -50,6 +53,7 @@ public class LevelCompleteScreen : UISystem {
 
 	private void SetAllInactive ()
 	{
+		//hide all textual/image components
 		levelCompleteTitleText.gameObject.SetActive (false);
 		supplyCrateTitleText.gameObject.SetActive (false);
 		cratesFoundText.gameObject.SetActive (false);
@@ -113,14 +117,20 @@ public class LevelCompleteScreen : UISystem {
 		//check for new level unlocks
 		//unlock next level if it isn't already
 		LevelData nextLevel = LevelDataManager.manager.GetNextLevelData();
-		if (nextLevel != null && !nextLevel.IsUnlocked ()) {
-			Debug.Log ("Unlocking " + nextLevel.GetLevelName());
-			nextLevel.Unlock ();
-			AddToDisplayList (newLevelUnlockedText);
-		} else { //if the next level is already unlocked, it is possible the player has earnt enough stars to unlock a level even further ahead
-			if (LevelDataManager.manager.CheckForNewStarUnlocks() > 0){
+		if (nextLevel == null) {
+			//hide the next button. TODO take this out to allow movement to a new world if there ever is one
+			nextButton.gameObject.SetActive (false);
+		} else {
+			nextButton.gameObject.SetActive(true);
+			if (!nextLevel.IsUnlocked ()) {
+				Debug.Log ("Unlocking " + nextLevel.GetLevelName ());
+				nextLevel.Unlock ();
 				AddToDisplayList (newLevelUnlockedText);
-				Debug.Log ("Unlocked new level based on stars");
+			} else { //if the next level is already unlocked, it is possible the player has earnt enough stars to unlock a level even further ahead
+				if (LevelDataManager.manager.CheckForNewStarUnlocks () > 0) {
+					AddToDisplayList (newLevelUnlockedText);
+					Debug.Log ("Unlocked new level based on stars");
+				}
 			}
 		}
 		
