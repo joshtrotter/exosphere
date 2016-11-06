@@ -50,9 +50,9 @@ public class PickupSlot : MonoBehaviour
 			//pickupImageTransform.position = homeCoords;
 			Vector3 tweenTargetPos = pickupImageTransform.position;
 			pickupImageTransform.position = tweenTargetPos + equipAnimPos;
-			pickupImageTransform.DOMove(tweenTargetPos, equipAnimSpeed).Play();
+			pickupImageTransform.DOMove (tweenTargetPos, equipAnimSpeed).Play ();
 			this.pickupImage.sprite = pickup.sprite;
-		}
+		} 
 		UpdateVisibility ();
 	}
 
@@ -137,7 +137,7 @@ public class PickupSlot : MonoBehaviour
 
 	public void UpdateVisibility ()
 	{
-		this.slotImage.enabled = IsEquipped ();
+		//this.slotImage.enabled = IsEquipped ();
 		this.pickupImage.enabled = IsEquipped ();
 	}
 

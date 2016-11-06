@@ -66,7 +66,7 @@ public class PickupController : MonoBehaviour
 		if (slot != null) {
 			slot.EquipPickup (pickup);
 		}
-		PulseAllSlots ();
+		//PulseAllSlots ();
 	}
 
 	public void UsePickup(Slot slot)
