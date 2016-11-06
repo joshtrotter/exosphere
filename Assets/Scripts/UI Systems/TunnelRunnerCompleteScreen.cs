@@ -7,6 +7,13 @@ using DG.Tweening;
 
 public class TunnelRunnerCompleteScreen : UISystem {
 
+	[System.Serializable]
+	public struct TunnelRunnerCompleteScreenImage{
+		public Image display;
+		public Sprite normal;
+		public Sprite golden;
+	}
+
 	public static TunnelRunnerCompleteScreen controller;
 
 	public Canvas canvas;
@@ -28,6 +35,11 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	public Text bestDistanceText;
 	public Text bestCrateCountText;
 	public Text bestFastestKmText;
+	
+	public TunnelRunnerCompleteScreenImage scoreImage;
+	public TunnelRunnerCompleteScreenImage distanceImage;
+	public TunnelRunnerCompleteScreenImage cratesImage;
+	public TunnelRunnerCompleteScreenImage fastestImage;
 	
 	private int lastScore = 0;
 	private float lastDistance;
@@ -93,10 +105,22 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		isShowingLastRun = true;
 
 		lastScoreText.text = lastScore.ToString();
+		if (lastScore >= bestScore) {
+			newHighScoreText.text = "New High Score!";
+			scoreImage.display.sprite = scoreImage.golden;
+		} else {
+			newHighScoreText.text = (bestScore - lastScore) + " points below Highscore";
+			scoreImage.display.sprite = scoreImage.normal;
+		}
+
 		lastDistanceText.text = lastDistance.ToString ("F0") + "m";
+		distanceImage.display.sprite = lastDistance >= bestDistance ? distanceImage.golden : distanceImage.normal;
+
 		lastCrateCountText.text = lastCrateCount.ToString();
+		cratesImage.display.sprite = lastCrateCount >= bestCrateCount ? cratesImage.golden : cratesImage.normal;
+
 		lastFastestKmText.text = GetFastestKmString (lastKmTime);
-		newHighScoreText.text = lastScore >= bestScore ? "New High Score!" : (bestScore - lastScore) + " points below Highscore";
+		fastestImage.display.sprite = (lastKmTime <= bestKmTime && lastKmTime != float.MaxValue) ? fastestImage.golden : fastestImage.normal;
 
 		switchScoreButtonText.text = "Best Run";
 		highScorePanel.gameObject.SetActive (false);
