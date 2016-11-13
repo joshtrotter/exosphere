@@ -25,7 +25,8 @@ public class TunnelScoreController : MonoBehaviour {
 	private float currentWaitToInformDistance;
 
 	//minimum air time
-	public float minAirTime = 2f;
+	public float minAirTime = 1.8f;
+	public float airTimeBasePoints = 20f;
 	public float airTimePointsPerSecond = 100f;
 	private float groundLeftTime;
 
@@ -148,7 +149,7 @@ public class TunnelScoreController : MonoBehaviour {
 
 	private void CheckForAirtime () {
 		if (runTime - groundLeftTime >= minAirTime) {
-			int airScore = (int)((runTime - groundLeftTime) * (airTimePointsPerSecond / 10)) * 10;
+			int airScore = (int) airTimeBasePoints + (int)((runTime - groundLeftTime) * (airTimePointsPerSecond / 10)) * 10;
 			if (runTime - groundLeftTime >= 2 * minAirTime) {
 				//good luck
 				airScore *= 2;
