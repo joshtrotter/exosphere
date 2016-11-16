@@ -31,6 +31,7 @@ public class SeeSawController : MonoBehaviour {
 	}
 
 	private void RemoveBias() {
+		Debug.Log ("Removing bias");
 		rampBottom.mass = massBase;
 		rampTop.mass = massBase;
 	}
@@ -40,8 +41,10 @@ public class SeeSawController : MonoBehaviour {
 		float topRampDistance = (coll.transform.position - rampTop.transform.position).magnitude;
 		
 		if (bottomRampDistance < topRampDistance) {
+			Debug.Log ("Resetting bias to bottom");
 			rampBottom.mass = massBias;
 		} else {
+			Debug.Log ("Resetting bias to top");
 			rampTop.mass = massBias;
 		}
 	}

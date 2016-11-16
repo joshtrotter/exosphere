@@ -32,6 +32,7 @@ public class SeeSawMorphChecker : MonoBehaviour {
 			yield return new WaitForEndOfFrame();
 		}
 		seeSawController.ResetBias(coll);
+		Debug.Log ("Seesaw morph checker calling reset");
 	}
 
 	private bool IsLightBall() {
