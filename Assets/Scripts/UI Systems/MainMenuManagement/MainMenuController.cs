@@ -12,6 +12,7 @@ public class MainMenuController : UISystem {
 
 	//used to determine whether a press of the back button should be passed to the levelSelectManager
 	private bool hasLaunched = false;
+	private bool hasPressedPlay = false;
 	private bool inSettings = false;
 
 	public override void Awake(){
@@ -34,7 +35,7 @@ public class MainMenuController : UISystem {
 	private void OnLevelWasLoaded(){
 		if (controller == this) {
 			if (LevelManager.manager.IsLevelLoader()) {
-				hasLaunched = false;
+				hasPressedPlay = false;
 				SetSkybox ();
 				RequestToBeShown ();
 			} else {
@@ -73,7 +74,7 @@ public class MainMenuController : UISystem {
 	public override void BackKey(){
 		//TODO disabled while world select is skipped
 		//worldSelectManager.BackButton ();
-		if (hasLaunched) {
+		if (hasLaunched && !hasPressedPlay) {
 			levelSelectManager.BackButton ();
 		}
 	}
@@ -87,17 +88,20 @@ public class MainMenuController : UISystem {
 
 	public void ReturnFocusToMainMenu(){
 		Debug.Log ("returning focus to main menu");
+		hasLaunched = false;
 		worldSelectManager.ReturnToOpeningScreen ();
 		levelSelectManager.ResetCamera ();
 	}
 
 	public void ReturnFocusToWorldLevels(){
 		Debug.Log ("Returning focus to world levels");
+		hasLaunched = true;
 		levelSelectManager.StartWorldLevelsDisplay (levelSelectManager.GetCurrentWorld());
 	}
 
 	public void ReturnFocusToNextLevel(){
 		Debug.Log ("returning focus to next level");
+		hasLaunched = true;
 		levelSelectManager.StartWorldLevelsDisplay (levelSelectManager.GetCurrentWorld());
 		levelSelectManager.StartLevelInfoDisplay (LevelDataManager.manager.GetNextLevelData().GetLevelID());
 	}
@@ -105,8 +109,13 @@ public class MainMenuController : UISystem {
 
 	public void ReturnFocusToNextWorld(){
 		Debug.Log ("Returning focus to next world");
+		hasLaunched = true;
 		levelSelectManager.ReturnToWorldSelect ();
 		worldSelectManager.MoveScreenToWorld (1);
+	}
+
+	public void BlockBackButton(){
+		hasPressedPlay = true;
 	}
 
 }

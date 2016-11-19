@@ -137,6 +137,7 @@ public class LevelSelectManager : MonoBehaviour {
 	}
 
 	public void PlayLevel(int levelID){	
+		MainMenuController.controller.BlockBackButton ();
 		LevelManager.manager.SetCurrentLevel (currentLevel.GetLevelID ());
 		DOTween.CompleteAll ();
 		GameObject.FindObjectOfType<LevelLaunchSequence> ().PlayLevel ();
