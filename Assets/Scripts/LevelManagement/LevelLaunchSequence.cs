@@ -15,7 +15,11 @@ public class LevelLaunchSequence : MonoBehaviour {
 		ball.isKinematic = false;
 		cam.enabled = true;
 		cam.transform.DOLocalRotate (new Vector3 (10f, 0f, 0f), 1f).Play ();
-		yield return new WaitForSeconds (3.5f);
+		yield return new WaitForSeconds (3f);
+		foreach (ZoomPad pad in GetComponentsInChildren<ZoomPad>()){
+			pad.Activate ();
+		}
+		//yield return new WaitForSeconds (0.5f);
 		LevelManager.manager.FirstLoadLevel ();
 	}
 	
