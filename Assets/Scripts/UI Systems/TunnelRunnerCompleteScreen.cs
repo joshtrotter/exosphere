@@ -51,6 +51,11 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	private int bestCrateCount;
 	private float bestKmTime;
 
+	/* Flag to denote whether the last run images should consider whether to be golden or not
+	 * This flag is false once best run data has been updated (as last run could now equal best run)
+	 * to keep golden images where necessary */
+	private bool shouldUpdateImages = false;
+
 	//allows us to freeze ball while screen is showing
 	private BallInputReader ballInputReader;
 	private Rigidbody rbBall;
@@ -76,7 +81,9 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		LoadBestRunData ();
 		if (lastScore > 0) {
 			switchScoreButtonText.transform.parent.gameObject.SetActive(true);
+			shouldUpdateImages = true;
 			ShowLastRun ();
+			UpdateBestRunData ();
 		} else {
 			switchScoreButtonText.transform.parent.gameObject.SetActive(false);
 			ShowHighScores();
@@ -105,22 +112,22 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		isShowingLastRun = true;
 
 		lastScoreText.text = lastScore.ToString();
-		if (lastScore >= bestScore) {
-			newHighScoreText.text = "New High Score!";
-			scoreImage.display.sprite = scoreImage.golden;
-		} else {
-			newHighScoreText.text = (bestScore - lastScore) + " points below Highscore";
-			scoreImage.display.sprite = scoreImage.normal;
-		}
-
 		lastDistanceText.text = lastDistance.ToString ("F0") + "m";
-		distanceImage.display.sprite = lastDistance >= bestDistance ? distanceImage.golden : distanceImage.normal;
-
 		lastCrateCountText.text = lastCrateCount.ToString();
-		cratesImage.display.sprite = lastCrateCount >= bestCrateCount ? cratesImage.golden : cratesImage.normal;
-
 		lastFastestKmText.text = GetFastestKmString (lastKmTime);
-		fastestImage.display.sprite = (lastKmTime <= bestKmTime && lastKmTime != float.MaxValue) ? fastestImage.golden : fastestImage.normal;
+
+		if (shouldUpdateImages) {
+			if (lastScore > bestScore) {
+				newHighScoreText.text = "New High Score!";
+				scoreImage.display.sprite = scoreImage.golden;
+			} else {
+				newHighScoreText.text = (bestScore - lastScore) + " points below Highscore";
+				scoreImage.display.sprite = scoreImage.normal;
+			}
+			distanceImage.display.sprite = lastDistance > bestDistance ? distanceImage.golden : distanceImage.normal;
+			cratesImage.display.sprite = lastCrateCount > bestCrateCount ? cratesImage.golden : cratesImage.normal;
+			fastestImage.display.sprite = (lastKmTime < bestKmTime && lastKmTime != float.MaxValue) ? fastestImage.golden : fastestImage.normal;
+		}
 
 		switchScoreButtonText.text = "Best Run";
 		highScorePanel.gameObject.SetActive (false);
@@ -128,6 +135,7 @@ public class TunnelRunnerCompleteScreen : UISystem {
 	}
 
 	private void ShowHighScores(){
+		shouldUpdateImages = false;
 		isShowingLastRun = false;
 
 		bestScoreText.text = bestScore.ToString();
@@ -183,7 +191,6 @@ public class TunnelRunnerCompleteScreen : UISystem {
 
 		lastCrateCount = LevelManager.manager.GetNumCollectablesFound ();
 
-		UpdateBestRunData ();
 	}
 
 	private void UpdateBestRunData(){
