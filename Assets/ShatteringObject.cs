@@ -13,7 +13,7 @@ public class ShatteringObject : MonoBehaviour {
 		StartCoroutine (delayInitialCollisions());
 	}
 
-	void OnLevelWasLoaded(){
+	void OnEnable(){
 		StartCoroutine (delayInitialCollisions());
 	}
 
