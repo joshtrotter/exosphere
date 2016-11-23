@@ -26,7 +26,9 @@ public class WorldLevels : MonoBehaviour {
 
 	public void DisplayWorldLevels (WorldData world)
 	{
-		RenderSettings.skybox = world.skybox;
+		//TODO the following may need to be re-enabled if we ever have multiple worlds with different skyboxes
+		//this has a slight issue with the changed skybox prematurely flashing in the background of a level when return to level select is used
+		//RenderSettings.skybox = world.skybox;
 		title.text = world.worldName;
 		for (int i = 0; i < levelIcons.Length; i++) {
 			levelIcons [i].DisplayLevelInfo (world.GetXthChildData (i));
