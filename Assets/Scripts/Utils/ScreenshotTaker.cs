@@ -13,7 +13,7 @@ public class ScreenshotTaker : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.K)){
 			Debug.Log ("Taking screenshot to " + Application.dataPath);
 			HUD.controller.Hide();
-			Application.CaptureScreenshot(Application.dataPath + "/Screenshots/" + LevelDataManager.manager.GetCurrentLevelData().GetLevelName() + Time.realtimeSinceStartup + ".png");
+			Application.CaptureScreenshot(Application.dataPath + "/Screenshots/" + LevelDataManager.manager.GetCurrentLevelData().GetLevelName() + Time.realtimeSinceStartup + ".png", 4);
 			//HUD.controller.Show();
 		}
 	}
