@@ -36,7 +36,7 @@ public class MainMenuController : UISystem {
 		if (controller == this) {
 			if (LevelManager.manager.IsLevelLoader()) {
 				hasPressedPlay = false;
-				SetSkybox ();
+				//SetSkybox ();
 				RequestToBeShown ();
 			} else {
 				Deregister ();
