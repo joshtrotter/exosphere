@@ -24,6 +24,8 @@ public class AmazeballTiltInput : MonoBehaviour
 
 	//Track an offset for the vertical acceleration so that the player can choose their own neutral orientation for the device
 	private float verticalAccelerationOffset;
+	//Store whether the device was tilted forward during calbiration
+	private bool calibrationTiltedForward;
 				
 	//If this rig is enabled we will register the two virtual axis with the CrossPlatformInputManager. This means these axis values will be derived from this script.
 	private void OnEnable ()
@@ -62,14 +64,14 @@ public class AmazeballTiltInput : MonoBehaviour
 							
 	// Update is called once per frame
 	void Update ()
-	{
+	{ 	
 		//If space is pressed then reset the 'neutral' device orientation
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			ConfigureVerticalOrientationOffset ();
 		}
 
 		//Get the base acceleration values
-		float verticalAcceleration = GetValueAboveThreshold (Input.acceleration.y - verticalAccelerationOffset, verticalAccelerationThreshold);
+		float verticalAcceleration = GetValueAboveThreshold (AdjustVerticalAccelerationForInitialTilt(GetTiltAdjustedVerticalAcceleration() - verticalAccelerationOffset), verticalAccelerationThreshold);
 		float horizontalAcceleration = GetValueAboveThreshold (Input.acceleration.x, horizontalAccelerationThreshold);
 
 		//Transform into scaled acceleration values (-1 to +1)
@@ -85,6 +87,34 @@ public class AmazeballTiltInput : MonoBehaviour
 	public void ConfigureVerticalOrientationOffset ()
 	{
 		verticalAccelerationOffset = Input.acceleration.y;
+		calibrationTiltedForward = IsDeviceTiltedForward();
+	}
+
+	//Indicates whether the device is tilted forward relative to a person in a sitting position
+	private bool IsDeviceTiltedForward() {
+		return Input.acceleration.z < 0;
+	}
+
+	//Indicates whether the device has crossed the threshold at which Input.acceleration.y starts moving in the opposite direction
+	private bool DeviceTiltSwapped ()
+	{
+		return calibrationTiltedForward != IsDeviceTiltedForward();
+	}
+
+	//Obtain the vertical acceleration value, adjusted if the device tilt has been swapped since calibration
+	private float GetTiltAdjustedVerticalAcceleration() 
+	{
+		if (!DeviceTiltSwapped ()) {
+			return Input.acceleration.y;
+		} else {
+			return -2 - Input.acceleration.y;
+		}
+	}
+
+	//Obtain the vertical acceleration value, adjusted if the device wasn't tilted forward during calibration
+	private float AdjustVerticalAccelerationForInitialTilt(float verticalAcceleration)
+	{
+		return verticalAcceleration * (calibrationTiltedForward ? 1 : -1);
 	}
 
 	//We use this to ignore any acceleration which is below the threshold value
