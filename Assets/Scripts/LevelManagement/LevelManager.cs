@@ -8,6 +8,7 @@ public class LevelManager : MonoBehaviour {
 	public static LevelManager manager;
 	
 	public int currentLevel = 1;
+	public int targetFps = 60;
 
 	private Vector3 spawnPosition;
 	private float cameraAngle;
@@ -26,6 +27,7 @@ public class LevelManager : MonoBehaviour {
 	private int TUNNEL_RUNNER_LEVEL;
 	
 	void Awake () {
+		Application.targetFrameRate = targetFps;
 		//set up singleton instance, destroy if a LevelManager already exists.
 		if (manager == null) {
 			manager = this;
