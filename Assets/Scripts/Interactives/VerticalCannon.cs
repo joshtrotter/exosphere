@@ -8,6 +8,8 @@ public class VerticalCannon : MonoBehaviour {
 	public float launchPower = 5f;
 	public Renderer[] launchLights;
 	public Light flashingLight;
+	public float camLaunchAngle = 0f;
+	public float camAirborneLockAngle = 90f;
 	private Color startColor;
 
 	//this variable will be used by the vertical cannon landing script to inform this class that 
@@ -45,6 +47,7 @@ public class VerticalCannon : MonoBehaviour {
 		wallClipper.enabled = false;
 		float camMoveSpeed = camController.moveSpeed;
 		camController.moveSpeed = 0f;
+		camController.constrainCameraAngle (camLaunchAngle, 0f, 5f);
 		camController.transform.DOLookAt (this.transform.position, 2f).Play ();
 		camController.movePivot (new Vector3 (0f, -2f, 0f));
 
@@ -70,6 +73,7 @@ public class VerticalCannon : MonoBehaviour {
 
 		//launch ball
 		rb.AddForce(Vector3.up * launchPower * rb.mass, ForceMode.Impulse);
+		camController.constrainCameraAngle (0f, camAirborneLockAngle, 0f);
 
 		//wait until a VerticalCannonLanding script lets the cannon know the ball has landed
 		hasLanded = false;
@@ -80,6 +84,7 @@ public class VerticalCannon : MonoBehaviour {
 		camController.moveSpeed = camMoveSpeed;
 		ballInput.enabled = true;
 		wallClipper.enabled = true;
+		camController.removeAngleConstraint ();
 	}
 
 	public void SetHasLanded(){

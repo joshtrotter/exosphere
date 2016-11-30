@@ -58,18 +58,21 @@ public class BallInputReader : MonoBehaviour
 			else {
 			brakeForce = Mathf.Abs (v);
 		}
+		
+		//prevent buttons firing in pause menu, etc.
+		if (Time.timeScale == 1f) {
+			//If we detect a touch then start tracking it
+			if (CrossPlatformInputManager.GetButtonDown ("Right")) {
+				StartCoroutine (TrackButtonPress ("Right", PickupController.Slot.RIGHT, CrossPlatformInputManager.GetLastKnownPos ("Right"), Time.time));
+			}
+			if (CrossPlatformInputManager.GetButtonDown ("Left")) {
+				StartCoroutine (TrackButtonPress ("Left", PickupController.Slot.LEFT, CrossPlatformInputManager.GetLastKnownPos ("Left"), Time.time));
+			}
 
-		//If we detect a touch then start tracking it
-		if (CrossPlatformInputManager.GetButtonDown ("Right")) {
-			StartCoroutine (TrackButtonPress ("Right", PickupController.Slot.RIGHT, CrossPlatformInputManager.GetLastKnownPos ("Right"), Time.time));
-		}
-		if (CrossPlatformInputManager.GetButtonDown ("Left")) {
-			StartCoroutine (TrackButtonPress ("Left", PickupController.Slot.LEFT, CrossPlatformInputManager.GetLastKnownPos ("Left"), Time.time));
-		}
-
-		//If we detect a shake then trigger the response
-		if (CrossPlatformInputManager.GetButtonDown ("Shake")) {
-			transforms.RemoveCurrent ();
+			//If we detect a shake then trigger the response
+			if (CrossPlatformInputManager.GetButtonDown ("Shake")) {
+				transforms.RemoveCurrent ();
+			}
 		}
 	}
 
