@@ -159,6 +159,15 @@ public class AmazeballCam : MonoBehaviour
 		Camera.main.transform.DOBlendableLocalMoveBy(new Vector3(0f,0f,zoomAmount), zoomTime).Play ();
 	}
 
+	public void lookAhead(float distanceAhead, float duration = 1f) {
+		lookAt (ball.transform.position + (ball.GetComponent<Rigidbody> ().velocity.normalized * distanceAhead), duration);
+	}
+
+	public void lookAt(Vector3 target, float duration = 1f) {
+		float camAngleToTarget = Quaternion.LookRotation (target - transform.position).eulerAngles.y;
+		DOTween.To (()=> camAngle, x=> camAngle = x, camAngleToTarget, duration).Play();
+	}
+
 	private float restrictAngleBetween180s(float angle) {
 		if (angle > 180f) {
 			angle = angle - 360f;
