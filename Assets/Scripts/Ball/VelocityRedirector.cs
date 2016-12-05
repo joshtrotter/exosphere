@@ -4,7 +4,6 @@ using System.Collections;
 public class VelocityRedirector : MonoBehaviour {
 
 	public Vector3 desiredDirection = new Vector3 (0,-1,1);
-	public float redirectPercentageThreshold = 0.5f;
 	public float redirectSpeed = 1f;
 	
 	private Coroutine velocityAdjuster;
