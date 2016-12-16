@@ -156,6 +156,7 @@ public class AmazeballCam : MonoBehaviour
 	}
 
 	public void zoomCamera(float zoomAmount, float zoomTime = 1f) {
+		Debug.Log ("Zooming to " + zoomAmount);
 		Camera.main.transform.DOBlendableLocalMoveBy(new Vector3(0f,0f,zoomAmount), zoomTime).Play ();
 	}
 

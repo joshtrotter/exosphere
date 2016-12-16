@@ -18,6 +18,7 @@ public class CameraManipulator : MonoBehaviour {
 	public bool resetOnExit = false;
 	public float resetTiltTime = 0.25f;
 	public float resetZoomTime = 0.25f;
+	public bool hardReset = false;
 	
 	private AmazeballCam cameraRig;
 	private float camLockCentreAngle;
@@ -43,13 +44,13 @@ public class CameraManipulator : MonoBehaviour {
 	
 	void OnTriggerExit (Collider coll) {
 		if (resetOnExit && coll.CompareTag ("Player")) {
-			if (camLock) {
+			if (camLock || hardReset) {
 				cameraRig.removeAngleConstraint();
 			}
-			if (camTilt) {
+			if (camTilt || hardReset) {
 				cameraRig.resetNeutralTilt(resetTiltTime);
 			}
-			if (camZoom) {
+			if (camZoom || hardReset) {
 				cameraRig.zoomCamera(-camZoomAmount, resetZoomTime);
 			}
 		}

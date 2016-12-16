@@ -2,7 +2,10 @@
 using DG.Tweening;
 using System.Collections;
 
-public class Checkpoint : MonoBehaviour {
+public class Checkpoint : HasLevelState {
+
+	private const int NOT_ACTIVATED_STATE = 0;
+	private const int ACTIVATED_STATE = 1;
 
 	public float cameraAngle;
 	public float bounceHeight = 0.25f;
@@ -15,15 +18,24 @@ public class Checkpoint : MonoBehaviour {
 	void Awake() {
 		bubbleEffect = transform.FindChild ("BubbleEffect");
 	}
+
+	public override void ReloadState(int state) {
+		currentState = state;
+		if (state == ACTIVATED_STATE) {
+			bubbleEffect.gameObject.SetActive(false);
+		}
+	}
 		
 	void OnTriggerEnter(Collider coll) {
 		if (coll.CompareTag ("Player")) {
 			ResetSpawnPoint();
 			ResetCamera();
+			if (currentState == NOT_ACTIVATED_STATE) {
+				RegisterStateChange(ACTIVATED_STATE);
+				HUD.controller.SendMessage("CheckpointReached");
+				VisualizeCheckpoint();
+			}
 			SaveLevelProgress();
-			//ResetPlayer (coll.gameObject);
-			HUD.controller.SendMessage("CheckpointReached");
-			VisualizeCheckpoint();
 		}
 	}
 
@@ -50,7 +62,10 @@ public class Checkpoint : MonoBehaviour {
 				.Append (bubbleEffect.DOScale (growToScale, growTime))
 				.AppendInterval (growTime)
 				.Append (bubbleEffect.DOScale (1f, growTime))
-				.Append (bubbleEffect.DOMoveY (bubbleEffect.position.y, growTime / 2));
+				.Append (bubbleEffect.DOMoveY (bubbleEffect.position.y, growTime / 2))
+				.AppendInterval(growTime)
+				.Append (bubbleEffect.DOScale (0f, growTime * 2f))
+				.AppendCallback(() => bubbleEffect.gameObject.SetActive(false));
 			
 	}
 }
