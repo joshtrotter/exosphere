@@ -36,7 +36,7 @@ public class BallController : MonoBehaviour
 	private Rigidbody rb;
 	
 	// The length of the ray used to check if the ball is grounded
-	private const float groundRayLength = 1f;
+	public float groundRayLength = 1f;
 
 	//Store our current target velocity
 	private Vector3 targetVelocity;
@@ -148,7 +148,7 @@ public class BallController : MonoBehaviour
 	public Boolean IsReallyOnGround ()
 	{
 		//TODO This is a candidate for future optimization - this method is called a lot and Physics.Raycast is relatively expensive
-		return Physics.Raycast (transform.position, Vector3.down, 0.6f);
+		return Physics.Raycast (transform.position, Vector3.down, groundRayLength - 0.4f);
 	}
 
 	private void updateGrind() {
