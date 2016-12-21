@@ -166,6 +166,15 @@ public class AmazeballCam : MonoBehaviour
 
 	public void lookAt(Vector3 target, float duration = 1f) {
 		float camAngleToTarget = Quaternion.LookRotation (target - transform.position).eulerAngles.y;
+
+		if (Mathf.Abs (camAngleToTarget - camAngle) > 180f) {
+			if (camAngleToTarget > camAngle) {
+				camAngleToTarget = camAngleToTarget - 360f;
+			} else {
+				camAngleToTarget = camAngleToTarget + 360f;
+			}
+		}
+
 		DOTween.To (()=> camAngle, x=> camAngle = x, camAngleToTarget, duration).Play();
 	}
 
