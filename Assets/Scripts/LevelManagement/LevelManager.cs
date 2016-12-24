@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Advertisements;
 
 public class LevelManager : MonoBehaviour {
 
@@ -17,6 +18,7 @@ public class LevelManager : MonoBehaviour {
 	
 	public int collected;
 	public int numDeaths;
+	public int deathsBetweenAds = 2;
 
 	private Dictionary<string, int> objectStates = new Dictionary<string, int>();
 	private Dictionary<string, int> tempObjectStates = new Dictionary<string, int>();
@@ -52,9 +54,12 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void ReloadLevel() {
-		Debug.Log ("Reloading level");
+		Debug.Log ("Reloading level: numDeaths = " + numDeaths);
 		TearDown ();
 		numDeaths++;
+		if (Advertisement.IsReady () && (numDeaths % deathsBetweenAds == 0)) {
+			Advertisement.Show ();
+		}
 		Application.LoadLevel (currentLevel);
 	}
 

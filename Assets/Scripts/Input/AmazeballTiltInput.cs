@@ -71,7 +71,7 @@ public class AmazeballTiltInput : MonoBehaviour
 		}
 
 		//Get the base acceleration values
-		float verticalAcceleration = GetValueAboveThreshold (AdjustVerticalAccelerationForInitialTilt(GetTiltAdjustedVerticalAcceleration() - verticalAccelerationOffset), verticalAccelerationThreshold);
+		float verticalAcceleration = GetValueAboveThreshold (AdjustAccelerationForInitialTilt(GetTiltAdjustedVerticalAcceleration() - verticalAccelerationOffset), verticalAccelerationThreshold);
 		float horizontalAcceleration = GetValueAboveThreshold (Input.acceleration.x, horizontalAccelerationThreshold);
 
 		//Transform into scaled acceleration values (-1 to +1)
@@ -112,9 +112,9 @@ public class AmazeballTiltInput : MonoBehaviour
 	}
 
 	//Obtain the vertical acceleration value, adjusted if the device wasn't tilted forward during calibration
-	private float AdjustVerticalAccelerationForInitialTilt(float verticalAcceleration)
+	private float AdjustAccelerationForInitialTilt(float acceleration)
 	{
-		return verticalAcceleration * (calibrationTiltedForward ? 1 : -1);
+		return acceleration * (calibrationTiltedForward ? 1 : -1);
 	}
 
 	//We use this to ignore any acceleration which is below the threshold value
