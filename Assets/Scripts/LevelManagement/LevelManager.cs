@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Advertisements;
+using UnityEngine.Analytics;
 
 public class LevelManager : MonoBehaviour {
 
@@ -50,7 +51,19 @@ public class LevelManager : MonoBehaviour {
 		Debug.Log ("First loading level");
 		firstLoad = true;
 		numDeaths = 0;
+		if (!IsTunnelRunner()) {
+			SendAnalyticsEvent ();
+		}
 		Application.LoadLevel (currentLevel);
+	}
+
+	private void SendAnalyticsEvent() {
+		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
+		
+		Analytics.CustomEvent("StartLevelEvent", new Dictionary<string, object> {
+			{"Level Name", levelData.GetLevelName ()},
+			{"Already Completed", levelData.HasBeenCompleted()}
+		});
 	}
 
 	public void ReloadLevel() {

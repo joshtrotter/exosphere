@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 public class LevelCompleteScreen : UISystem {
 
@@ -37,6 +38,8 @@ public class LevelCompleteScreen : UISystem {
 	private int buttonPress;
 
 	public Canvas levelCompleteCanvas;
+
+	private bool firstComplete = false;
 
 	public override void Awake(){
 		//set up singleton instance
@@ -92,6 +95,7 @@ public class LevelCompleteScreen : UISystem {
 		//stars and records
 		levelCompleteStar.sprite = collectedStar;
 		if (!levelData.HasBeenCompleted()) {
+			firstComplete = true;
 			levelData.Complete ();
 			AddToDisplayList(levelCompleteStarEarned);
 		}
@@ -136,6 +140,8 @@ public class LevelCompleteScreen : UISystem {
 		
 		LevelDataManager.manager.Save ();
 
+		SendAnalyticsEvent ();
+
 		RequestToBeShown ();
 	}
 		
@@ -163,10 +169,10 @@ public class LevelCompleteScreen : UISystem {
 	}
 
 	private IEnumerator RevealSummary(){
-		yield return new WaitForSeconds(1.2f); //was 1.5f
+		yield return new WaitForSeconds(1f); //was 1.5f
 		foreach (Graphic text in displayList) {
 			text.color = Color.white;
-			yield return new WaitForSeconds(0.7f); //was 1f
+			yield return new WaitForSeconds(0.5f); //was 1f
 		}
 	}
 
@@ -216,6 +222,21 @@ public class LevelCompleteScreen : UISystem {
 
 	public override void BackKey(){
 		ButtonPress (0);
+	}
+
+	private void SendAnalyticsEvent() {
+		LevelData levelData = LevelDataManager.manager.GetCurrentLevelData ();
+		
+		Analytics.CustomEvent("EndLevelEvent", new Dictionary<string, object> {
+			{"Level Name", levelData.GetLevelName ()},
+			{"First Completion", firstComplete},
+			{"Deaths", LevelManager.manager.numDeaths},
+			{"No Death Challenge Complete", levelData.NoDeathsChallengeHasBeenCompleted()},
+			{"Crates", LevelManager.manager.collected},
+			{"Crate Challenge Complete", levelData.AllCollectablesHaveBeenCollected()}
+		});
+
+		firstComplete = false;
 	}
 	
 

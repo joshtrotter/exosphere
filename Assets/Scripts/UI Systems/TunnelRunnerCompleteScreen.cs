@@ -4,6 +4,8 @@ using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using DG.Tweening;
+using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 public class TunnelRunnerCompleteScreen : UISystem {
 
@@ -132,6 +134,20 @@ public class TunnelRunnerCompleteScreen : UISystem {
 		switchScoreButtonText.text = "Best Run";
 		highScorePanel.gameObject.SetActive (false);
 		lastRunPanel.gameObject.SetActive (true);
+		SendAnalyticsEvent ();
+	}
+
+	private void SendAnalyticsEvent() {
+		Analytics.CustomEvent("TunnelRunnerDeathEvent", new Dictionary<string, object> {
+			{"Score", lastScore},
+			{"Distance", lastDistance},
+			{"Crates", lastCrateCount},
+			{"Speed", lastKmTime},
+			{"Best Score", bestScore},
+			{"Best Distance", bestDistance},
+			{"Best Crates", bestCrateCount},
+			{"Best Speed", bestKmTime}
+		});
 	}
 
 	private void ShowHighScores(){

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 
 public class MainMenuController : UISystem {
 
@@ -45,16 +47,25 @@ public class MainMenuController : UISystem {
 	}
 
 	public void TunnelRunnerButton(){
+		Analytics.CustomEvent("MainMenuEvent", new Dictionary<string, object> {
+			{"Selection", "Tunnel Runner"}
+		});
 		worldSelectManager.InitiateTunnelRunnerLaunch ();
 	}
 
 	public void SettingsButton(){
+		Analytics.CustomEvent("MainMenuEvent", new Dictionary<string, object> {
+			{"Selection", "Settings"}
+		});
 		inSettings = true;
 		worldSelectManager.OpenSettingsMenu ();
 	}
 
 
 	public void Launch(){
+		Analytics.CustomEvent("MainMenuEvent", new Dictionary<string, object> {
+			{"Selection", "Adventure Mode"}
+		});
 		hasLaunched = true;
 		worldSelectManager.EnterWorld (LevelDataManager.manager.GetWorldData (1));
 	}
