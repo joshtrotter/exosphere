@@ -20,6 +20,8 @@ public class LevelManager : MonoBehaviour {
 	public int collected;
 	public int numDeaths;
 	public int deathsBetweenAds = 2;
+	public float timeBetweenAds = 180f;
+	private float timeOfLastAd = 0f;
 
 	private Dictionary<string, int> objectStates = new Dictionary<string, int>();
 	private Dictionary<string, int> tempObjectStates = new Dictionary<string, int>();
@@ -70,10 +72,15 @@ public class LevelManager : MonoBehaviour {
 		Debug.Log ("Reloading level: numDeaths = " + numDeaths);
 		TearDown ();
 		numDeaths++;
-		if (Advertisement.IsReady () && (numDeaths % deathsBetweenAds == 0)) {
+		HandleAdvertisements ();
+		Application.LoadLevel (currentLevel);
+	}
+
+	private void HandleAdvertisements() {
+		if (Advertisement.IsReady () && (numDeaths % deathsBetweenAds == 0) && (Time.time - timeOfLastAd >= timeBetweenAds)) {
+			timeOfLastAd = Time.time;
 			Advertisement.Show ();
 		}
-		Application.LoadLevel (currentLevel);
 	}
 
 	private void TearDown()
