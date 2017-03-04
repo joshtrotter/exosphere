@@ -16,8 +16,10 @@ The [BallController](Assets/Scripts/Ball/BallController.cs) and [BrakeController
 The [CameraController](Assets/Scripts/Camera/AmazeballCam.cs) uses the accelerometer readings to pivot and tilt around the ball. The camera is prevented from clipping through world geometry. Triggers are available to manipulate or constrain the camera angle, zoom and camera effects in order to customise gameplay sequences.
 
 ## Morph System
+The [MorphController](Assets/Scripts/Transform/TransformController.cs) manages the different ball [Morphs](Assets/Scripts/Transfrom/BallTransform.cs) which change the physical properties of the ball and how it moves. Some morphs also enable specialised gameplay functions such as the ability to reflect lasers.
 
 ## Pickup System
+The [PickupController](Assets/Scripts/Pickups/PickupController.cs) manages the players inventory of [Pickups](Assets/Scripts/Pickups/Pickup.cs). The HUD for pickups is managed through [PickupSlots](Assets/Scripts/Pickups/PickupSlot.cs). Pick ups are consumable items that are triggered by tapping the icon on the HUD.
 
 ## Level Management
 
