@@ -22,8 +22,10 @@ The [MorphController](Assets/Scripts/Transform/TransformController.cs) manages t
 The [PickupController](Assets/Scripts/Pickups/PickupController.cs) manages the players inventory of [Pickups](Assets/Scripts/Pickups/Pickup.cs). The HUD for pickups is managed through [PickupSlots](Assets/Scripts/Pickups/PickupSlot.cs). Pick ups are consumable items that are triggered by tapping the icon on the HUD.
 
 ## Level Management
+Game state such as level unlocks, achievements, and player settings are persisted to disk. Temporary level state such as collectables and interactives are stored in memory using a checkpointing system.
 
 ## Procedural Generation
+The [TunnelSpawnController](Assets/Scripts/Tunnel/TunnelSpawnController.cs) builds an endless sequence of [Tunnel Pieces](Assets/Scripts/Tunnel/TunnelPiece.cs). Tunnel pieces are selected semi-randomly based on a preference system to create exciting and challenging sequences. Each piece can be further randomised with missing panels, obstacles, materials, decals and collectables. The system uses object pooling for performance.
 
 ### Info
 This repository contains only the scripts from the Unity project. Binary file are kept out of the public repo as they contain art assets purchased from the Unity Asset Store.
