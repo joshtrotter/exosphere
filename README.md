@@ -2,7 +2,7 @@
 
 A ball-rolling puzzle game for mobile that uses tilt based controls. The player must morph the exo ball to adapt to their environment and solve physics based puzzles. The game comes with designed levels as well as a procedurally generated endless runner mode.
 
-[![Launch Trailer](Assets/Screenshots/SelectedShots/CalamityLevelShot.png?raw=true "Launch Trailer")](https://www.youtube.com/watch?v=v6KqbtJ24PE)
+[![Launch Trailer](Assets/Screenshots/CalamityLevelShot.png?raw=true "Launch Trailer")](https://www.youtube.com/watch?v=v6KqbtJ24PE)
 
 *Project Status:* [Released on Play Store](https://play.google.com/store/apps/details?id=trotterj.ExoSphere)
 
